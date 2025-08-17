@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ViewCell
+    x:Class="ExpenseTracker.Features.Templates.ExpenseListItemTemplate"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ViewCell.View>
+        <StackLayout
+            BackgroundColor="{Binding BackgroundColor}"
+            HorizontalOptions="FillAndExpand"
+            Orientation="Vertical"
+            Spacing="0"
+            VerticalOptions="FillAndExpand">
+            <StackLayout
+                Margin="10,0,10,0"
+                BackgroundColor="Transparent"
+                HorizontalOptions="FillAndExpand"
+                Orientation="Horizontal"
+                VerticalOptions="FillAndExpand">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HorizontalOptions="StartAndExpand"
+                    Text="{Binding Category}"
+                    VerticalOptions="EndAndExpand"
+                    VerticalTextAlignment="End" />
+                <Label
+                    HorizontalOptions="End"
+                    Text="{Binding CurrencySymbol}"
+                    VerticalOptions="EndAndExpand"
+                    VerticalTextAlignment="End" />
+                <Label
+                    HorizontalOptions="End"
+                    Text="{Binding AmountStr}"
+                    VerticalOptions="EndAndExpand"
+                    VerticalTextAlignment="End" />
+            </StackLayout>
+            <StackLayout
+                Margin="10,3,10,0"
+                BackgroundColor="Transparent"
+                HorizontalOptions="FillAndExpand"
+                Orientation="Horizontal"
+                VerticalOptions="FillAndExpand">
+                <Label
+                    HorizontalTextAlignment="Start"
+                    LineBreakMode="TailTruncation"
+                    Text="{Binding Note}"
+                    VerticalOptions="StartAndExpand"
+                    VerticalTextAlignment="Start"
+                    WidthRequest="200" />
+                <Label
+                    FontSize="15"
+                    HorizontalOptions="EndAndExpand"
+                    Text="{Binding Date}"
+                    VerticalOptions="StartAndExpand"
+                    VerticalTextAlignment="Start" />
+            </StackLayout>
+        </StackLayout>
+    </ViewCell.View>
+</ViewCell>
+

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.SearchExpenseList.SearchExpenseListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:templates="clr-namespace:ExpenseTracker.Features.Templates"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="Search Expense List">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <templates:MyDataTemplateSelector x:Key="MyTemplateSelector">
+                <templates:MyDataTemplateSelector.ExpenseHeaderTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <templates:ExpenseHeaderTemplate />
+                        </ViewCell>
+                    </DataTemplate>
+                </templates:MyDataTemplateSelector.ExpenseHeaderTemplate>
+
+                <templates:MyDataTemplateSelector.ExpenseTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <templates:ExpenseListItemTemplateV2 />
+                        </ViewCell>
+                    </DataTemplate>
+                </templates:MyDataTemplateSelector.ExpenseTemplate>
+            </templates:MyDataTemplateSelector>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout VerticalOptions="FillAndExpand">
+        <Label
+            Margin="20,20,0,10"
+            FontAttributes="Bold"
+            FontSize="15"
+            Text="Fill atleast 1 filter" />
+        <Grid VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="20,0,10,0"
+                Text="Amount:"
+                VerticalOptions="Center" />
+            <Entry
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="0,0,20,0"
+                Keyboard="Numeric"
+                Placeholder="Enter amount"
+                Text="{Binding Amount}" />
+
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="20,0,10,0"
+                Text="Category:"
+                VerticalOptions="Center" />
+            <Picker
+                Title="Select Category"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="0,0,20,0"
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}">
+                <Picker.Behaviors>
+                    <toolkit:EventToCommandBehavior Command="{Binding CategorySelectedCommand}" EventName="SelectedIndexChanged" />
+                </Picker.Behaviors>
+            </Picker>
+
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="20,0,10,0"
+                Text="Note:"
+                VerticalOptions="Center" />
+            <Entry
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="0,0,20,0"
+                Placeholder="Enter note"
+                Text="{Binding Note}" />
+            <Label
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Margin="20,10,0,0"
+                FontAttributes="Bold"
+                Text="{Binding SearchCoverage}" />
+            <Label
+                Grid.Row="4"
+                Grid.ColumnSpan="2"
+                Margin="20,0,0,10"
+                FontAttributes="Bold"
+                Text="{Binding SearchTextResult}" />
+
+            <ActivityIndicator
+                Grid.Row="5"
+                Grid.ColumnSpan="2"
+                HeightRequest="50"
+                IsRunning="True"
+                IsVisible="{Binding IsBusy}" />
+            <ListView
+                Grid.Row="6"
+                Grid.ColumnSpan="2"
+                Margin="10,5,0,10"
+                CachingStrategy="RetainElement"
+                HasUnevenRows="True"
+                IsEnabled="True"
+                IsVisible="{Binding IsExpenseListVisible}"
+                ItemTemplate="{StaticResource MyTemplateSelector}"
+                ItemsSource="{Binding UiExpenses}"
+                RowHeight="55"
+                SelectedItem="{Binding UiExpenseSelectedItem, Mode=TwoWay}"
+                SeparatorColor="Blue">
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSelectedCommand}" EventName="ItemSelected" />
+                </ListView.Behaviors>
+            </ListView>
+        </Grid>
+        <Button
+            Margin="20,10,20,10"
+            Command="{Binding SearchCommand}"
+            CornerRadius="10"
+            IsEnabled="{Binding IsSearchButtonEnabled}"
+            Text="Search"
+            VerticalOptions="End" />
+    </StackLayout>
+</ContentPage>

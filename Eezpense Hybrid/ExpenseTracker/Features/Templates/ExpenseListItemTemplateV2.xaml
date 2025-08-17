@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="ExpenseTracker.Features.Templates.ExpenseListItemTemplateV2"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Grid
+        Padding="0,0,0,0"
+        HorizontalOptions="Fill"
+        IsVisible="{Binding IsVisible}"
+        VerticalOptions="Fill">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Label
+            Grid.Column="0"
+            Margin="10,0,0,0"
+            HorizontalOptions="Start"
+            IsVisible="False"
+            VerticalOptions="Center">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="{Binding Category}" />
+                    <Span Text="&#10;" />
+                    <Span Text="{Binding Note}" />
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+
+
+
+        <VerticalStackLayout
+            Margin="10,5,5,5"
+            IsVisible="True"
+            VerticalOptions="Center">
+            <Label
+                FontAttributes="Bold"
+                LineBreakMode="TailTruncation"
+                MaxLines="1"
+                Text="{Binding Category}"
+                VerticalOptions="Start" />
+            <Label
+                LineBreakMode="TailTruncation"
+                MaxLines="2"
+                Text="{Binding Note}"
+                VerticalOptions="End" />
+        </VerticalStackLayout>
+
+        <Label
+            Grid.Column="1"
+            Margin="0,5,10,5"
+            HorizontalOptions="End"
+            HorizontalTextAlignment="End"
+            VerticalOptions="Center">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span FontAttributes="Bold" Text="{Binding CurrencySymbol}" />
+                    <Span Text=" " />
+                    <Span FontAttributes="Bold" Text="{Binding AmountStr}" />
+                    <Span Text="&#10;" />
+                    <Span Text="{Binding Date}" />
+                    <Span Text=" @ " />
+                    <Span Text="{Binding Time}" />
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+    </Grid>
+</ContentView>
+

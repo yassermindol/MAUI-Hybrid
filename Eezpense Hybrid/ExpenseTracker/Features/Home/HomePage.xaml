@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<uranium:UraniumContentPage
+    x:Class="ExpenseTracker.Features.Home.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ExpenseTracker.Controls"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    xmlns:localize="clr-namespace:ExpenseTracker.Resources.Localization"
+    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:materialSymbols="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
+    xmlns:templates="clr-namespace:ExpenseTracker.Features.Templates"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+    Title="{localize:Translate RecentExpenses}"
+    HideSoftInputOnTapped="True">
+
+    <Page.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light=White, Dark={StaticResource OffBlack}}" StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent}" />
+    </Page.Behaviors>
+
+    <uranium:UraniumContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+            <converters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+            <templates:MyDataTemplateSelector x:Key="MyTemplateSelector">
+                <templates:MyDataTemplateSelector.ExpenseHeaderTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <templates:ExpenseHeaderTemplate />
+                        </ViewCell>
+                    </DataTemplate>
+                </templates:MyDataTemplateSelector.ExpenseHeaderTemplate>
+
+                <templates:MyDataTemplateSelector.ExpenseTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <templates:ExpenseListItemTemplateV2 />
+                        </ViewCell>
+                    </DataTemplate>
+                </templates:MyDataTemplateSelector.ExpenseTemplate>
+            </templates:MyDataTemplateSelector>
+        </ResourceDictionary>
+    </uranium:UraniumContentPage.Resources>
+
+    <StackLayout>
+        <HorizontalStackLayout x:Name="topUi" IsVisible="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
+            <controls:CustomDatePicker
+                Margin="5,0,0,0"
+                Date="{Binding SelectedStartDate, Mode=TwoWay}"
+                FontAttributes="Bold"
+                FontSize="15"
+                Format="MMM-d-yyyy"
+                HorizontalOptions="End">
+                <controls:CustomDatePicker.Behaviors>
+                    <toolkit:EventToCommandBehavior Command="{Binding DateSelectedCommand}" EventName="DateSelected" />
+                </controls:CustomDatePicker.Behaviors>
+            </controls:CustomDatePicker>
+            <Label VerticalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text=" to Present:  " />
+                        <Span FontAttributes="Bold" Text="{Binding TotalCurrencySymbol}" />
+                        <Span Text=" " />
+                        <Span FontAttributes="Bold" Text="{Binding TotalExpense}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </HorizontalStackLayout>
+
+        <StackLayout IsVisible="{Binding IsBusy}" VerticalOptions="CenterAndExpand">
+            <ActivityIndicator IsRunning="True" IsVisible="{Binding IsBusy}" />
+            <Label
+                Margin="0,5,0,0"
+                HorizontalOptions="Center"
+                Text="Loading..."
+                VerticalOptions="Start" />
+        </StackLayout>
+
+        <BoxView BackgroundColor="LightGrey" HeightRequest="0.6" />
+
+        <Label
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsNoRecordsToShowVisible}"
+            Text="No records to show."
+            VerticalOptions="CenterAndExpand" />
+
+        <ListView
+            x:Name="expenseListView"
+            Margin="0,0,0,10"
+            CachingStrategy="RetainElement"
+            HasUnevenRows="True"
+            IsEnabled="True"
+            IsVisible="{Binding IsListVisible}"
+            ItemTemplate="{StaticResource MyTemplateSelector}"
+            ItemsSource="{Binding UiExpenses}"
+            RowHeight="55"
+            SelectedItem="{Binding UiExpenseSelectedItem, Mode=TwoWay}"
+            VerticalOptions="Start">
+            <ListView.Behaviors>
+                <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSelectedCommand}" EventName="ItemSelected" />
+                <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSizeChangedCommand}" EventName="SizeChanged" />
+            </ListView.Behaviors>
+        </ListView>
+    </StackLayout>
+
+    <uranium:UraniumContentPage.Attachments>
+        <material:BottomSheetView
+            x:Name="bottomSheetView"
+            BackgroundColor="{AppThemeBinding Light=White,
+                                              Dark=Black}"
+            CloseOnTapOutside="True"
+            IsPresented="{Binding IsBottomSheetPresented}"
+            IsVisible="{Binding IsAddExpenseVisible}">
+            <material:BottomSheetView.Header>
+                <StackLayout
+                    x:Name="bottomSheetViewHeader"
+                    HorizontalOptions="Fill"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                    Orientation="Vertical"
+                    Spacing="0">
+
+                    <BoxView BackgroundColor="LightGray" HeightRequest="2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
+                            Margin="55,0,0,0"
+                            Padding="13"
+                            FontAttributes="Bold"
+                            FontSize="17"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            Text="{localize:Translate AddExpense}" />
+                        <Image
+                            Grid.Column="1"
+                            Margin="0,0,30,0"
+                            HeightRequest="30"
+                            HorizontalOptions="Start"
+                            Source="{Binding AddExpenseIconSource}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                    <BoxView BackgroundColor="LightGray" HeightRequest="1">
+                        <BoxView.Triggers>
+                            <DataTrigger
+                                Binding="{Binding Source={x:Reference bottomSheetView}, Path=IsPresented}"
+                                TargetType="BoxView"
+                                Value="False">
+                                <Setter Property="IsVisible" Value="True" />
+                            </DataTrigger>
+                            <DataTrigger
+                                Binding="{Binding Source={x:Reference bottomSheetView}, Path=IsPresented}"
+                                TargetType="BoxView"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </BoxView.Triggers>
+                    </BoxView>
+                </StackLayout>
+            </material:BottomSheetView.Header>
+            <StackLayout IsVisible="{Binding IsAddExpenseVisible}">
+                <StackLayout
+                    Padding="30,5,30,10"
+                    Spacing="10"
+                    StyleClass="ControlPreview">
+                    <material:TextField
+                        Title="Amount"
+                        FontSize="17"
+                        IsVisible="{Binding IsAddExpenseVisible}"
+                        Keyboard="Numeric"
+                        ReturnType="Next"
+                        Text="{Binding AmountStr}"
+                        TextColor="{AppThemeBinding Light=Black,
+                                                    Dark=White}" />
+                    <Label
+                        IsVisible="{Binding AmountErrorText, Converter={StaticResource StringToBooleanConverter}}"
+                        Style="{StaticResource ErrorLabelStyle}"
+                        Text="{Binding AmountErrorText}" />
+                    <material:TextField
+                        x:Name="noteTextField"
+                        Title="Notes(Optional)"
+                        FontSize="17"
+                        ReturnType="Done"
+                        Text="{Binding Note}"
+                        TextColor="{AppThemeBinding Light=Black,
+                                                    Dark=White}">
+                        <material:TextField.Behaviors>
+                            <toolkit:EventToCommandBehavior Command="{Binding NoteCompletedCommand}" EventName="Completed" />
+                        </material:TextField.Behaviors>
+                    </material:TextField>
+                    <Grid>
+                        <material:TextField
+                            Title="{localize:Translate ChooseExpenseCategory}"
+                            FontSize="17"
+                            HorizontalOptions="Fill"
+                            IsReadOnly="True"
+                            Text="{Binding SelectedExpenseCategory}"
+                            TextColor="{AppThemeBinding Light=Black,
+                                                        Dark=White}" />
+                        <BoxView
+                            x:Name="clickableStack"
+                            Margin="0,5,0,1"
+                            BackgroundColor="Transparent"
+                            CornerRadius="10"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill">
+                            <BoxView.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShowExpenseCategoryListCommand}" />
+                            </BoxView.GestureRecognizers>
+                        </BoxView>
+                        <Image
+                            Margin="0,3,15,0"
+                            Aspect="AspectFit"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource
+                                    FontFamily="MaterialSharp"
+                                    Glyph="{x:Static materialSymbols:MaterialSharp.Expand_circle_down}"
+                                    Color="{AppThemeBinding Light=#FF4A4848,
+                                                            Dark=White}" />
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                    <Label
+                        IsVisible="{Binding CategorySelectionErrorText, Converter={StaticResource StringToBooleanConverter}}"
+                        Style="{StaticResource ErrorLabelStyle}"
+                        Text="{Binding CategorySelectionErrorText}" />
+                    <StackLayout Orientation="Horizontal">
+                        <Image
+                            Margin="5,0,10,0"
+                            HeightRequest="44"
+                            Source="ic_date_time2">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectDateTimeCommand}" NumberOfTapsRequired="1" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Button
+                            Margin="0,5,0,5"
+                            Command="{Binding SaveCommand}"
+                            CornerRadius="10"
+                            FontAttributes="Bold"
+                            FontAutoScalingEnabled="True"
+                            HeightRequest="45"
+                            HorizontalOptions="FillAndExpand"
+                            IsEnabled="True"
+                            IsVisible="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                            Text="Save" />
+                        <ActivityIndicator
+                            Margin="0,5,0,5"
+                            HeightRequest="30"
+                            HorizontalOptions="FillAndExpand"
+                            IsRunning="True"
+                            IsVisible="{Binding IsBusy}"
+                            WidthRequest="30" />
+                    </StackLayout>
+
+                </StackLayout>
+                <BoxView BackgroundColor="#FF023002" HeightRequest="1" />
+            </StackLayout>
+        </material:BottomSheetView>
+    </uranium:UraniumContentPage.Attachments>
+</uranium:UraniumContentPage>

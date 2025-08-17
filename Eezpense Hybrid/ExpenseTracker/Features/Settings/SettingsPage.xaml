@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Settings.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Settings">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Margin" Value="10,0,0,0" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <TableView
+                Margin="10,10,20,0"
+                Intent="Settings"
+                RowHeight="60">
+                <TableRoot>
+                    <TableSection>
+                        <ViewCell>
+                            <StackLayout Margin="3,0,0,0" Orientation="Horizontal">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CategoriesCommand}" NumberOfTapsRequired="1" />
+                                </StackLayout.GestureRecognizers>
+                                <Image
+                                    HeightRequest="18"
+                                    HorizontalOptions="Start"
+                                    Source="{AppThemeBinding Light=ic_categories,
+                                                             Dark=ic_categories_white}" />
+                                <Label Text="Expense Categories" />
+                                <Image HorizontalOptions="EndAndExpand" Source="ic_arrow_right" />
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Padding="0" Orientation="Horizontal">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding RestoreExpensesCommand}" NumberOfTapsRequired="1" />
+                                </StackLayout.GestureRecognizers>
+                                <Image
+                                    HeightRequest="27"
+                                    HorizontalOptions="Start"
+                                    Source="{AppThemeBinding Light=ic_restore_deleted,
+                                                             Dark=ic_restore_deleted_white}" />
+                                <Label Text="Restore Deleted Expenses" />
+                                <Image HorizontalOptions="EndAndExpand" Source="ic_arrow_right" />
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ChangeCurrencySymbolCommand}" NumberOfTapsRequired="1" />
+                                </StackLayout.GestureRecognizers>
+                                <Label
+                                    Margin="5,0,0,0"
+                                    FontSize="21"
+                                    Text="{Binding CurrentCurrency}" />
+                                <Label Text="Change Currency Symbol" />
+                                <Image HorizontalOptions="EndAndExpand" Source="ic_arrow_right" />
+                            </StackLayout>
+                        </ViewCell>
+                        <ViewCell>
+                            <StackLayout Margin="3,0,0,0" Orientation="Horizontal">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding AboutCommand}" NumberOfTapsRequired="1" />
+                                </StackLayout.GestureRecognizers>
+                                <Image
+                                    HeightRequest="22"
+                                    HorizontalOptions="Start"
+                                    Source="{AppThemeBinding Light=ic_about,
+                                                             Dark=ic_about_white}" />
+                                <Label Text="About App" />
+                                <Image HorizontalOptions="EndAndExpand" Source="ic_arrow_right" />
+                            </StackLayout>
+                        </ViewCell>
+
+                        <!--
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer
+							        Command="{Binding SignoutCommand}"
+							        NumberOfTapsRequired="1" />
+                                </StackLayout.GestureRecognizers>
+                                <Image
+                                 HeightRequest="22"
+                                 HorizontalOptions="Start"
+                                 Source="ic_signout.png" />
+                                <Label Text="Signout"/>
+                            </StackLayout>
+                        </ViewCell>
+
+                        -->
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

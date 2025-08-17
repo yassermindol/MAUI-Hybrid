@@ -1,0 +1,70 @@
+﻿@page "/dailysummary"
+
+@using System.Collections.Generic
+
+<ul class="list-group">
+    @foreach (var item in Items)
+    {
+        <li class="list-group-item" style="padding-left:0px;">
+            <div class="d-flex justify-content-between align-items-center" @onclick="() => Toggle(item.Id)" style="cursor: pointer;">
+                <span style="padding-left:12px;">@item.Title</span>
+                <span class="badge bg-secondary">@((item.IsExpanded) ? "−" : "+")</span>
+            </div>
+
+            @if (item.IsExpanded && item.SubItems?.Any() == true)
+            {
+                <ul class="list-group mt-2">
+                    @foreach (var sub in item.SubItems)
+                    {
+                        <li class="list-group-item list-group-item-action">
+                            @sub
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+    }
+</ul>
+
+@code {
+    // Simple model for demonstration
+    class ListItem
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public bool IsExpanded { get; set; }
+        public List<string> SubItems { get; set; } = new();
+    }
+
+    // Sample data
+    List<ListItem> Items = new()
+    {
+        new ListItem
+        {
+            Id = 1,
+            Title = "Fruits",
+            SubItems = new List<string> { "Apple", "Banana", "Cherry" }
+        },
+        new ListItem
+        {
+            Id = 2,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+        new ListItem
+        {
+            Id = 3,
+            Title = "Dairy",
+            SubItems = new List<string> { "Milk", "Cheese" }
+        }
+    };
+
+    void Toggle(int id)
+    {
+        var item = Items.FirstOrDefault(i => i.Id == id);
+        if (item != null)
+        {
+            item.IsExpanded = !item.IsExpanded;
+        }
+    }
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage
+    x:Class="ExpenseTracker.PopupViews.SelectDateRange.SelectDateRangePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ExpenseTracker.Controls"
+    xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+    <ContentPage.Content>
+        <StackLayout
+            Margin="30,0,15,20"
+            BackgroundColor="Transparent"
+            HorizontalOptions="Fill"
+            VerticalOptions="End">
+            <!--  BackgroundColor="{AppThemeBinding Light=White, Dark=#1f2212}"  -->
+            <Frame
+                BackgroundColor="{AppThemeBinding Light=WhiteSmoke,
+                                                  Dark=#1f2212}"
+                CornerRadius="25"
+                HorizontalOptions="FillAndExpand">
+                <StackLayout
+                    Margin="5,0,5,0"
+                    BackgroundColor="Transparent"
+                    Orientation="Vertical">
+
+                    <Label
+                        Margin="10"
+                        HorizontalOptions="Center"
+                        Text="Select Dates" />
+                    <StackLayout
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="CenterAndExpand"
+                        Orientation="Horizontal">
+                        <controls:CustomDatePicker
+                            Date="{Binding SelectedStartDate, Mode=TwoWay}"
+                            FontAttributes="Bold"
+                            FontSize="15"
+                            Format="MMM-d-yyyy"
+                            HorizontalOptions="End" />
+                        <Label
+                            FontAttributes="Bold"
+                            Text=" to "
+                            VerticalOptions="Center" />
+                        <controls:CustomDatePicker
+                            Date="{Binding SelectedEndDate, Mode=TwoWay}"
+                            FontAttributes="Bold"
+                            FontSize="15"
+                            Format="MMM-d-yyyy"
+                            HorizontalOptions="Start" />
+                    </StackLayout>
+
+                    <Label
+                        Margin="0,40,0,0"
+                        FontSize="Small"
+                        HeightRequest="50"
+                        HorizontalOptions="Center"
+                        Text="Submit"
+                        TextDecorations="Underline"
+                        VerticalOptions="FillAndExpand">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SubmitCommand}" NumberOfTapsRequired="1" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</mopups:PopupPage>

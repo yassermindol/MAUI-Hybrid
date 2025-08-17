@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Test.TestPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="TestPage">
+
+    <ScrollView>
+        <StackLayout Margin="5,0,5,0" Orientation="Vertical">
+            <Label
+                Margin="10"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="Select date and time" />
+            <Grid
+                ColumnDefinitions="Auto,*"
+                HorizontalOptions="CenterAndExpand"
+                RowDefinitions="Auto,Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,0,0"
+                    FontAttributes="Bold"
+                    Text="Date: "
+                    VerticalTextAlignment="Center" />
+                <DatePicker
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Date="{Binding SelectedStartDate, Mode=TwoWay}"
+                    Format="MMM-d-yyyy"
+                    VerticalOptions="Start" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Time: "
+                    VerticalTextAlignment="Center" />
+                <TimePicker
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Format="h:mm tt"
+                    Time="{Binding SelectedTime, Mode=TwoWay}" />
+            </Grid>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    Margin="0,30,0,0"
+                    FontSize="Small"
+                    HeightRequest="50"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Cancel"
+                    TextDecorations="Underline">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CancelCommand}" NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label
+                    Margin="0,30,0,0"
+                    FontSize="Small"
+                    HeightRequest="50"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Done"
+                    TextDecorations="Underline">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding DoneCommand}" NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

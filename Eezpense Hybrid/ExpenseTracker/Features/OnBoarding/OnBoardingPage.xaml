@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.OnBoarding.OnBoardingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ExpenseTracker.Controls"
+    xmlns:local="clr-namespace:ExpenseTracker.Features.OnBoarding"
+    xmlns:materialSymbols="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="User Setup"
+    HideSoftInputOnTapped="True">
+
+    <Page.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Transparent" StatusBarStyle="DarkContent" />
+    </Page.Behaviors>
+
+    <Grid RowDefinitions="*,Auto">
+        <CarouselView
+            x:Name="MyCarousel"
+            Grid.Row="0"
+            BackgroundColor="Transparent"
+            ItemsSource="{Binding Slides}"
+            Loop="False">
+            <CarouselView.Resources>
+
+                <DataTemplate x:Key="welcomeTemplate">
+                    <Grid>
+                        <VerticalStackLayout>
+                            <Label
+                                Margin="0,70,0,15"
+                                FontAttributes="Bold"
+                                FontSize="24"
+                                HorizontalOptions="Center"
+                                Text="Welcome to Eezpense!" />
+                            <Image
+                                Margin="0,10,0,20"
+                                HeightRequest="130"
+                                Source="app_logo" />
+
+                            <!--  Description  -->
+                            <Label
+                                Margin="15,10,0,0"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="Easily manage your expenses and gain insights into your spending habits. Here's what you can do:"
+                                TextColor="{AppThemeBinding Light=MidnightBlue,
+                                                            Dark=DeepSkyBlue}" />
+
+                            <!--  Bullet Points (your existing style)  -->
+                            <StackLayout Margin="15,20,0,0" Spacing="15">
+                                <Label
+                                    FontFamily="Courier"
+                                    FontSize="16"
+                                    HorizontalOptions="Start"
+                                    Text="• Quickly enter your expense data" />
+
+                                <Label
+                                    FontFamily="Courier"
+                                    FontSize="16"
+                                    HorizontalOptions="Start"
+                                    Text="• View summary reports daily, weekly and monthly" />
+
+                                <Label
+                                    FontFamily="Courier"
+                                    FontSize="16"
+                                    HorizontalOptions="Start"
+                                    Text="• Tap on entries to see details" />
+
+                                <Label
+                                    FontFamily="Courier"
+                                    FontSize="16"
+                                    HorizontalOptions="Start"
+                                    Text="• Organize expenses with sorting and grouping" />
+
+                                <Label
+                                    FontFamily="Courier"
+                                    FontSize="16"
+                                    HorizontalOptions="Start"
+                                    Text="• Enjoy a simple interface" />
+                            </StackLayout>
+                        </VerticalStackLayout>
+                        <Button
+                            Margin="20,0,20,0"
+                            Clicked="OnNextClicked"
+                            CornerRadius="10"
+                            Text="Next"
+                            VerticalOptions="End" />
+                    </Grid>
+
+                </DataTemplate>
+
+                <!--  Currency template  -->
+                <DataTemplate x:Key="currencyTemplate">
+                    <Grid Margin="15,50,15,10" RowDefinitions="Auto,Auto,Auto,Auto,*">
+                        <Label
+                            Grid.Row="0"
+                            Margin="10,20,0,10"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            LineHeight="1.2"
+                            Text="{Binding HeaderInstruction}"
+                            VerticalOptions="Start" />
+
+                        <Frame
+                            Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Padding="12,0,12,0"
+                            BorderColor="Gray"
+                            CornerRadius="8"
+                            HasShadow="False"
+                            HeightRequest="40"
+                            HorizontalOptions="FillAndExpand">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  Label to display selected item  -->
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="16"
+                                    Text="{Binding SelectedCurrency, Mode=TwoWay}"
+                                    VerticalOptions="Center" />
+                                <Image
+                                    Grid.Column="1"
+                                    Aspect="AspectFit"
+                                    HeightRequest="27"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            FontFamily="MaterialSharp"
+                                            Glyph="{x:Static materialSymbols:MaterialSharp.Expand_circle_down}"
+                                            Color="{AppThemeBinding Light=#FF4A4848,
+                                                                    Dark=LightGray}" />
+                                    </Image.Source>
+                                </Image>
+
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShowCurrencyListCommand}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <Entry
+                            Grid.Row="2"
+                            Focused="Search_Entry_Focused"
+                            IsVisible="{Binding IsSearchEntryVisible}"
+                            Keyboard="Default"
+                            Placeholder="Search"
+                            ReturnType="Search"
+                            Text="{Binding SearchText}">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior Command="{Binding SearchCompletedCommand}" EventName="Completed" />
+                            </Entry.Behaviors>
+                        </Entry>
+
+                        <ListView
+                            Grid.Row="3"
+                            CachingStrategy="RecycleElement"
+                            HeightRequest="400"
+                            IsVisible="{Binding IsListViewVisible}"
+                            ItemsSource="{Binding CurrencyList}"
+                            SelectedItem="{Binding ListCurrencyItemSelected}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextCell Text="{Binding}" TextColor="{AppThemeBinding Dark=LightBlue}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.Behaviors>
+                                <toolkit:EventToCommandBehavior Command="{Binding CurrencyItemSelectedCommand}" EventName="ItemSelected" />
+                            </ListView.Behaviors>
+                        </ListView>
+                        <StackLayout
+                            Grid.Row="4"
+                            HorizontalOptions="FillAndExpand"
+                            Orientation="Horizontal"
+                            VerticalOptions="End">
+                            <Button
+                                Margin="0,0,10,0"
+                                Clicked="OnBackClicked"
+                                CornerRadius="10"
+                                HorizontalOptions="FillAndExpand"
+                                Text="Back"
+                                VerticalOptions="End" />
+                            <Button
+                                Clicked="OnNextClicked"
+                                CornerRadius="10"
+                                HorizontalOptions="FillAndExpand"
+                                Text="Next"
+                                VerticalOptions="End" />
+                        </StackLayout>
+                    </Grid>
+                </DataTemplate>
+
+                <!--  Expense Category template  -->
+                <DataTemplate x:Key="categoryTemplate">
+                    <StackLayout Margin="15,50,15,10" Orientation="Vertical">
+                        <Label
+                            Margin="10,20,0,15"
+                            FontSize="16"
+                            LineHeight="1.2"
+                            Text="Add your expense category like Food, Bills, Transportation, etc. You can edit, delete and restore them later in the app settings." />
+                        <Entry
+                            Margin="30,0,30,0"
+                            Focused="Category_Entry_Focused"
+                            HorizontalTextAlignment="Center"
+                            Placeholder="Enter Expense Category"
+                            Text="{Binding CategoryText}"
+                            VerticalTextAlignment="End" />
+                        <Button
+                            Margin="30,20,30,20"
+                            Command="{Binding AddCategoryCommand}"
+                            CornerRadius="10"
+                            IsEnabled="{Binding IsAddButtonEnabled}"
+                            Text="Add Category"
+                            VerticalOptions="End" />
+
+                        <Label
+                            Margin="10,10,0,10"
+                            HorizontalOptions="Center"
+                            Text="{Binding AddMessage}" />
+
+                        <ListView CachingStrategy="RecycleElement" ItemsSource="{Binding Categories}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextCell Text="{Binding}" TextColor="{AppThemeBinding Dark=LightBlue}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,20,0"
+                                Clicked="OnBackClicked"
+                                CornerRadius="10"
+                                HorizontalOptions="FillAndExpand"
+                                Text="Back" />
+                            <Button
+                                Command="{Binding DoneCommand}"
+                                CornerRadius="10"
+                                HorizontalOptions="FillAndExpand"
+                                Text="Done" />
+                        </StackLayout>
+                    </StackLayout>
+                </DataTemplate>
+            </CarouselView.Resources>
+
+            <CarouselView.ItemTemplate>
+                <local:MyTemplateSelector
+                    CategoryTemplate="{StaticResource categoryTemplate}"
+                    CurrencyTemplate="{StaticResource currencyTemplate}"
+                    WelcomeTemplate="{StaticResource welcomeTemplate}" />
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+        <IndicatorView
+            x:Name="MyIndicator"
+            Grid.Row="1"
+            Margin="0,10,0,55"
+            BackgroundColor="Transparent"
+            HorizontalOptions="Center"
+            IndicatorColor="Gray"
+            IndicatorSize="12"
+            SelectedIndicatorColor="Green"
+            VerticalOptions="CenterAndExpand" />
+    </Grid>
+
+</ContentPage>
+

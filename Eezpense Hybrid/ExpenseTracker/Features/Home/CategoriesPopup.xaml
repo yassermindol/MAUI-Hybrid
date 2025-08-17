@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage
+    x:Class="ExpenseTracker.Features.Home.CategoriesPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    <!--
+        BackgroundColor="#FFF3F4EE"
+    -->
+    <Frame
+        Margin="15,15,15,0"
+        CornerRadius="10"
+        VerticalOptions="End">
+        <StackLayout Spacing="0">
+            <Label
+                FontAttributes="Bold"
+                FontSize="15"
+                HorizontalOptions="Center"
+                Text="Select Expense Category"
+                VerticalOptions="Center" />
+            <ListView
+                x:Name="expenseCategoryListView"
+                Margin="0,20,0,0"
+                CachingStrategy="RecycleElement"
+                ItemsSource="{Binding ExpenseCategories}"
+                MaximumHeightRequest="350"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                VerticalOptions="End">
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                        Command="{Binding ItemSelectedCommand}"
+                        CommandParameter="{Binding SelectedItem}"
+                        EventName="ItemSelected" />
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout VerticalOptions="Center">
+                                <Label
+                                    Text="{Binding}"
+                                    TextColor="{AppThemeBinding Light=Black,
+                                                                Dark=White}"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!--
+            <ListView x:Name="expenseCategoryListView"
+                      VerticalOptions="End"
+                      ItemsSource="{Binding ExpenseCategories}"
+                      SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                      Margin="0,20,0,0">
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="ItemSelected"
+                                                    Command="{Binding ItemSelectedCommand}"
+                                                    CommandParameter="{Binding SelectedItem}"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding Name}"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            -->
+        </StackLayout>
+    </Frame>
+</mopups:PopupPage>

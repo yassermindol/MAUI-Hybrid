@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.DetailsOfExpenseList.ExpensePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    Title="Expense Item">
+
+    <ContentPage.Resources>
+        <Style x:Key="KeyLabel" TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Start" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        <Style x:Key="ValueLabel" TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Start" />
+        </Style>
+
+        <ResourceDictionary>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout
+                Margin="25,20,25,20"
+                Orientation="Vertical"
+                Spacing="0"
+                VerticalOptions="FillAndExpand">
+
+                <StackLayout
+                    Margin="0,20,0,0"
+                    ClassId="Date"
+                    Orientation="Horizontal"
+                    VerticalOptions="Start">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        MinimumWidthRequest="70"
+                        Text="Date: "
+                        VerticalOptions="Center" />
+                    <Label Text="{Binding DateTime}" />
+                </StackLayout>
+
+                <StackLayout
+                    Margin="0,20,0,0"
+                    ClassId="Category"
+                    Orientation="Horizontal"
+                    VerticalOptions="Start">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        MinimumWidthRequest="70"
+                        Text="Category: "
+                        VerticalOptions="Center" />
+                    <Label
+                        FontFamily="Lobster"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        Text="{Binding Category}"
+                        VerticalOptions="Start" />
+                </StackLayout>
+
+                <StackLayout
+                    Margin="0,20,0,0"
+                    ClassId="Amount"
+                    Orientation="Horizontal"
+                    VerticalOptions="Start">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        MinimumWidthRequest="70"
+                        Text="Amount: "
+                        VerticalOptions="Center" />
+                    <Label
+                        FontFamily="Lobster"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        Text="{Binding Amount}"
+                        VerticalOptions="Start" />
+                </StackLayout>
+
+                <StackLayout Orientation="Vertical">
+                    <Label
+                        Margin="0,20,0,0"
+                        ClassId="NotesLabel"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        Text="Notes:"
+                        VerticalOptions="Start" />
+                    <Label
+                        Margin="0,10,0,0"
+                        ClassId="NotesValue"
+                        FontFamily="Lobster"
+                        FontSize="16"
+                        HeightRequest="300"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="WordWrap"
+                        MaxLines="0"
+                        Text="{Binding Notes}"
+                        VerticalOptions="FillAndExpand" />
+                </StackLayout>
+
+                <Button
+                    ClassId="DeleteButton"
+                    Command="{Binding DeleteCommand}"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                    Style="{StaticResource ButtonStyle}"
+                    Text="Delete"
+                    VerticalOptions="EndAndExpand" />
+
+                <Button
+                    Margin="0,15,0,0"
+                    ClassId="EditButton"
+                    Command="{Binding EditCommand}"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                    Style="{StaticResource ButtonStyle}"
+                    Text="Edit"
+                    VerticalOptions="End" />
+
+                <ActivityIndicator
+                    Margin="10,0,10,40"
+                    IsVisible="{Binding IsBusy}"
+                    VerticalOptions="EndAndExpand" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

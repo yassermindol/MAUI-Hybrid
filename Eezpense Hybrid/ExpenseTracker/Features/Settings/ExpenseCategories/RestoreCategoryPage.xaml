@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Settings.ExpenseCategories.RestoreCategoryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Name="ThisPage"
+    Title="Restore Category">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout Spacing="0">
+            <ActivityIndicator IsVisible="{Binding IsBusy}" VerticalOptions="CenterAndExpand" />
+            <Label
+                HorizontalOptions="Center"
+                IsVisible="{Binding IsNoCategoriesToShowVisible}"
+                Text="No categories to restore."
+                VerticalOptions="CenterAndExpand" />
+            <StackLayout
+                Margin="10"
+                BackgroundColor="{DynamicResource PrimaryBackgroundColor}"
+                IsVisible="{Binding IsRestoreControlsVisible}"
+                VerticalOptions="FillAndExpand">
+
+                <ListView
+                    Margin="10,0,10,0"
+                    ItemsSource="{Binding DeletedCategories}"
+                    RowHeight="55"
+                    SelectedItem="{Binding SelectedItem}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout BackgroundColor="{Binding Source={x:Reference ThisPage}, Path=BackgroundColor}" Orientation="Horizontal">
+                                    <Label
+                                        HorizontalOptions="StartAndExpand"
+                                        Text="{Binding Name}"
+                                        VerticalOptions="Center" />
+                                    <CheckBox IsChecked="{Binding IsChecked}">
+                                        <CheckBox.Behaviors>
+                                            <toolkit:EventToCommandBehavior
+                                                Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ItemCheckBoxTappedCommand}"
+                                                CommandParameter="{Binding .}"
+                                                EventName="CheckedChanged" />
+                                        </CheckBox.Behaviors>
+                                    </CheckBox>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            <StackLayout
+                Margin="0,0,0,20"
+                HeightRequest="50"
+                IsVisible="{Binding IsRestoreControlsVisible}"
+                Orientation="Horizontal"
+                Spacing="0">
+                <Label
+                    Margin="60,0,0,0"
+                    HorizontalOptions="Start"
+                    Text="Select All"
+                    VerticalOptions="Center" />
+                <CheckBox
+                    x:Name="SelectAllCheckBox"
+                    HorizontalOptions="StartAndExpand"
+                    IsChecked="{Binding IsSelectAllChecked}">
+                    <CheckBox.Behaviors>
+                        <toolkit:EventToCommandBehavior
+                            Command="{Binding SelectAllCheckBoxTappedCommand}"
+                            CommandParameter="{Binding Source={x:Reference SelectAllCheckBox}, Path=IsChecked}"
+                            EventName="CheckedChanged" />
+                    </CheckBox.Behaviors>
+                </CheckBox>
+                <Image
+                    Margin="0,0,60,0"
+                    HeightRequest="27"
+                    HorizontalOptions="End"
+                    Source="{AppThemeBinding Light=ic_restore,
+                                             Dark=ic_restore_white}">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding RestoreCommand}" NumberOfTapsRequired="1" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

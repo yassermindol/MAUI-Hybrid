@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Settings.AboutAppPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="About App">
+    <VerticalStackLayout>
+        <Label
+            x:Name="lblVersion"
+            Margin="0,20,0,0"
+            HorizontalOptions="Center" />
+        <Image
+            Margin="0,10,0,0"
+            HeightRequest="150"
+            Source="app_logo.png" />
+        <Label
+            Margin="0,5,0,0"
+            FontAttributes="Bold"
+            FontFamily="Courier"
+            FontSize="30"
+            HorizontalOptions="Center"
+            Text="Eezpense" />
+        <Label
+            Margin="0,0,0,0"
+            FontFamily="Courier"
+            FontSize="18"
+            HorizontalOptions="Center"
+            Text="(Easily enter and track your expenses)" />
+
+        <Label
+            Margin="20,20,20,0"
+            FontFamily="Courier"
+            FontSize="16"
+            HorizontalOptions="Center"
+            Text="This app helps you quickly enter your expenses and track with simplicity and efficiency." />
+        <Label
+            Margin="20,20,20,0"
+            FontAttributes="Bold"
+            FontFamily="Courier"
+            FontSize="16"
+            HorizontalOptions="Start"
+            Text="Developed by: YMI Tech" />
+    </VerticalStackLayout>
+</ContentPage>

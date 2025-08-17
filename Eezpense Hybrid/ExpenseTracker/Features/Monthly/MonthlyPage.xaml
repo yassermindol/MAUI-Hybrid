@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Monthly.MonthlyPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    xmlns:localize="clr-namespace:ExpenseTracker.Resources.Localization"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="{localize:Translate MonthlySummaryReport}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout IsVisible="{Binding IsBusy}" VerticalOptions="CenterAndExpand">
+                <ActivityIndicator IsRunning="True" IsVisible="{Binding IsBusy}" />
+                <Label
+                    Margin="0,5,0,0"
+                    HorizontalOptions="Center"
+                    Text="Loading..."
+                    VerticalOptions="Start" />
+            </StackLayout>
+            <Label
+                HorizontalOptions="Center"
+                IsVisible="{Binding IsNoRecordsToShowVisible}"
+                Text="No records to show."
+                VerticalOptions="CenterAndExpand" />
+
+            <ListView
+                Margin="20,20,20,0"
+                IsVisible="{Binding IsListVisible}"
+                ItemsSource="{Binding MonthItems}"
+                RowHeight="55"
+                SelectedItem="{Binding SelectedMonth, Mode=TwoWay}"
+                SeparatorColor="Blue"
+                VerticalOptions="CenterAndExpand">
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior Command="{Binding MonthSelectedCommand}" EventName="ItemSelected" />
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid
+                                BackgroundColor="{Binding ItemColor}"
+                                RowSpacing="0"
+                                VerticalOptions="Fill">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="5,0,0,0"
+                                    LineBreakMode="WordWrap"
+                                    VerticalTextAlignment="End">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Month}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="End"
+                                    VerticalTextAlignment="End">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span FontAttributes="Bold" Text="{Binding CurrencySymbol}" />
+                                            <Span Text=" " />
+                                            <Span FontAttributes="Bold" Text="{Binding TotalStr}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <BoxView
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    BackgroundColor="{Binding BarColor}"
+                                    CornerRadius="5"
+                                    HeightRequest="15"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Start"
+                                    WidthRequest="{Binding BarWidth}" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button
+                Margin="20,10,20,10"
+                Command="{Binding SelectYearCommand}"
+                CornerRadius="10"
+                HeightRequest="45"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                Text="{Binding SelectedYear}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

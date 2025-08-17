@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="ExpenseTracker.Controls.CustomPickerView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:materialSymbols="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols">
+
+    <!--
+        Data Binding does not work on the calling page if we use this template =(.
+    -->
+
+    <Frame
+        Padding="10"
+        BorderColor="Gray"
+        CornerRadius="8"
+        HasShadow="False"
+        HeightRequest="40"
+        HorizontalOptions="FillAndExpand">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Label to display selected item  -->
+            <Label
+                x:Name="SelectedLabel"
+                Grid.Column="0"
+                FontSize="16"
+                Text="{Binding SelectedText, Mode=TwoWay}"
+                TextColor="Black"
+                VerticalOptions="Center" />
+
+            <Image
+                Grid.Column="1"
+                Aspect="AspectFit"
+                HeightRequest="27"
+                HorizontalOptions="End"
+                VerticalOptions="Center">
+                <Image.Source>
+                    <FontImageSource
+                        FontFamily="MaterialSharp"
+                        Glyph="{x:Static materialSymbols:MaterialSharp.Expand_circle_down}"
+                        Color="#FF4A4848" />
+                </Image.Source>
+            </Image>
+        </Grid>
+        <Frame.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding TapCommand}" />
+        </Frame.GestureRecognizers>
+    </Frame>
+</ContentView>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="ExpenseTracker.PopupViews.PopupStatus"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
+    <StackLayout BackgroundColor="{AppThemeBinding Light=WhiteSmoke, Dark=Black}" Orientation="Vertical">
+        <ActivityIndicator
+            Margin="0,20,0,0"
+            BackgroundColor="Transparent"
+            IsRunning="True"
+            IsVisible="True"
+            Color="{StaticResource BrandingRed}" />
+        <Label
+            x:Name="lblMessage"
+            Margin="40,20,40,20"
+            TextColor="{AppThemeBinding Light=Black,
+                                        Dark=White}" />
+    </StackLayout>
+</toolkit:Popup>

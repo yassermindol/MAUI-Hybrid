@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    x:Class="ExpenseTracker.Resources.Themes.LightTheme"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Color x:Key="BrandingPurple">#2c2154</Color>
+    <Color x:Key="BrandingBlue">#211546</Color>
+    <Color x:Key="BrandingRed">#fc4236</Color>
+    <Color x:Key="BrandingLightBlue">#1976D2</Color>
+
+    <Color x:Key="PrimaryBackgroundColor">White</Color>
+    <Color x:Key="SecondaryBackgroundColor">Gray</Color>
+    <!--  The default background color for light theme is #EEEEEE, In new versions you could be looking for #FAFAFA  -->
+    <Color x:Key="ThirdBackgroundColor">White</Color>
+
+    <!--  Normal Theme Colors  -->
+    <Color x:Key="BackgroundColor">#ffffff</Color>
+    <Color x:Key="AccentColor">#fc4236</Color>
+    <Color x:Key="TextColor">#ff333333</Color>
+    <Color x:Key="LightTextColor">#66333333</Color>
+    <Color x:Key="HyperlinkColor">#fc4236</Color>
+    <Color x:Key="PlaceholderColor">#33333333</Color>
+
+    <!--  Inverted Theme Colors  -->
+    <Color x:Key="InvertedBackgroundColor">#24344b</Color>
+    <Color x:Key="InvertedAccentColor">#24344b</Color>
+    <Color x:Key="InvertedTextColor">#ffffffff</Color>
+    <Color x:Key="InvertedLightTextColor">#66ffffff</Color>
+
+
+    <Style TargetType="NavigationPage">
+        <Setter Property="BarBackgroundColor" Value="{StaticResource BrandingPurple}" />
+        <Setter Property="BarTextColor" Value="#ffffff" />
+        <!--  Sets the status bar color to white, https://stackoverflow.com/questions/44245054/xamarin-forms-ios-status-bar-text-color  -->
+    </Style>
+
+    <Style x:Key="NavigationTitleText" TargetType="Label">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="FontFamily" Value="sans-serif-light" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="NavigationText" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="FontFamily" Value="sans-serif-light" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="StandardText" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="FontFamily" Value="sans-serif-light" />
+    </Style>
+
+    <Style x:Key="Button" TargetType="Button">
+        <Setter Property="Padding" Value="50,0,50,0" />
+        <Setter Property="HeightRequest" Value="48" />
+        <Setter Property="BackgroundColor" Value="#fc4236" />
+        <Setter Property="TextColor" Value="#ffffff" />
+        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        <Setter Property="FontSize" Value="Default" />
+    </Style>
+
+    <Style x:Key="MyButton1" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="LightBlue" />
+        <Setter Property="CornerRadius" Value="25" />
+        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="TextColor" Value="Black" />
+        <Setter Property="VerticalOptions" Value="Start" />
+    </Style>
+
+    <Style x:Key="TextBlock" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        <Setter Property="HorizontalTextAlignment" Value="Start" />
+        <Setter Property="FontSize" Value="Default" />
+        <Setter Property="LineHeight" Value="1.5" />
+    </Style>
+
+
+    <!--  Form Styles  -->
+    <Style TargetType="ScrollView">
+        <!--  Setter Property="Orientation" Value="Vertical" /  -->
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+    </Style>
+    <Style TargetType="Grid">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+    </Style>
+
+    <Style TargetType="StackLayout">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+    </Style>
+
+    <Style TargetType="TableView">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+    </Style>
+
+    <Style x:Key="Form" TargetType="StackLayout">
+        <!--  Setter Property="Orientation" Value="Vertical" /  -->
+        <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="Padding" Value="16, 32, 16, 16" />
+        <Setter Property="Spacing" Value="32" />
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
+    </Style>
+
+    <Style x:Key="FormTextBlock" TargetType="Label">
+        <Setter Property="TextColor" Value="Black" />
+        <!--  Setter Property="VerticalOptions" Value="Start" /  -->
+        <!--  Setter Property="HorizontalOptions" Value="Fill" /  -->
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="Medium" />
+        <Setter Property="LineHeight" Value="1.5" />
+    </Style>
+
+    <Style
+        x:Key="FormHeading"
+        BasedOn="{StaticResource FormTextBlock}"
+        TargetType="Label">
+        <Setter Property="FontSize" Value="36" />
+        <Setter Property="FontFamily" Value="sans-serif-light" />
+    </Style>
+
+    <Style
+        x:Key="FormFooter"
+        BasedOn="{StaticResource FormTextBlock}"
+        TargetType="Label">
+        <Setter Property="FontSize" Value="Small" />
+    </Style>
+
+    <Style x:Key="Fieldset" TargetType="StackLayout">
+        <!--  Setter Property="Orientation" Value="Vertical" /  -->
+        <!--  Setter Property="VerticalOptions" Value="FillAndExpand" /  -->
+        <Setter Property="Margin" Value="0, 0, 0, 16" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="IsClippedToBounds" Value="True" />
+    </Style>
+
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource PlaceholderColor}" />
+        <!--  Setter Property="VerticalOptions" Value="Start" /  -->
+        <!--  Setter Property="HorizontalOptions" Value="Fill" /  -->
+        <Setter Property="BackgroundColor" Value="#00ffffff" />
+        <!--  Setter Property="BackgroundColor" Value="Transparent" /  -->
+        <Setter Property="HeightRequest" Value="64" />
+        <Setter Property="Margin" Value="0, 0, 0, 0" />
+    </Style>
+
+    <Style x:Key="FormEditor" TargetType="Editor">
+        <Setter Property="TextColor" Value="Black" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource PlaceholderColor}" />
+        <!--  Setter Property="VerticalOptions" Value="Start" /  -->
+        <!--  Setter Property="HorizontalOptions" Value="Fill" /  -->
+        <!--  Setter Property="BackgroundColor" Value="#00ffffff" /  -->
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
+        <!--  Setter Property="HeightRequest" Value="64" /  -->
+        <Setter Property="Margin" Value="0, 0, 0, 0" />
+    </Style>
+
+    <Style x:Key="FormPicker" TargetType="Picker">
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="BackgroundColor" Value="#00ffffff" />
+        <Setter Property="HeightRequest" Value="64" />
+        <Setter Property="Margin" Value="0, 0, 0, 0" />
+    </Style>
+
+    <Style
+        x:Key="FormButton"
+        BasedOn="{StaticResource Button}"
+        TargetType="Button">
+        <!--  Setter Property="VerticalOptions" Value="Start" /  -->
+        <Setter Property="Padding" Value="50,0,50,0" />
+        <Setter Property="HeightRequest" Value="48" />
+        <Setter Property="BackgroundColor" Value="#fc4236" />
+        <Setter Property="TextColor" Value="#ffffff" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="FontSize" Value="Default" />
+    </Style>
+
+    <Style
+        x:Key="FormButton2"
+        BasedOn="{StaticResource Button}"
+        TargetType="Button">
+        <!--  Setter Property="VerticalOptions" Value="Start" /  -->
+        <Setter Property="Padding" Value="50,0,50,0" />
+        <Setter Property="HeightRequest" Value="48" />
+        <Setter Property="BackgroundColor" Value="Gray" />
+        <Setter Property="TextColor" Value="#ffffff" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="FontSize" Value="Default" />
+        <Setter Property="Margin" Value="15,0,15,0" />
+        <Setter Property="CornerRadius" Value="40" />
+    </Style>
+
+    <Style x:Key="FormActivityIndicator" TargetType="ActivityIndicator">
+        <Setter Property="Visual" Value="Material" />
+        <Setter Property="BackgroundColor" Value="#ffffff" />
+        <Setter Property="Color" Value="{StaticResource BrandingRed}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="WidthRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="IsRunning" Value="True" />
+    </Style>
+
+    <Style x:Key="FieldIcon" TargetType="Image">
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="HeightRequest" Value="24" />
+        <Setter Property="WidthRequest" Value="24" />
+    </Style>
+
+
+
+    <Style x:Key="NormalText" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+
+    <Style
+        x:Key="Title"
+        BasedOn="{StaticResource NormalText}"
+        TargetType="Label">
+        <Setter Property="LineHeight" Value="1.5" />
+        <Setter Property="FontSize" Value="Title" />
+        <Setter Property="FontFamily" Value="sans-serif-light" />
+    </Style>
+
+    <Style
+        x:Key="Subtitle"
+        BasedOn="{StaticResource NormalText}"
+        TargetType="Label">
+        <Setter Property="LineHeight" Value="1.5" />
+        <Setter Property="FontSize" Value="Subtitle" />
+        <Setter Property="FontFamily" Value="sans-serif-light" />
+    </Style>
+
+    <Style TargetType="TableSection">
+        <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+    </Style>
+
+    <Style TargetType="TextCell">
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <Setter Property="DetailColor" Value="{StaticResource LightTextColor}" />
+    </Style>
+
+    <Style x:Key="Article" TargetType="StackLayout">
+        <Setter Property="Orientation" Value="Vertical" />
+        <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="Padding" Value="16, 32, 16, 16" />
+        <Setter Property="Spacing" Value="32" />
+    </Style>
+
+    <Style x:Key="WebContent" TargetType="StackLayout">
+        <Setter Property="Orientation" Value="Vertical" />
+        <Setter Property="VerticalOptions" Value="Fill" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Spacing" Value="0" />
+    </Style>
+
+    <Style x:Key="PageIcon" TargetType="Image">
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="HeightRequest" Value="128" />
+    </Style>
+
+    <Style
+        x:Key="FixedPageIcon"
+        BasedOn="{StaticResource PageIcon}"
+        TargetType="Image">
+        <Setter Property="Aspect" Value="AspectFill" />
+        <Setter Property="WidthRequest" Value="128" />
+    </Style>
+
+    <Style TargetType="ActivityIndicator">
+        <Setter Property="Visual" Value="Material" />
+        <Setter Property="Margin" Value="0,32,0,32" />
+        <Setter Property="BackgroundColor" Value="#ffffff" />
+        <Setter Property="Color" Value="{StaticResource BrandingRed}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="WidthRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="IsRunning" Value="True" />
+    </Style>
+
+
+
+    <Style x:Key="FontFamilyStyle" TargetType="Label">
+        <!--  It is not advisable to use custom fonts in mobile  -->
+        <!--  Setter Property="FontFamily" Value="HelveticaNeue" /  -->
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+        <!--  It is not advisable to use custom fonts in mobile  -->
+        <!--  Setter Property="FontFamily" Value="{StaticResource FontFamilyStyle}" /  -->
+    </Style>
+
+    <Style x:Key="LabelError" TargetType="Label">
+        <Setter Property="FontSize" Value="Small" />
+        <Setter Property="TextColor" Value="Red" />
+    </Style>
+
+</ResourceDictionary>

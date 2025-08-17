@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.DateRange.DateRangePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    xmlns:localize="clr-namespace:ExpenseTracker.Resources.Localization"
+    xmlns:oxy="clr-namespace:OxyPlot.Maui.Skia;assembly=OxyPlot.Maui.Skia"
+    xmlns:templates="clr-namespace:ExpenseTracker.Features.Templates"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:AndBooleanConverter x:Key="AndBooleanConverter" />
+            <converters:AndBooleanInvertConverter x:Key="AndBooleanInvertConverter" />
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+            <templates:MyDataTemplateSelector x:Key="MyTemplateSelector">
+                <templates:MyDataTemplateSelector.ExpenseHeaderTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <templates:ExpenseHeaderTemplate />
+                        </ViewCell>
+                    </DataTemplate>
+                </templates:MyDataTemplateSelector.ExpenseHeaderTemplate>
+
+                <templates:MyDataTemplateSelector.ExpenseTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <templates:ExpenseListItemTemplateV2 />
+                        </ViewCell>
+                    </DataTemplate>
+                </templates:MyDataTemplateSelector.ExpenseTemplate>
+            </templates:MyDataTemplateSelector>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!--
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding ToggleViewCommand}"
+            Text="{Binding ViewTypeText}"/>
+    </ContentPage.ToolbarItems>
+    -->
+
+    <StackLayout>
+        <StackLayout IsVisible="{Binding IsBusy}" VerticalOptions="CenterAndExpand">
+            <ActivityIndicator IsRunning="True" IsVisible="{Binding IsBusy}" />
+            <Label
+                Margin="0,5,0,0"
+                HorizontalOptions="Center"
+                Text="Loading..."
+                VerticalOptions="Start" />
+        </StackLayout>
+
+        <Label
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsNoRecordsToShowVisible}"
+            Text="No records to show."
+            VerticalOptions="CenterAndExpand" />
+
+        <Grid
+            Margin="5,-15,0,0"
+            Padding="0"
+            ColumnSpacing="0"
+            IsVisible="{Binding IsPieChartVisible}"
+            RowSpacing="0"
+            VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="400" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <oxy:PlotView
+                x:Name="oxyplot"
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Model="{Binding PieChartModel}" />
+
+            <ListView
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                Margin="50,10,20,10"
+                ItemsSource="{Binding Legends}"
+                RowHeight="25"
+                SeparatorVisibility="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout
+                                HeightRequest="20"
+                                Orientation="Horizontal"
+                                Spacing="0">
+                                <BoxView
+                                    Margin="3"
+                                    BackgroundColor="{Binding LegendColor}"
+                                    CornerRadius="2"
+                                    WidthRequest="17" />
+                                <Label
+                                    HorizontalTextAlignment="Start"
+                                    LineBreakMode="TailTruncation"
+                                    Text="{Binding ExpenseCategory}"
+                                    WidthRequest="120" />
+                                <Label HorizontalOptions="Start">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text=":  " />
+                                            <Span Text="{Binding CurrencySymbol}" />
+                                            <Span Text=" " />
+                                            <Span Text=" " />
+                                            <Span Text="{Binding TotalStr}" />
+                                            <Span Text=" - " />
+                                            <Span Text="{Binding Percentage}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <ListView
+            Margin="10,0,10,0"
+            CachingStrategy="RetainElement"
+            HasUnevenRows="True"
+            IsEnabled="True"
+            IsVisible="{Binding IsListVisible}"
+            ItemTemplate="{StaticResource MyTemplateSelector}"
+            ItemsSource="{Binding UiExpenses}"
+            RowHeight="55"
+            SelectedItem="{Binding UiExpenseSelectedItem, Mode=TwoWay}">
+            <ListView.Behaviors>
+                <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSelectedCommand}" EventName="ItemSelected" />
+            </ListView.Behaviors>
+        </ListView>
+
+        <Button
+            Margin="20,10,20,10"
+            Command="{Binding SelectDateRangeCommand}"
+            CornerRadius="10"
+            HeightRequest="45"
+            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+            Text="{Binding DateRangeButtonText}" />
+    </StackLayout>
+</ContentPage>

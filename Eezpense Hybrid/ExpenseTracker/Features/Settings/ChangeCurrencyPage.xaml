@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Settings.ChangeCurrencyPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:materialSymbols="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="Change Currency">
+    <Grid Margin="15,0,15,10" RowDefinitions="Auto,Auto,Auto,Auto,*">
+        <Label
+            Grid.Row="0"
+            Margin="10,20,0,10"
+            FontAttributes="Bold"
+            FontSize="16"
+            HorizontalOptions="Center"
+            Text="Select your currency if the detected currency is incorrect. You can change this anytime in the app settings."
+            VerticalOptions="Start" />
+
+        <Frame
+            Grid.Row="1"
+            Margin="0,10,0,0"
+            Padding="12,0,12,0"
+            BorderColor="Gray"
+            CornerRadius="8"
+            HasShadow="False"
+            HeightRequest="40"
+            HorizontalOptions="FillAndExpand">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Label to display selected item  -->
+                <Label
+                    Grid.Column="0"
+                    FontSize="16"
+                    Text="{Binding SelectedCurrency}"
+                    VerticalOptions="Center" />
+                <Image
+                    Grid.Column="1"
+                    Aspect="AspectFit"
+                    HeightRequest="27"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center">
+                    <Image.Source>
+                        <FontImageSource
+                            FontFamily="MaterialSharp"
+                            Glyph="{x:Static materialSymbols:MaterialSharp.Expand_circle_down}"
+                            Color="{AppThemeBinding Light=#FF4A4848,
+                                                    Dark=White}" />
+                    </Image.Source>
+                </Image>
+
+            </Grid>
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ShowCurrencyListCommand}" />
+            </Frame.GestureRecognizers>
+        </Frame>
+
+        <Entry
+            Grid.Row="2"
+            IsVisible="{Binding IsSearchEntryVisible}"
+            Keyboard="Default"
+            Placeholder="Search"
+            ReturnType="Search"
+            Text="{Binding SearchText}">
+            <Entry.Behaviors>
+                <toolkit:EventToCommandBehavior Command="{Binding SearchCompletedCommand}" EventName="Completed" />
+            </Entry.Behaviors>
+        </Entry>
+
+        <ListView
+            Grid.Row="3"
+            CachingStrategy="RecycleElement"
+            HeightRequest="400"
+            IsVisible="{Binding IsListViewVisible}"
+            ItemsSource="{Binding CurrencyList}"
+            SelectedItem="{Binding ListCurrencyItemSelected}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout VerticalOptions="Center">
+                            <Label
+                                Text="{Binding}"
+                                TextColor="{AppThemeBinding Light=Black,
+                                                            Dark=White}"
+                                VerticalOptions="Center" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Behaviors>
+                <toolkit:EventToCommandBehavior Command="{Binding CurrencyItemSelectedCommand}" EventName="ItemSelected" />
+            </ListView.Behaviors>
+        </ListView>
+        <Button
+            Grid.Row="4"
+            Command="{Binding SaveCommand}"
+            CornerRadius="10"
+            Text="Save"
+            VerticalOptions="End" />
+    </Grid>
+</ContentPage>

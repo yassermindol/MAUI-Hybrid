@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Daily.DailyPageV2"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:blazorPage="clr-namespace:ExpenseTracker.Components.Pages"
+    Title="Daily Summary Report">
+    <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+        <BlazorWebView.RootComponents>
+            <RootComponent ComponentType="{x:Type blazorPage:DailySummaryBlazorPage}" Selector="#app" />
+        </BlazorWebView.RootComponents>
+    </BlazorWebView>
+</ContentPage>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.Settings.ExpenseCategories.CategoriesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:control="clr-namespace:ExpenseTracker.Controls"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    xmlns:resources="clr-namespace:ExpenseTracker.Resources.Localization"
+    xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+    x:Name="ThisPage"
+    Title="Expense Categories">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding DeleteCategoryCommand}"
+            Order="Secondary"
+            Priority="0"
+            Text="Delete Categories" />
+        <ToolbarItem
+            Command="{Binding RestoreCategoryCommand}"
+            Order="Secondary"
+            Priority="0"
+            Text="Restore Categories" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <ActivityIndicator IsVisible="{Binding IsBusy}" VerticalOptions="CenterAndExpand" />
+            <StackLayout
+                Margin="10"
+                BackgroundColor="{DynamicResource PrimaryBackgroundColor}"
+                VerticalOptions="FillAndExpand">
+                <ListView
+                    CachingStrategy="RetainElement"
+                    IsVisible="{Binding IsListViewVisible}"
+                    ItemSelected="ListView_ItemSelected"
+                    ItemsSource="{Binding Categories}"
+                    RowHeight="55"
+                    SelectedItem="{Binding SelectedItem}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout BackgroundColor="{Binding Source={x:Reference ThisPage}, Path=BindingContext.PageBackgroundColor}" Orientation="Horizontal">
+                                    <Label
+                                        Margin="10,0,0,0"
+                                        FontSize="16"
+                                        HorizontalOptions="StartAndExpand"
+                                        Text="{Binding Name}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        x:Name="editableEntry"
+                                        Margin="8,0,0,0"
+                                        FontSize="16"
+                                        HorizontalOptions="StartAndExpand"
+                                        IsVisible="{Binding IsEntryVisible}"
+                                        Text="{Binding Name}"
+                                        VerticalOptions="Center" />
+                                    <Image
+                                        HeightRequest="20"
+                                        HorizontalOptions="End"
+                                        IsVisible="{Binding IsClearIconVisible}"
+                                        Source="ic_clear">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ClearEditCommand}" CommandParameter="{Binding .}" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+
+                                    <Image
+                                        Margin="10,0,10,0"
+                                        HeightRequest="20"
+                                        HorizontalOptions="End"
+                                        IsVisible="{Binding IsCheckIconVisible}"
+                                        Source="ic_check">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.AcceptEditCommand}" CommandParameter="{Binding .}" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                    <Image
+                                        Margin="0,0,10,0"
+                                        HeightRequest="15"
+                                        HorizontalOptions="End"
+                                        IsVisible="{Binding IsEditIconVisible}"
+                                        Source="{AppThemeBinding Light=ic_edit.png,
+                                                                 Dark=ic_edit_darkmode.png}">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.EditCategoryCommand}" CommandParameter="{Binding .}" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Label
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsNoCategoriesToShowVisible}"
+                    Text="No categories to show."
+                    VerticalOptions="CenterAndExpand" />
+                <Button
+                    Margin="0,5,0,0"
+                    ClassId="AddButton"
+                    Command="{Binding AddCategoryCommand}"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                    Style="{StaticResource ButtonStyle}"
+                    Text="Add Expense Category"
+                    VerticalOptions="End" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

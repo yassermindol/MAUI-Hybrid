@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExpenseTracker.Features.DetailsOfExpenseList.EditExpensePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ExpenseTracker.Controls"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    Title="Edit Expense"
+    HideSoftInputOnTapped="True">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
+
+        <Style x:Key="KeyLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout
+                Margin="25,20,25,20"
+                Orientation="Vertical"
+                Spacing="0"
+                VerticalOptions="FillAndExpand">
+                <StackLayout
+                    Margin="0,10,0,0"
+                    ClassId="Date"
+                    Orientation="Horizontal"
+                    Spacing="0"
+                    VerticalOptions="Start">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        MinimumWidthRequest="70"
+                        Style="{StaticResource KeyLabel}"
+                        Text="Date: "
+                        VerticalOptions="Center" />
+                    <StackLayout
+                        HorizontalOptions="StartAndExpand"
+                        Orientation="Horizontal"
+                        Spacing="0">
+                        <DatePicker
+                            Date="{Binding SelectedDate, Mode=TwoWay}"
+                            FontSize="15"
+                            Format="MMM-d-yyyy"
+                            HorizontalOptions="Start"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}" />
+                        <Label
+                            HorizontalOptions="Start"
+                            Text="@"
+                            VerticalOptions="Center" />
+                        <TimePicker
+                            Margin="0"
+                            FontSize="15"
+                            Format="hh:mm tt"
+                            HorizontalOptions="StartAndExpand"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                            Time="{Binding SelectedTime, Mode=TwoWay}" />
+                    </StackLayout>
+                </StackLayout>
+
+                <StackLayout
+                    Margin="0,10,0,0"
+                    ClassId="Category"
+                    Orientation="Horizontal"
+                    VerticalOptions="Start">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        MinimumWidthRequest="70"
+                        Text="Category: "
+                        VerticalOptions="Center" />
+                    <Picker
+                        Title="Select Category"
+                        FontFamily="Lobster"
+                        FontSize="16"
+                        HorizontalOptions="FillAndExpand"
+                        HorizontalTextAlignment="Start"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                        ItemsSource="{Binding PickerSource}"
+                        SelectedItem="{Binding SelectedCategory}"
+                        TextColor="{AppThemeBinding Light=Black,
+                                                    Dark=White}"
+                        VerticalOptions="Start" />
+                </StackLayout>
+
+                <StackLayout
+                    Margin="0,10,0,0"
+                    ClassId="Amount"
+                    Orientation="Horizontal"
+                    VerticalOptions="Start">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Start"
+                        MinimumWidthRequest="70"
+                        VerticalOptions="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Amount:" />
+                                <Span Text="  " />
+                                <Span Text="{Binding CurrencySymbol}}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Entry
+                        FontFamily="Lobster"
+                        FontSize="16"
+                        HorizontalOptions="FillAndExpand"
+                        HorizontalTextAlignment="Start"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                        Keyboard="Numeric"
+                        Text="{Binding Amount}"
+                        VerticalOptions="Start" />
+                </StackLayout>
+
+                <Label
+                    Margin="0,20,0,0"
+                    ClassId="NotesLabel"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start"
+                    Text="Notes:"
+                    VerticalOptions="Start" />
+                <Editor
+                    Margin="0,10,0,0"
+                    AutoSize="TextChanges"
+                    BackgroundColor="Transparent"
+                    ClassId="NotesValue"
+                    FontFamily="Lobster"
+                    FontSize="16"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalTextAlignment="Start"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                    Text="{Binding Notes}"
+                    TextColor="{AppThemeBinding Light=Black,
+                                                Dark=White}"
+                    VerticalOptions="Start" />
+                <Button
+                    ClassId="SaveButton"
+                    Command="{Binding SaveCommand}"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                    Style="{StaticResource ButtonStyle}"
+                    Text="Save"
+                    VerticalOptions="EndAndExpand" />
+
+                <ActivityIndicator
+                    Margin="10,0,10,40"
+                    IsVisible="{Binding IsBusy}"
+                    VerticalOptions="EndAndExpand" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
