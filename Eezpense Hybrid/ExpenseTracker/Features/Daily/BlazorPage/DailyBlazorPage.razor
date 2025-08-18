@@ -1,0 +1,207 @@
+﻿
+
+<h3>DailyBlazorPage</h3>
+
+<ul class="list-group">
+    @foreach (var item in Items)
+    {
+        <li class="list-group-item" style="padding-left:0px;padding-right:0;" @key="item.Id">
+            <!--
+            <div class="d-flex justify-content-between align-items-center" @onclick="() => Toggle(item.Id)" style="cursor: pointer;">
+                <span style="padding-left:12px;">@item.Title</span>
+                <span class="badge bg-secondary">@((item.IsExpanded) ? "−" : "+")</span>
+            </div>
+            -->
+
+            <div style="display:flex; flex-direction:row; align-items:center; margin-left:10px;margin-right:10px;" @onclick="() => Toggle(item.Id)">
+                <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-right:10px;">
+                    <div style="display:flex; flex-direction:row;">
+                        <label style="margin-bottom:4px;font-size:14px;font-weight:600;">@item.Title</label>
+                        <label style="margin-left:auto;margin-right:8px;font-size:14px;font-weight:600;">P 64</label>
+                    </div>
+                    <div style="background-color:blue; height:6px; width:100%;margin-bottom:4px;"></div>
+                </div>
+                <span class="badge bg-secondary">
+                    @((item.IsExpanded) ? "−" : "+")
+                </span>
+            </div>
+
+            @if (item.IsExpanded && item.SubItems?.Any() == true)
+            {
+                <ul class="list-group mt-2">
+                    @foreach (var sub in item.SubItems)
+                    {
+                        <li class="list-group-item list-group-item-action" style="padding-left:10px;padding-right:10px;">
+                            <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
+                                <div style="display:flex; flex-direction:row;flex:1;">
+                                    <label style="margin-bottom:4px;font-size:14px;font-weight:500;">@sub</label>
+                                    <label style="margin-left:auto;margin-right:8px;font-size:14px;">P 64</label>
+                                </div>
+                                <div style="display:flex; flex-direction:row;flex:1;padding:0px;">
+                                    <label style="
+                                                    margin-right:10px;
+                                                    flex:1;
+                                                    overflow:hidden;
+                                                    display:-webkit-box;
+                                                    -webkit-box-orient:vertical;
+                                                    -webkit-line-clamp:2;
+                                                    line-height:1.2em;
+                                                    font-size:14px;
+                                                    text-overflow:ellipsis;">
+                                        This is a long label.
+                                    </label>
+                                    <label style="margin-left:auto;margin-right:8px;font-size:14px;">Today 5:06 PM</label>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+    }
+</ul>
+
+@code {
+    // Simple model for demonstration
+    class ListItem
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public bool IsExpanded { get; set; }
+        public List<string> SubItems { get; set; } = new();
+    }
+
+    // Sample data
+    List<ListItem> Items = new()
+    {
+        new ListItem
+        {
+            Id = 1,
+            Title = "Fruits",
+            SubItems = new List<string> { "Apple", "Banana", "Cherry" }
+        },
+        new ListItem
+        {
+            Id = 2,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+        new ListItem
+        {
+            Id = 3,
+            Title = "Dairy",
+            SubItems = new List<string> { "Milk", "Cheese" }
+        },
+         new ListItem
+        {
+            Id = 4,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 5,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 6,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 7,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 8,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 9,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 10,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 11,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 12,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 13,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 14,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 15,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 16,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 17,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 18,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 19,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 20,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+    };
+
+    void Toggle(int id)
+    {
+        var item = Items.FirstOrDefault(i => i.Id == id);
+        if (item != null)
+        {
+            item.IsExpanded = !item.IsExpanded;
+        }
+    }
+}

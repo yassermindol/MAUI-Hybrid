@@ -4,11 +4,11 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:blazorPages="clr-namespace:ExpenseTracker.Components.Pages"
-    xmlns:daily="clr-namespace:ExpenseTracker.Features.Daily"
+    xmlns:daily="clr-namespace:ExpenseTracker.Features.Daily.BlazorPage"
     Title="Daily Summary Report">
     <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
-            <RootComponent ComponentType="{x:Type blazorPages:DailySummaryBlazorPage}" Selector="#app" />
+            <RootComponent ComponentType="{x:Type daily:DailyBlazorPage}" Selector="#app" />
         </BlazorWebView.RootComponents>
     </BlazorWebView>
 </ContentPage>

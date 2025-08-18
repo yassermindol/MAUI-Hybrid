@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Maui;
+using ExpenseTracker.Features.Daily;
+using ExpenseTracker.Features.Daily.BlazorPage;
 using Microsoft.Extensions.Logging;
 using OxyPlot.Maui.Skia;
 using SkiaSharp.Views.Maui.Controls.Hosting;
@@ -25,6 +27,9 @@ namespace ExpenseTracker
             });
 
             builder.Services.AddMauiBlazorWebView();
+
+            var services = builder.Services;
+            services.AddScoped<DailyBlazorViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();
