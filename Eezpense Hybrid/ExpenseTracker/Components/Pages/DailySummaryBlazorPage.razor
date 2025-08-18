@@ -5,10 +5,27 @@
 <ul class="list-group">
     @foreach (var item in Items)
     {
-        <li class="list-group-item" style="padding-left:0px;">
+        <li class="list-group-item" style="padding-left:0px;padding-right:0;" @key="item.Id">
+            <!--
             <div class="d-flex justify-content-between align-items-center" @onclick="() => Toggle(item.Id)" style="cursor: pointer;">
                 <span style="padding-left:12px;">@item.Title</span>
                 <span class="badge bg-secondary">@((item.IsExpanded) ? "−" : "+")</span>
+            </div>
+            -->
+
+            <div style="display:flex; flex-direction:row; align-items:center;" @onclick="() => Toggle(item.Id)">
+                <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-left:10px;">
+
+                    <div style="display:flex; flex-direction:row;">
+                        <label style="margin-bottom:4px;font-size:14px;font-weight:600;">@item.Title</label>
+                        <label style="margin-left:auto;margin-right:8px;font-size:14px;font-weight:600;">P 64</label>
+                    </div>
+
+                    <div style="background-color:blue; height:6px; width:100%;"></div>
+                </div>
+                <span class="badge bg-secondary" style="margin-left:10px;">
+                    @((item.IsExpanded) ? "−" : "+")
+                </span>
             </div>
 
             @if (item.IsExpanded && item.SubItems?.Any() == true)
@@ -16,8 +33,29 @@
                 <ul class="list-group mt-2">
                     @foreach (var sub in item.SubItems)
                     {
-                        <li class="list-group-item list-group-item-action">
-                            @sub
+                        <li class="list-group-item list-group-item-action" style="padding-left:4px;padding-right:4px;">
+                            <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
+
+                                <div style="display:flex; flex-direction:row;flex:1;">
+                                    <label style="margin-bottom:4px;font-size:14px;font-weight:500;">@sub</label>
+                                    <label style="margin-left:auto;margin-right:8px;font-size:14px;">P 64</label>
+                                </div>
+
+                                <div style="display:flex; flex-direction:row;flex:1;padding:0px;">
+                                    <label style="
+                                        margin-right:10px;
+                                        flex:1;
+                                        overflow:hidden;
+                                        display:-webkit-box;
+                                        -webkit-box-orient:vertical;
+                                        -webkit-line-clamp:2;
+                                        line-height:1.2em;
+                                        text-overflow:ellipsis;">
+                                        This is a long label that will grow or shrink with remaining space, but only shows two lines of text and then adds ellipsis when it overflows.
+                                    </label>
+                                    <label style="margin-left:auto;margin-right:8px;font-size:14px;">Today 5:06 PM</label>
+                                </div>
+                            </div>
                         </li>
                     }
                 </ul>
@@ -56,7 +94,109 @@
             Id = 3,
             Title = "Dairy",
             SubItems = new List<string> { "Milk", "Cheese" }
-        }
+        },
+         new ListItem
+        {
+            Id = 4,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 5,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 6,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 7,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 8,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 9,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 10,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 11,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 12,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+         new ListItem
+        {
+            Id = 13,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 14,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 15,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 16,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 17,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 18,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 19,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
+          new ListItem
+        {
+            Id = 20,
+            Title = "Vegetables",
+            SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
+        },
     };
 
     void Toggle(int id)
