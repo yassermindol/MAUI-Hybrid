@@ -9,15 +9,19 @@ namespace ExpenseTracker
         public App()
         {
             InitializeComponent();
+            if (AppSettings.Account.OnBoardingCompleted)
+                MainPage = new AppShell();
+            else
+                MainPage = new OnBoardingPage();
         }
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            if (AppSettings.Account.OnBoardingCompleted)
-                return new Window(new AppShell()) { Title = "App Shell" };
-            else
-                return new Window(new OnBoardingPage()) { Title = "On Boarding" };
-        }
+        //protected override Window CreateWindow(IActivationState? activationState)
+        //{
+        //    if (AppSettings.Account.OnBoardingCompleted)
+        //        return new Window(new AppShell());
+        //    else
+        //        return new Window(new OnBoardingPage());
+        //}
 
         public static bool IsDarkMode
         {
