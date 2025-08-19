@@ -9,13 +9,49 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="ExpenseTracker.styles.css" />
     <link rel="icon" href="data:,">
+
+    <style>
+        /* Full-page centering */
+        /*
+        #app {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            flex:1;
+            background-color: white;
+        }
+        */
+        /* Progress ring style */
+        .progress-ring {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #ccc; /* lighter track */
+            border-top: 4px solid #007bff; /* active color */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
 
     <div class="status-bar-safe-area"></div>
 
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw;">
+            <div class="progress-ring"></div>
+            <div>Loading...</div>
+        </div>       
+    </div>
+    
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
