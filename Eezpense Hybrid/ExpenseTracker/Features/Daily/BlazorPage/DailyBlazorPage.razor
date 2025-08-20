@@ -1,4 +1,5 @@
-﻿
+﻿@using ExpenseTracker.Features.Daily.BlazorPage
+@inject DailyBlazorViewModel _viewModel
 
 <div style="display:flex; flex-direction:column;height:100vh; overflow:hidden;">
 
@@ -6,8 +7,9 @@
         <label style="font-size:15px;font-weight:600;
                        border-bottom: 2px solid rgba(0, 0, 0, 0.25);
                       display: inline-block;   
-                      padding-bottom: 0px;">Aug-18-2025</label>
-        <label style="font-size:14px;">to Present:</label>
+                      padding-bottom: 0px;"
+                      >@_viewModel.SelectedDate.ToString("MMM-dd-yyyy")</label>
+        <label style="font-size:14px;"> to Present:</label>
         <label style="font-size:14px;">P</label>
         <label style="font-size:14px;">24</label>
    </div>
@@ -15,7 +17,7 @@
     <ul class="list-group" style="flex:1; overflow-y:auto;">
         @foreach (var item in Items)
         {
-            <li class="list-group-item" style="padding-left:0px;padding-right:0;background-color:LightSteelBlue;" @key="item.Id" @onclick="() => Toggle(item.Id)">
+            <li class="list-group-item" style="padding-left:0px;padding-right:0;background-color:#F3F4F6;" @key="item.Id" @onclick="() => Toggle(item.Id)">
                 <div style="display:flex; flex-direction:row; align-items:center;                                
                             margin-left:10px;margin-right:10px;" >
                     <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-right:10px;">
@@ -65,7 +67,7 @@
         }
     </ul>
 
-    <MauiButton/>
+    <MauiButton Text="Jul-2-2025 to present"/>
 </div>
 
 
@@ -211,5 +213,12 @@
         {
             item.IsExpanded = !item.IsExpanded;
         }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _viewModel.OnDateChanged -= StateHasChanged;
+        _viewModel.OnDateChanged += StateHasChanged;
     }
 }

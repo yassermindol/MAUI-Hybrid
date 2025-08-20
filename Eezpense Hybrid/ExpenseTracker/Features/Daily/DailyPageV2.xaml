@@ -6,9 +6,22 @@
     xmlns:blazorPages="clr-namespace:ExpenseTracker.Components.Pages"
     xmlns:daily="clr-namespace:ExpenseTracker.Features.Daily.BlazorPage"
     Title="Daily Summary Report">
-    <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
-        <BlazorWebView.RootComponents>
-            <RootComponent ComponentType="{x:Type daily:DailyBlazorPage}" Selector="#app" />
-        </BlazorWebView.RootComponents>
-    </BlazorWebView>
+
+    <Grid>
+
+        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+            <BlazorWebView.RootComponents>
+                <RootComponent ComponentType="{x:Type daily:DailyBlazorPage}" Selector="#app" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
+
+        <DatePicker
+            VerticalOptions="Start"
+            HorizontalOptions="Start"
+            x:Name="HiddenDatePicker"
+            Opacity="0"
+            WidthRequest="100"
+            BackgroundColor="Yellow"/>
+    </Grid>
+
 </ContentPage>

@@ -29,7 +29,7 @@ namespace ExpenseTracker
             builder.Services.AddMauiBlazorWebView();
 
             var services = builder.Services;
-            services.AddScoped<DailyBlazorViewModel>();
+            services.AddSingleton<DailyBlazorViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

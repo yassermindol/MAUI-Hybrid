@@ -2,43 +2,52 @@
 
 <style>
     .maui-button {
-        background-color: #f2f2f2 !important; /* light gray */
+        background-color: #512BD4 !important;
         border: 1px solid #c8c8c8 !important;
-        color: #1a1a1a !important; /* text color */
-        border-radius: 6px !important;
-        padding: 8px 14px !important;
+        color: white;
+        border-radius: 10px !important;
+        padding: 14px 10px !important;
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         font-size: 14px;
         line-height: 1;
         cursor: pointer;
         box-shadow: none !important;
-        transition: background-color 150ms ease, border-color 150ms ease;
+        margin: 2px 20px;
+        transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease;
     }
 
         .maui-button:hover {
-            background-color: #e6e6e6 !important;
-            border-color: #bdbdbd !important;
+            background-color: #512BD4 !important;
         }
 
-        .maui-button:active {
-            background-color: #e0e0e0 !important;
-            border-color: #b0b0b0 !important;
-            transform: translateY(1px);
-        }
-
-        .maui-button:focus-visible {
-            outline: 2px solid #5c9ded;
-            outline-offset: 2px;
+        /* Pressed state when class is added dynamically */
+        .maui-button.pressed {
+            transform: scale(0.96);
+            background-color: #6f4fed !important;
         }
 </style>
 
-<h3>MAUI-style Button (Blazor)</h3>
-
-<button class="maui-button" @onclick="SayHello">Tap me</button>
+<button class="maui-button @(pressed ? "pressed" : "")" @onclick="Clicked">@Text</button>
 
 @code {
-    private void SayHello()
+
+    private bool pressed;
+    [Parameter]
+    public string Text { get; set; } = "Tap me";
+
+    [Parameter]
+    public EventCallback OnClickCallback { get; set; }
+
+    private async Task Clicked()
     {
-        Console.WriteLine("MAUI-style button clicked!");
+        pressed = true;
+        StateHasChanged();
+
+        await Task.Delay(200);
+        pressed = false;
+        StateHasChanged();
+
+        if (OnClickCallback.HasDelegate)
+            await OnClickCallback.InvokeAsync();
     }
 }
