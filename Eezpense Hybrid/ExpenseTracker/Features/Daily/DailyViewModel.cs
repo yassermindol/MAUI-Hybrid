@@ -47,7 +47,11 @@ public partial class DailyViewModel : BaseViewModel
         WeakReferenceMessenger.Default.Register<DeleteExpenseMessage>(this, OnDeleteExpense);
         WeakReferenceMessenger.Default.Register<RestoreExpenseMessage>(this, OnRestoreExpense);
         WeakReferenceMessenger.Default.Register<CurrencySymbolChangedMessage>(this, OnCurrencySymbolChanged);
-        SelectDateButtonText = $"{StartDate.ToHuman()} - {EndDate.ToHuman()}";
+        
+        if(StartDate == EndDate)
+            SelectDateButtonText = $"{StartDate.ToHuman()}";
+        else
+            SelectDateButtonText = $"{StartDate.ToHuman()} to {EndDate.ToHuman()}";
     }
 
     private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)

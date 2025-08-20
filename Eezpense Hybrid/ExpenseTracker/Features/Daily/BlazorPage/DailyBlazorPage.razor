@@ -4,14 +4,9 @@
 <div style="display:flex; flex-direction:column;height:100vh; overflow:hidden;">
 
    <div style="margin:10px 10px;">
-        <label style="font-size:15px;font-weight:600;
-                       border-bottom: 2px solid rgba(0, 0, 0, 0.25);
-                      display: inline-block;   
-                      padding-bottom: 0px;"
-                      >@_viewModel.SelectedDate.ToString("MMM-dd-yyyy")</label>
-        <label style="font-size:14px;"> to Present:</label>
-        <label style="font-size:14px;">P</label>
-        <label style="font-size:14px;">24</label>
+        <label style="font-size:14px;font-weight:500">Total: </label>
+        <label style="font-size:14px;font-weight:500">P</label>
+        <label style="font-size:14px;font-weight:500">24</label>
    </div>
 
     <ul class="list-group" style="flex:1; overflow-y:auto;">
@@ -67,11 +62,17 @@
         }
     </ul>
 
-    <MauiButton Text="Jul-2-2025 to present"/>
+    <MauiButton Text="@_viewModel.SelectDateButtonText" OnClickCallback="OnButtonClick"/>
 </div>
 
 
 @code {
+
+    private void OnButtonClick()
+    {
+        _viewModel.SelectDateRangeCommand.Execute(null);
+    }
+
     // Simple model for demonstration
     class ListItem
     {
@@ -218,7 +219,7 @@
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _viewModel.OnDateChanged -= StateHasChanged;
-        _viewModel.OnDateChanged += StateHasChanged;
-    }
+        _viewModel.StateHasChanged -= StateHasChanged;
+        _viewModel.StateHasChanged += StateHasChanged;
+    }    
 }

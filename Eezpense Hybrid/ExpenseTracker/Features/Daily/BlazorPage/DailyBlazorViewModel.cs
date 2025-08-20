@@ -1,21 +1,17 @@
-﻿
+﻿using System.ComponentModel;
 
 namespace ExpenseTracker.Features.Daily.BlazorPage;
 
-public class DailyBlazorViewModel: DailyViewModel
+public class DailyBlazorViewModel : DailyViewModel
 {
-    public event Action OnDateChanged;
+    public event Action StateHasChanged;
 
-    public DatePicker DatePicker { get; internal set; }
-
-    DateTime _selectedDate = DateTime.Today;
-    public DateTime SelectedDate
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
-        get => _selectedDate;
-        set
+        base.OnPropertyChanged(e);
+        if (e.PropertyName == nameof(SelectDateButtonText))
         {
-            SetProperty(ref _selectedDate, value);
-            OnDateChanged?.Invoke();
-        } 
+            StateHasChanged?.Invoke();
+        }
     }
 }
