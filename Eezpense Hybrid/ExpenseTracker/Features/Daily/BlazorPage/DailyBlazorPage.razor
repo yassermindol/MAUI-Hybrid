@@ -28,7 +28,7 @@
                 {
                     <li class="list-group-item" style="padding:0;padding-top:10px;background-color:#F3F4F6;" @key="dayItem.ID" @onclick="() => OnDayClicked(dayItem.ID)">
                         <div style="display:flex; flex-direction:row; align-items:center;
-                                                     margin-left:10px;margin-right:10px;">
+                                                                                         margin-left:10px;margin-right:10px;">
                             <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-right:10px;">
                                 <div style="display:flex; flex-direction:row;">
                                     <label style="margin-bottom:4px;font-size:14px;font-weight:600;">@dayItem.Date</label>
@@ -47,8 +47,8 @@
                             <ul class="list-group mt-2">
                                 @foreach (var expenseItem in dayItem.Expenses)
                                 {
-                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:white;" 
-                                                    @onclick="() => OnExpenseItemClicked(expenseItem.ID)">
+                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:white;"
+                                        @onclick="() => OnExpenseItemClicked(expenseItem.ID)">
                                         <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
                                             <div style="display:flex; flex-direction:row;flex:1;">
                                                 <label style="margin-bottom:4px;font-size:14px;font-weight:500;">@expenseItem.Category</label>
@@ -56,10 +56,7 @@
                                                 <label style="margin-right:8px;font-size:14px;font-weight:500;"> @expenseItem.AmountStr</label>
                                             </div>
                                             <div style="display:flex; flex-direction:row;flex:1;padding:0px;">
-                                                <label style="
-                                                    margin-right:10px;
-                                                    flex:1;
-                                                    overflow:hidden;
+                                                <label style="margin-right:10px;flex:1;overflow:hidden;
                                                     display:-webkit-box;
                                                     -webkit-box-orient:vertical;
                                                     -webkit-line-clamp:2;
@@ -80,21 +77,22 @@
         }
     }
 
-    <MauiButton Text="@_viewModel.SelectDateButtonText" OnClickCallback="OnButtonClick" IsEnabled="!_viewModel.IsBusy" />
+    <MauiButton Text="@_viewModel.SelectDateButtonText" OnClickCallback="OnDateRangeButtonClick" IsEnabled="!_viewModel.IsBusy" />
 </div>
 
 
 @code {
-    private bool IsButtonEnabled = true;
 
     bool expenseItemClicked = false;
     private void OnExpenseItemClicked(long id)
     {
+        if (expenseItemClicked)
+            return;
         expenseItemClicked = true;
-        MainThread.InvokeOnMainThreadAsync(() => _viewModel.UiExpenseItemSelectedAsync(id));
+        MainThread.InvokeOnMainThreadAsync(() => _viewModel.UiExpenseItemSelectedAsync(id, () => expenseItemClicked = false));
     }
 
-    private void OnButtonClick()
+    private void OnDateRangeButtonClick()
     {
         _viewModel.SelectDateRangeCommand.Execute(null);
     }
@@ -102,12 +100,8 @@
     private void OnDayClicked(long id)
     {
         if (expenseItemClicked)
-        {
-            expenseItemClicked = false;
             return;
-        }
 
-        IsButtonEnabled = id % 2 == 0 ? true : false;
         var item = _viewModel.DailyItems.FirstOrDefault(i => i.ID == id);
         if (item != null)
         {

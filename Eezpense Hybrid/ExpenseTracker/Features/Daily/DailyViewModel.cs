@@ -72,6 +72,8 @@ public partial class DailyViewModel : BaseViewModel
                 }
             }
         }
+
+        StateHasChanged();
     }
 
 

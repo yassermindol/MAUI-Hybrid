@@ -31,11 +31,12 @@ public class DailyBlazorViewModel : DailyViewModel
         StateHasChanged?.Invoke();
     }
 
-    public async Task UiExpenseItemSelectedAsync(long id)
+    public async Task UiExpenseItemSelectedAsync(long id, Action callback)
     {
         var page = new ExpensePage();
         var expenseEntity = await ExpenseTableDb.Get(id);
         page.BindingContext = new ExpenseViewModel(expenseEntity); ;
         await _navigation.PushAsync(page);
+        callback.Invoke();
     }
 }
