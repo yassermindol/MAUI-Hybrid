@@ -47,7 +47,8 @@
                             <ul class="list-group mt-2">
                                 @foreach (var expenseItem in dayItem.Expenses)
                                 {
-                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;" @onclick="() => OnExpenseItemClicked(expenseItem.ID)">
+                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:white;" 
+                                                    @onclick="() => OnExpenseItemClicked(expenseItem.ID)">
                                         <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
                                             <div style="display:flex; flex-direction:row;flex:1;">
                                                 <label style="margin-bottom:4px;font-size:14px;font-weight:500;">@expenseItem.Category</label>
