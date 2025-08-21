@@ -16,12 +16,21 @@ public class UiDayItem : UiExpenseItem
         set => SetProperty(ref barWidth, value);
     }
 
+    string barWidthPercentage;
+    public string BarWidthPercentage
+    {
+        get => barWidthPercentage;
+        set => SetProperty(ref barWidthPercentage, value);
+    }
+
     Color barColor;
     public Color BarColor
     {
         get => barColor;
         set => SetProperty(ref barColor, value);
     }
+
+    public string BarcolorCssHex => BarColor.ToCssHex();
 
     public ObservableCollection<UiDayItem> Expenses { get; set; } = new ObservableCollection<UiDayItem>();
     public Color ItemColor { get; set; }

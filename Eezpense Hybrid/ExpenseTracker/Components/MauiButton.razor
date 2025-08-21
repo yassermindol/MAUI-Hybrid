@@ -2,41 +2,55 @@
 
 <style>
     .maui-button {
-        background-color: #512BD4 !important;
-        border: 1px solid #c8c8c8 !important;
+        background-color: #512BD4;
+        border: 1px solid #c8c8c8;
         color: white;
-        border-radius: 10px !important;
-        padding: 14px 10px !important;
+        border-radius: 10px;
+        padding: 14px 10px;
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         font-size: 14px;
         line-height: 1;
         cursor: pointer;
-        box-shadow: none !important;
-        margin: 10px 20px;
+        box-shadow: none;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: auto;
+        margin-bottom: 10px;     
         transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease;
     }
 
         .maui-button:hover {
-            background-color: #512BD4 !important;
+            background-color: #512BD4;
+        }
+
+        /* Disabled state styling */
+        .maui-button:disabled {
+            background-color: #e0e0e0; /* gray background when disabled */
+            color: #333; /* dark text when disabled */
+            border-color: #c8c8c8;
+            cursor: not-allowed;
         }
 
         /* Pressed state when class is added dynamically */
         .maui-button.pressed {
             transform: scale(0.96);
-            background-color: #6f4fed !important;
+            background-color: #6f4fed;
         }
 </style>
 
-<button class="maui-button @(pressed ? "pressed" : "")" @onclick="Clicked">@Text</button>
+<button class="maui-button @(pressed ? "pressed" : "")" disabled="@(IsEnabled ? null : true)" @onclick="Clicked">@Text</button>
 
 @code {
-
     private bool pressed;
+
     [Parameter]
     public string Text { get; set; } = "Tap me";
 
     [Parameter]
     public EventCallback OnClickCallback { get; set; }
+
+    [Parameter]
+    public bool IsEnabled { get; set; } = true;
 
     private async Task Clicked()
     {

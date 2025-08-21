@@ -18,8 +18,8 @@ namespace ExpenseTracker.Features.Daily;
 
 public partial class DailyViewModel : BaseViewModel
 {
-    DailyService _service = new();
-    UiListDataProvider _dataProvider = new();
+    protected DailyService _service = new();
+    protected UiListDataProvider _dataProvider = new();
 
     [ObservableProperty]
     ObservableCollection<UiDayItem> dailyItems = new ObservableCollection<UiDayItem>();
@@ -37,6 +37,9 @@ public partial class DailyViewModel : BaseViewModel
     string currencySymbol = AppSettings.Account.CurrencySymbol;
 
     bool _isClicked = false;
+
+    public Action StateHasChanged { get; set; }
+
     public DailyViewModel()
     {
         WeakReferenceMessenger.Default.Register<AddExpenseMessage>(this, OnNewExpenseSaved);
@@ -186,6 +189,7 @@ public partial class DailyViewModel : BaseViewModel
 
     public async Task LoadDataAsync()
     {
+        StateHasChanged?.Invoke();
         Busy();
         await Task.Delay(10);
         var expenses = _service.GetDaily(StartDate, EndDate);
@@ -194,10 +198,12 @@ public partial class DailyViewModel : BaseViewModel
         DailyItems.Clear();
         _collectionChanged.Monitor(DailyItems, uiItems.Count, NotBusy, RefreshUI);
         foreach (var item in uiItems)
-            DailyItems.Add(item);        
+            DailyItems.Add(item);   
+        
+        StateHasChanged?.Invoke();
     }
 
-    private void Busy()
+    protected void Busy()
     {
         IsBusy = true;
         IsListVisible = false;
@@ -205,7 +211,7 @@ public partial class DailyViewModel : BaseViewModel
         IsTotalVisible = false;
     }
 
-    private void NotBusy()
+    protected void NotBusy()
     {
         IsBusy = false;
         IsListVisible = true;
@@ -224,7 +230,7 @@ public partial class DailyViewModel : BaseViewModel
         await MopupService.Instance.PushAsync(page);
     }
 
-    private DateTime StartDate
+    protected DateTime StartDate
     {
         get
         {

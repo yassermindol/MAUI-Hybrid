@@ -1,0 +1,14 @@
+﻿.progress-ring {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #ccc; /* lighter track */
+    border-top: 4px solid #007bff; /* active color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

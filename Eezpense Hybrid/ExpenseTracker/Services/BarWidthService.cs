@@ -17,4 +17,12 @@ public class BarWidthService
         double width = (amount / _maxAmount) * _maxWidthReference;
         return width;
     }
+
+    public string GetWidthPercentage(double amount)
+    {
+        double width = (amount / _maxAmount) * _maxWidthReference;
+        double percentage = (width / _maxWidthReference) * 100;
+        return $"{percentage:0.00}%";
+    }
+
 }

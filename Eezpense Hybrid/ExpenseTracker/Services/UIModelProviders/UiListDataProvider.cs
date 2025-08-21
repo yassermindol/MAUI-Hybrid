@@ -285,6 +285,7 @@ public class UiListDataProvider
             header.Total = subItemsTotal;
             total = total + subItemsTotal;
             header.BarColor = colorService.GetColor(index);
+            header.ID = index;
             UiDailyItems.Add(header);
             index++;
             foreach (var item in group)
@@ -310,6 +311,7 @@ public class UiListDataProvider
         {
             header.IsExpanded = showSubItems ? true : false; // if showSubItems is true, then expand the header by default
             header.BarWidth = widthService.GetWidth(header.Total) - 16; // 20 is to align the margin on the right coz I cannot set it on the xaml with Margin
+            header.BarWidthPercentage = widthService.GetWidthPercentage(header.Total);
         }           
 
         index = 0;
