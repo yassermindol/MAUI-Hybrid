@@ -1,4 +1,6 @@
 ﻿using ExpenseTracker.ExtensionMethods;
+using ExpenseTracker.Features.DetailsOfExpenseList;
+using ExpenseTracker.Features.DetailsOfExpenseList.ViewModels;
 using System.ComponentModel;
 
 namespace ExpenseTracker.Features.Daily.BlazorPage;
@@ -27,5 +29,13 @@ public class DailyBlazorViewModel : DailyViewModel
             DailyItems.Add(item);
         NotBusy();
         StateHasChanged?.Invoke();
+    }
+
+    public async Task UiExpenseItemSelectedAsync(long id)
+    {
+        var page = new ExpensePage();
+        var expenseEntity = await ExpenseTableDb.Get(id);
+        page.BindingContext = new ExpenseViewModel(expenseEntity); ;
+        await _navigation.PushAsync(page);
     }
 }

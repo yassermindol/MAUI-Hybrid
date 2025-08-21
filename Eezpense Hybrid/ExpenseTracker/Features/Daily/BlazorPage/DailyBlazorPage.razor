@@ -13,7 +13,7 @@
         {
             <div style="display:flex;flex:1;align-items:center; justify-content:center;">
                 <label style="font-size:15px;font-weight:400;">No records to show.</label>
-            </div>            
+            </div>
         }
         else
         {
@@ -24,35 +24,35 @@
             </div>
 
             <ul class="list-group" style="flex:1; overflow-y:auto;">
-                @foreach (var item in _viewModel.DailyItems)
+                @foreach (var dayItem in _viewModel.DailyItems)
                 {
-                    <li class="list-group-item" style="padding:0;padding-top:10px;background-color:#F3F4F6;" @key="item.ID" @onclick="() => OnItemClicked(item.ID)">
+                    <li class="list-group-item" style="padding:0;padding-top:10px;background-color:#F3F4F6;" @key="dayItem.ID" @onclick="() => OnDayClicked(dayItem.ID)">
                         <div style="display:flex; flex-direction:row; align-items:center;
-                             margin-left:10px;margin-right:10px;">
+                                                     margin-left:10px;margin-right:10px;">
                             <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-right:10px;">
                                 <div style="display:flex; flex-direction:row;">
-                                    <label style="margin-bottom:4px;font-size:14px;font-weight:600;">@item.Date</label>
+                                    <label style="margin-bottom:4px;font-size:14px;font-weight:600;">@dayItem.Date</label>
                                     <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:600;">@_viewModel.CurrencySymbol</label>
-                                    <label style="margin-right:8px;font-size:14px;font-weight:600;"> @item.TotalStr</label>
+                                    <label style="margin-right:8px;font-size:14px;font-weight:600;"> @dayItem.TotalStr</label>
                                 </div>
-                                <div style="background-color:@item.BarcolorCssHex;height:12px;width:@item.BarWidthPercentage;margin-bottom:10px;margin-top:2px;border-radius:5px;"></div>
+                                <div style="background-color:@dayItem.BarcolorCssHex;height:12px;width:@dayItem.BarWidthPercentage;margin-bottom:10px;margin-top:2px;border-radius:5px;"></div>
                             </div>
                             <span class="badge bg-secondary">
-                                @((item.IsExpanded) ? "−" : "+")
+                                @((dayItem.IsExpanded) ? "−" : "+")
                             </span>
                         </div>
 
-                        @if (item.IsExpanded && item.Expenses?.Any() == true)
+                        @if (dayItem.IsExpanded && dayItem.Expenses?.Any() == true)
                         {
                             <ul class="list-group mt-2">
-                                @foreach (var sub in item.Expenses)
+                                @foreach (var expenseItem in dayItem.Expenses)
                                 {
-                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;">
+                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;" @onclick="() => OnExpenseItemClicked(expenseItem.ID)">
                                         <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
                                             <div style="display:flex; flex-direction:row;flex:1;">
-                                                <label style="margin-bottom:4px;font-size:14px;font-weight:500;">@sub.Category</label>
+                                                <label style="margin-bottom:4px;font-size:14px;font-weight:500;">@expenseItem.Category</label>
                                                 <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:500;">@_viewModel.CurrencySymbol</label>
-                                                <label style="margin-right:8px;font-size:14px;font-weight:500;"> @sub.AmountStr</label>
+                                                <label style="margin-right:8px;font-size:14px;font-weight:500;"> @expenseItem.AmountStr</label>
                                             </div>
                                             <div style="display:flex; flex-direction:row;flex:1;padding:0px;">
                                                 <label style="
@@ -64,8 +64,9 @@
                                                     -webkit-line-clamp:2;
                                                     line-height:1.2em;
                                                     font-size:14px;
-                                                    text-overflow:ellipsis;">@sub.Note</label>
-                                                <label style="margin-left:auto;margin-right:8px;font-size:14px;">@sub.Date</label>
+                                                    text-overflow:ellipsis;">@expenseItem.Note</label>
+                                                <label style="margin-left:auto;margin-right:4px;font-size:14px;">@expenseItem.Date | </label>
+                                                <label style="margin-right:8px;font-size:14px;">@expenseItem.Time</label>
                                             </div>
                                         </div>
                                     </li>
@@ -85,141 +86,26 @@
 @code {
     private bool IsButtonEnabled = true;
 
+    bool expenseItemClicked = false;
+    private void OnExpenseItemClicked(long id)
+    {
+        expenseItemClicked = true;
+        MainThread.InvokeOnMainThreadAsync(() => _viewModel.UiExpenseItemSelectedAsync(id));
+    }
+
     private void OnButtonClick()
     {
         _viewModel.SelectDateRangeCommand.Execute(null);
     }
 
-    List<ListItem> Items;
-    private void GenerateDummyData()
+    private void OnDayClicked(long id)
     {
-        Items = new()
-            {
-            new ListItem
-            {
-                Id = 1,
-                Title = "Fruits",
-                SubItems = new List<string> { "Apple", "Banana", "Cherry" }
-            },
-            new ListItem
-            {
-                Id = 2,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-            new ListItem
-            {
-                Id = 3,
-                Title = "Dairy",
-                SubItems = new List<string> { "Milk", "Cheese" }
-            },
-             new ListItem
-            {
-                Id = 4,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 5,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 6,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 7,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 8,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 9,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 10,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 11,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 12,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-             new ListItem
-            {
-                Id = 13,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-              new ListItem
-            {
-                Id = 14,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-              new ListItem
-            {
-                Id = 15,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-              new ListItem
-            {
-                Id = 16,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-              new ListItem
-            {
-                Id = 17,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-              new ListItem
-            {
-                Id = 18,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-              new ListItem
-            {
-                Id = 19,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-              new ListItem
-            {
-                Id = 20,
-                Title = "Vegetables",
-                SubItems = new List<string> { "Carrot", "Lettuce", "Tomato" }
-            },
-        };
-    }
+        if (expenseItemClicked)
+        {
+            expenseItemClicked = false;
+            return;
+        }
 
-    private void OnItemClicked(long id)
-    {
         IsButtonEnabled = id % 2 == 0 ? true : false;
         var item = _viewModel.DailyItems.FirstOrDefault(i => i.ID == id);
         if (item != null)
@@ -234,7 +120,6 @@
         await base.OnInitializedAsync();
         _viewModel.StateHasChanged -= StateHasChanged;
         _viewModel.StateHasChanged += StateHasChanged;
-        //GenerateDummyData();
         await _viewModel.LoadDataAsync();
     }
 
