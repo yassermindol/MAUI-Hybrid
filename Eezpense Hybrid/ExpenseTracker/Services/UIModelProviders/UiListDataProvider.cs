@@ -299,8 +299,9 @@ public class UiListDataProvider
                 uiExpense.DateTime = item.Date;
                 uiExpense.CategoryLocalID = item.CategoryLocalID;
                 uiExpense.ItemType = ExpenseItemType.ExpenseItem;
-                if (showSubItems)
-                    UiDailyItems.Add(uiExpense);
+                //This is for old implementation, not using blazor
+                //if (showSubItems)
+                    //UiDailyItems.Add(uiExpense);
                 header.Expenses.Add(uiExpense);
             }
         }

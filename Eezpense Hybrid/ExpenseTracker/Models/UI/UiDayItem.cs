@@ -30,7 +30,7 @@ public class UiDayItem : UiExpenseItem
         set => SetProperty(ref barColor, value);
     }
 
-    public string BarcolorCssHex => BarColor.ToCssHex();
+    public string BarcolorCssHex => ItemType == ExpenseItemType.Header ? BarColor.ToCssHex() : null;
 
     public ObservableCollection<UiDayItem> Expenses { get; set; } = new ObservableCollection<UiDayItem>();
     public Color ItemColor { get; set; }

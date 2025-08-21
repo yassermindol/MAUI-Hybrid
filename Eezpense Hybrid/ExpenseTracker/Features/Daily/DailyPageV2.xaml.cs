@@ -44,12 +44,12 @@ public partial class DailyPageV2 : ContentPage
             ToolbarItems[1].Text = "Show sub items";
         }
     }
-
+    
     private void ShowSubItems(bool showSubItems)
     {
         _viewModel.IsShowSubItems = showSubItems;
         SetActiveToolbarItems();
-        Task.Run(_viewModel.LoadDataAsync);
+        MainThread.InvokeOnMainThreadAsync(_viewModel.LoadDataAsync);
     }
 
     protected override void OnAppearing()

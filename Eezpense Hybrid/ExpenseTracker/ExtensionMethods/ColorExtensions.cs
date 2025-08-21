@@ -17,20 +17,29 @@ public static class ColorExtensions
 
     public static string ToCssHex(this Color color)
     {
-        int r = (int)(color.Red * 255);
-        int g = (int)(color.Green * 255);
-        int b = (int)(color.Blue * 255);
-        int a = (int)(color.Alpha * 255);
-
-        // If fully opaque, omit alpha (#RRGGBB)
-        if (a == 255)
+        if (color is null)
+            return "red";
+        try
         {
-            return $"#{r:X2}{g:X2}{b:X2}";
+            int r = (int)(color.Red * 255);
+            int g = (int)(color.Green * 255);
+            int b = (int)(color.Blue * 255);
+            int a = (int)(color.Alpha * 255);
+            // If fully opaque, omit alpha (#RRGGBB)
+            if (a == 255)
+            {
+                return $"#{r:X2}{g:X2}{b:X2}";
+            }
+            else
+            {
+                // Include alpha if not fully opaque (#RRGGBBAA)
+                return $"#{r:X2}{g:X2}{b:X2}{a:X2}";
+            }
         }
-        else
+        catch (Exception e)
         {
-            // Include alpha if not fully opaque (#RRGGBBAA)
-            return $"#{r:X2}{g:X2}{b:X2}{a:X2}";
-        }
+            Console.WriteLine(e);
+            throw;
+        }      
     }
 }

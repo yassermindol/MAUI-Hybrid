@@ -50,8 +50,8 @@ public partial class DailyViewModel : BaseViewModel
         WeakReferenceMessenger.Default.Register<DeleteExpenseMessage>(this, OnDeleteExpense);
         WeakReferenceMessenger.Default.Register<RestoreExpenseMessage>(this, OnRestoreExpense);
         WeakReferenceMessenger.Default.Register<CurrencySymbolChangedMessage>(this, OnCurrencySymbolChanged);
-        
-        if(StartDate == EndDate)
+
+        if (StartDate == EndDate)
             SelectDateButtonText = $"{StartDate.ToHuman()}";
         else
             SelectDateButtonText = $"{StartDate.ToHuman()} to {EndDate.ToHuman()}";
@@ -64,14 +64,14 @@ public partial class DailyViewModel : BaseViewModel
         foreach (var item in DailyItems)
         {
             item.CurrencySymbol = symbol;
-            if(item.ItemType == Models.ExpenseItemType.Header)
+            if (item.ItemType == Models.ExpenseItemType.Header)
             {
                 foreach (var expense in item.Expenses)
                 {
                     expense.CurrencySymbol = symbol;
                 }
             }
-        }           
+        }
     }
 
 
@@ -114,7 +114,7 @@ public partial class DailyViewModel : BaseViewModel
     {
         if (ShouldRefreshData)
         {
-            LoadDataAsync();
+            MainThread.InvokeOnMainThreadAsync(LoadDataAsync);
             ShouldRefreshData = false;
         }
     }
@@ -173,7 +173,7 @@ public partial class DailyViewModel : BaseViewModel
             }
             DailyItems.Clear();
             foreach (var item in tempList)
-                DailyItems.Add(item);            
+                DailyItems.Add(item);
             RefreshUI();
         }
         else
@@ -187,7 +187,7 @@ public partial class DailyViewModel : BaseViewModel
         _isClicked = false;
     }
 
-    public async Task LoadDataAsync()
+    public virtual async Task LoadDataAsync()
     {
         StateHasChanged?.Invoke();
         Busy();
@@ -198,8 +198,7 @@ public partial class DailyViewModel : BaseViewModel
         DailyItems.Clear();
         _collectionChanged.Monitor(DailyItems, uiItems.Count, NotBusy, RefreshUI);
         foreach (var item in uiItems)
-            DailyItems.Add(item);   
-        
+            DailyItems.Add(item);
         StateHasChanged?.Invoke();
     }
 
@@ -234,7 +233,7 @@ public partial class DailyViewModel : BaseViewModel
     {
         get
         {
-            if(AppSettings.Account.StartDateDaily == DateTime.MinValue)
+            if (AppSettings.Account.StartDateDaily == DateTime.MinValue)
             {
                 AppSettings.Account.StartDateDaily = DateTime.Now;
             }
@@ -258,6 +257,6 @@ public partial class DailyViewModel : BaseViewModel
         EndDate = endDate;
         SelectDateButtonText = $"{StartDate.ToHuman()} to {EndDate.ToHuman()}";
         await MopupService.Instance.PopAsync();
-        LoadDataAsync();
+        MainThread.InvokeOnMainThreadAsync(LoadDataAsync);
     }
 }

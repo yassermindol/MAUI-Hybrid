@@ -14,7 +14,7 @@ public class DailyBlazorViewModel : DailyViewModel
         }
     }
 
-    public new async Task LoadDataAsync()
+    public override async Task LoadDataAsync()
     {
         StateHasChanged?.Invoke();
         Busy();
