@@ -23,7 +23,7 @@
         <ShellContent ContentTemplate="{DataTemplate home:HomePage}" />
     </Tab>
     <Tab Title="Daily" Icon="ic_day.png">
-        <ShellContent ContentTemplate="{DataTemplate daily:DailyPageV2}" />
+        <ShellContent ContentTemplate="{DataTemplate daily:DailyPage}" />
     </Tab>
 
     <Tab Title="{localize:Translate Weekly}" Icon="ic_week.png">

@@ -19,9 +19,9 @@
                 <StackLayout Margin="5,0,5,0" Orientation="Vertical">
                     <Label
                         Margin="10"
-                        FontAttributes="Bold"
+                        FontSize="15"
                         HorizontalOptions="Center"
-                        Text="Select date and time" />
+                        Text="Select the transaction date and time of the expense item to be saved. Note that this setting will auto reset to the current date time once the expense item is saved. " />
                     <Grid
                         ColumnDefinitions="Auto,*"
                         HorizontalOptions="CenterAndExpand"

@@ -10,6 +10,8 @@
     -->
     <Frame
         Margin="15,15,15,0"
+        BackgroundColor="{AppThemeBinding Light=WhiteSmoke,
+                                          Dark=#1f2212}"
         CornerRadius="10"
         VerticalOptions="End">
         <StackLayout Spacing="0">
@@ -47,31 +49,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
-            <!--
-            <ListView x:Name="expenseCategoryListView"
-                      VerticalOptions="End"
-                      ItemsSource="{Binding ExpenseCategories}"
-                      SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                      Margin="0,20,0,0">
-                <ListView.Behaviors>
-                    <toolkit:EventToCommandBehavior EventName="ItemSelected"
-                                                    Command="{Binding ItemSelectedCommand}"
-                                                    CommandParameter="{Binding SelectedItem}"/>
-                </ListView.Behaviors>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout>
-                                <Label Text="{Binding Name}"
-                                       VerticalOptions="CenterAndExpand"
-                                       HorizontalOptions="Center"/>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            -->
         </StackLayout>
     </Frame>
 </mopups:PopupPage>

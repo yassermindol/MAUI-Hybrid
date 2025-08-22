@@ -1,22 +1,16 @@
-﻿
-using AndroidX.Lifecycle;
-using ExpenseTracker.ExtensionMethods;
-using ExpenseTracker.Models;
-using ExpenseTracker.Settings;
-using Microsoft.Maui.Controls;
+﻿using ExpenseTracker.ExtensionMethods;
 
 namespace ExpenseTracker.Features.Daily;
 
 public partial class DailyPage : ContentPage
 {
-    DailyViewModel _viewModel = new();
-    public DailyPage()
-    {
-        InitializeComponent();
+    DailyViewModel _viewModel;
+    public DailyPage(DailyViewModel viewModel)
+	{
+		InitializeComponent();
+        _viewModel = viewModel;
         BindingContext = _viewModel;
-        _viewModel.RefreshUI = RefreshUI;
-        _viewModel.LoadDataAsync();
-        SetToolbarItems();
+        SetToolbarItems(); ;
     }
 
     private void SetToolbarItems()
@@ -49,20 +43,12 @@ public partial class DailyPage : ContentPage
             ToolbarItems[1].Text = "Show sub items";
         }
     }
-
+    
     private void ShowSubItems(bool showSubItems)
     {
         _viewModel.IsShowSubItems = showSubItems;
         SetActiveToolbarItems();
-        Task.Run(_viewModel.LoadDataAsync);
-    }
-
-    private void RefreshUI()
-    {
-        listview.BeginRefresh();
-        Task.Delay(50).Wait();
-        listview.EndRefresh();
-        InvalidateMeasure();
+        MainThread.InvokeOnMainThreadAsync(_viewModel.LoadDataAsync);
     }
 
     protected override void OnAppearing()

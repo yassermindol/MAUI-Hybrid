@@ -1,6 +1,7 @@
 using ExpenseTracker.Database;
 using ExpenseTracker.Models.DbEntities;
 using ExpenseTracker.Services.Implementations;
+using Java.Time;
 
 namespace ExpenseTracker.Services.Api;
 
@@ -23,6 +24,9 @@ public class BaseApiService
 
     protected async Task<List<ExpenseEntity>> GetExpenses(DateTime start, DateTime end)
     {
+        //make sure time is up to just before midnight/next day
+        start = new DateTime(start.Year, start.Month, start.Day);
+        end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
         var result = await _localDb.Expenses.Get(start, end);
         return result.OrderByDescending(x=>x.Date).ToList();
     }

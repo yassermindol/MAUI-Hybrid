@@ -30,11 +30,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
     <!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\app_icon_splash.png" Color="#512BD4" BaseSize="128,128" />
+    <MauiSplashScreen Include="Resources\Splash\app_icon_splash_big.png" Color="#FFFFFFFF" BaseSize="128,128" />
 
     <!-- Images -->
     <MauiImage Include="Resources\Images\*" />
@@ -66,9 +64,6 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Features\Daily\DailyPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Features\Daily\DailyPageV2.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Features\DateRange\DateRangePage.xaml">
@@ -187,6 +182,13 @@
   <ItemGroup>
     <Folder Include="Features\OnBoarding\Templates\" />
     <Folder Include="Platforms\Android\Resources\mipmap-ldpi\" />
+    <Folder Include="Resources\AppIcon\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Features\Daily\DailyPage.xaml.cs">
+      <DependentUpon>DailyPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

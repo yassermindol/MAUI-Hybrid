@@ -3,8 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ExpenseTracker.EventMessages;
 using ExpenseTracker.EventMessages.ExpenseCategoryEvents;
-using ExpenseTracker.Features.DetailsOfExpenseList.ViewModels;
+using ExpenseTracker.ExtensionMethods;
 using ExpenseTracker.Features.DetailsOfExpenseList;
+using ExpenseTracker.Features.DetailsOfExpenseList.ViewModels;
 using ExpenseTracker.Models.UI;
 using ExpenseTracker.PopupViews.SelectDateRange;
 using ExpenseTracker.Services.Api;
@@ -12,7 +13,7 @@ using ExpenseTracker.Services.UIModelGenerators;
 using ExpenseTracker.Settings;
 using Mopups.Services;
 using System.Collections.ObjectModel;
-using ExpenseTracker.ExtensionMethods;
+using System.ComponentModel;
 
 namespace ExpenseTracker.Features.Daily;
 
@@ -35,8 +36,6 @@ public partial class DailyViewModel : BaseViewModel
 
     [ObservableProperty]
     string currencySymbol = AppSettings.Account.CurrencySymbol;
-
-    bool _isClicked = false;
 
     public Action StateHasChanged { get; set; }
 
@@ -127,84 +126,7 @@ public partial class DailyViewModel : BaseViewModel
         internal set => AppSettings.Account.ShowSubItems = value;
     }
 
-    [RelayCommand]
-    private async Task UiExpenseSelected()
-    {
-        if (UiExpenseSelectedItem == null)
-            return;
-
-        if (_isClicked)
-            return;
-        _isClicked = true;
-        if (UiExpenseSelectedItem.ItemType == Models.ExpenseItemType.Header)
-        {
-            if (UiExpenseSelectedItem.IsExpanded)
-            {
-                int i = UiExpenseSelectedItem.Index;
-                foreach (var item in UiExpenseSelectedItem.Expenses)
-                    DailyItems.RemoveAt(i + 1);
-                UiExpenseSelectedItem.IsExpanded = false;
-            }
-            else
-            {
-                int index = UiExpenseSelectedItem.Index;
-                if (index == DailyItems.Count - 1) // last header was clicked
-                {
-                    foreach (var item in UiExpenseSelectedItem.Expenses)
-                        DailyItems.Add(item);
-                }
-                else
-                {
-                    int i = 1;
-                    foreach (var item in UiExpenseSelectedItem.Expenses)
-                    {
-                        DailyItems.Insert(index + i, item);
-                        i++;
-                    }
-                }
-                UiExpenseSelectedItem.IsExpanded = true;
-            }
-
-            int newIndex = 0;
-            List<UiDayItem> tempList = new List<UiDayItem>();
-            foreach (var item in DailyItems)
-            {
-                item.Index = newIndex;
-                tempList.Add(item);
-                newIndex++;
-            }
-            DailyItems.Clear();
-            foreach (var item in tempList)
-                DailyItems.Add(item);
-            RefreshUI();
-        }
-        else
-        {
-            var page = new ExpensePage();
-            var expenseEntity = await ExpenseTableDb.Get(UiExpenseSelectedItem.ID);
-            page.BindingContext = new ExpenseViewModel(expenseEntity); ;
-            await _navigation.PushAsync(page);
-        }
-        UiExpenseSelectedItem = null;
-        _isClicked = false;
-    }
-
-    public virtual async Task LoadDataAsync()
-    {
-        StateHasChanged?.Invoke();
-        Busy();
-        await Task.Delay(10);
-        var expenses = _service.GetDaily(StartDate, EndDate);
-        var uiItems = _dataProvider.GetUiDays(expenses, IsShowSubItems, out double total);
-        Total = total.ToMoney();
-        DailyItems.Clear();
-        _collectionChanged.Monitor(DailyItems, uiItems.Count, NotBusy, RefreshUI);
-        foreach (var item in uiItems)
-            DailyItems.Add(item);
-        StateHasChanged?.Invoke();
-    }
-
-    protected void Busy()
+    private void Busy()
     {
         IsBusy = true;
         IsListVisible = false;
@@ -212,7 +134,7 @@ public partial class DailyViewModel : BaseViewModel
         IsTotalVisible = false;
     }
 
-    protected void NotBusy()
+    private void NotBusy()
     {
         IsBusy = false;
         IsListVisible = true;
@@ -231,7 +153,7 @@ public partial class DailyViewModel : BaseViewModel
         await MopupService.Instance.PushAsync(page);
     }
 
-    protected DateTime StartDate
+    private DateTime StartDate
     {
         get
         {
@@ -260,5 +182,38 @@ public partial class DailyViewModel : BaseViewModel
         SelectDateButtonText = $"{StartDate.ToHuman()} to {EndDate.ToHuman()}";
         await MopupService.Instance.PopAsync();
         MainThread.InvokeOnMainThreadAsync(LoadDataAsync);
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        if (e.PropertyName == nameof(SelectDateButtonText))
+        {
+            StateHasChanged?.Invoke();
+        }
+    }
+
+    public async Task LoadDataAsync()
+    {
+        StateHasChanged?.Invoke();
+        Busy();
+        await Task.Delay(10);
+        var expenses = _service.GetDaily(StartDate, EndDate);
+        var uiItems = _dataProvider.GetUiDays(expenses, IsShowSubItems, out double total);
+        Total = total.ToMoney();
+        DailyItems.Clear();
+        foreach (var item in uiItems)
+            DailyItems.Add(item);
+        NotBusy();
+        StateHasChanged?.Invoke();
+    }
+
+    public async Task UiExpenseItemSelectedAsync(long id, Action callback)
+    {
+        var page = new ExpensePage();
+        var expenseEntity = await ExpenseTableDb.Get(id);
+        page.BindingContext = new ExpenseViewModel(expenseEntity); ;
+        await _navigation.PushAsync(page);
+        callback.Invoke();
     }
 }
