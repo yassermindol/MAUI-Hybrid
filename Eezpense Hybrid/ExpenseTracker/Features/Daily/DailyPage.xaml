@@ -4,13 +4,19 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:blazorPages="clr-namespace:ExpenseTracker.Components.Pages"
+    xmlns:converters="clr-namespace:ExpenseTracker.Converters"
     xmlns:daily="clr-namespace:ExpenseTracker.Features.Daily"
     Title="Daily Summary Report">
 
-    <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <BlazorWebView x:Name="webView" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
             <RootComponent ComponentType="{x:Type daily:DailyRazorPage}" Selector="#app" />
         </BlazorWebView.RootComponents>
     </BlazorWebView>
-
 </ContentPage>

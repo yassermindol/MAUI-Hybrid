@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Features.Main;
+﻿using ExpenseTracker.Features.Daily;
+using ExpenseTracker.Features.Main;
 using ExpenseTracker.Features.OnBoarding;
 using ExpenseTracker.Settings;
 
@@ -13,6 +14,14 @@ namespace ExpenseTracker
                 MainPage = new AppShell();
             else
                 MainPage = new OnBoardingPage();
+
+            RequestedThemeChanged += OnRequestedThemeChanged;
+        }
+
+        public static Action<bool> OnThemeChanged;
+        private void OnRequestedThemeChanged(object? sender, AppThemeChangedEventArgs e)
+        {
+            OnThemeChanged?.Invoke(e.RequestedTheme == AppTheme.Dark);
         }
 
         //protected override Window CreateWindow(IActivationState? activationState)

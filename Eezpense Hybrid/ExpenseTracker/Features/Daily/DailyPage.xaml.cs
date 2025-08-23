@@ -1,4 +1,6 @@
 ﻿using ExpenseTracker.ExtensionMethods;
+using ExpenseTracker.Resources.Themes;
+using Microsoft.AspNetCore.Components.WebView.Maui;
 
 namespace ExpenseTracker.Features.Daily;
 
@@ -10,7 +12,7 @@ public partial class DailyPage : ContentPage
 		InitializeComponent();
         _viewModel = viewModel;
         BindingContext = _viewModel;
-        SetToolbarItems(); ;
+        SetToolbarItems();
     }
 
     private void SetToolbarItems()

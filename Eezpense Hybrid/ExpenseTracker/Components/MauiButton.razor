@@ -2,40 +2,38 @@
 
 <style>
     .maui-button {
-        background-color: #512BD4;
-        border: 1px solid #c8c8c8;
+        background-color: var(--maui-btn-bg);
         color: white;
         border-radius: 10px;
-        padding: 14px 10px;
+        padding-left: 14px;
+        padding-right: 14px;
+        padding-top: 8px;
+        padding-bottom: 12px;
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-        font-size: 14px;
-        line-height: 1;
+        font-size: 15px;
+        height: 47px;
         cursor: pointer;
-        box-shadow: none;
         margin-left: 20px;
         margin-right: 20px;
         margin-top: auto;
-        margin-bottom: 10px;     
+        box-shadow:none;
+        margin-bottom: 10px;
         transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease;
     }
 
-        .maui-button:hover {
-            background-color: #512BD4;
-        }
+    /* Disabled state styling */
+    .maui-button:disabled {
+        background-color: #e0e0e0; /* gray background when disabled */
+        color: #333; /* dark text when disabled */
+        border-color: #c8c8c8;
+        cursor: not-allowed;
+    }
 
-        /* Disabled state styling */
-        .maui-button:disabled {
-            background-color: #e0e0e0; /* gray background when disabled */
-            color: #333; /* dark text when disabled */
-            border-color: #c8c8c8;
-            cursor: not-allowed;
-        }
-
-        /* Pressed state when class is added dynamically */
-        .maui-button.pressed {
-            transform: scale(0.96);
-            background-color: #6f4fed;
-        }
+    /* Pressed state when class is added dynamically */
+    .maui-button.pressed {
+        transform: scale(0.96);
+        background-color: #6f4fed;
+    }
 </style>
 
 <button class="maui-button @(pressed ? "pressed" : "")" disabled="@(IsEnabled ? null : true)" @onclick="Clicked">@Text</button>

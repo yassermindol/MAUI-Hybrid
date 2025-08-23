@@ -21,7 +21,7 @@ public abstract partial class BaseViewModel : ObservableObject
     Page MainPage => Application.Current.MainPage;
 
     [ObservableProperty]
-    bool isNoRecordsToShowVisible;
+    bool isNoRecordsToShowVisible = true;
 
     [ObservableProperty]
     bool isListVisible;

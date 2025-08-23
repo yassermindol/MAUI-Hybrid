@@ -1,24 +1,23 @@
-﻿/* theme.css */
-
+﻿
 /* Default (light) theme #ffffff */
 :root {
-    --bg-color: #111827;
+    --bg-color: #ffffff;
     --text-color: #1f2937;
-    --card-bg: #f9fafb;
-    --border-color: #e5e7eb;
+    --maui-btn-bg: #512BD4;
+    --list-item-main-bg: #F3F4F6;
+    --list-sub-item-bg: white;
+    --status-ring-color: #6200EE;
+    --status-ring-cut-color: #FFFFFF;
 }
 
-/* Dark theme variables */
-.theme-dark {
-    --bg-color: #111827;
-    --text-color: #e5e7eb;
-    --card-bg: #1f2937;
-    --border-color: #374151;
-}
-
-/* Optional accent colors */
-:root, .theme-dark {
-    --primary-color: #2563eb;
+.dark-mode {
+    --bg-color: #1f1f1f;
+    --text-color: white;
+    --maui-btn-bg: #ac99ea;
+    --list-item-main-bg: #141414;
+    --list-sub-item-bg: #404040;
+    --status-ring-color: #FFFFFF;
+    --status-ring-cut-color: #1f1f1f;
 }
 
 html, body, #app {

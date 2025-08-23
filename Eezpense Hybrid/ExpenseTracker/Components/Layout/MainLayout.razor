@@ -1,5 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
+
+<HeadContent>
+
+    @if (IsDarkMode)
+    {
+        
+    }
+
+</HeadContent>
+
 <div class="page">
     <main>
         <article class="content px-4">
@@ -7,3 +17,7 @@
         </article>
     </main>
 </div>
+
+@code {
+    public bool IsDarkMode { get; set; } = true;
+}

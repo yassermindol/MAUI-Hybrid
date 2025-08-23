@@ -1,7 +1,8 @@
 ﻿@using ExpenseTracker.Features.Daily
 @inject DailyViewModel _viewModel
+@inject IJSRuntime JS
 
-<div style="display:flex; flex-direction:column;height:100vh; overflow:hidden;">
+<div style="display:flex; flex-direction:column;height:100vh; overflow:hidden;background-color:var(--bg-color)">
 
     @if (_viewModel.IsBusy)
     {
@@ -12,7 +13,7 @@
         @if (_viewModel.IsNoRecordsToShowVisible)
         {
             <div style="display:flex;flex:1;align-items:center; justify-content:center;">
-                <label style="font-size:15px;font-weight:400;">No records to show.</label>
+                <label style="font-size:15px;font-weight:400;color:var(--text-color)">No records to show.</label>
             </div>
         }
         else
@@ -26,14 +27,13 @@
             <ul class="list-group" style="flex:1; overflow-y:auto;">
                 @foreach (var dayItem in _viewModel.DailyItems)
                 {
-                    <li class="list-group-item" style="padding:0;padding-top:10px;background-color:#F3F4F6;" @key="dayItem.ID" @onclick="() => OnDayClicked(dayItem.ID)">
-                        <div style="display:flex; flex-direction:row; align-items:center;
-                                                                                         margin-left:10px;margin-right:10px;">
+                    <li class="list-group-item" style="padding:0;padding-top:10px;background-color:var(--list-item-main-bg);" @key="dayItem.ID" @onclick="() => OnDayClicked(dayItem.ID)">
+                        <div style="display:flex; flex-direction:row; align-items:center; margin-left:10px;margin-right:10px;">
                             <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-right:10px;">
                                 <div style="display:flex; flex-direction:row;">
-                                    <label style="margin-bottom:4px;font-size:14px;font-weight:600;">@dayItem.Date</label>
-                                    <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:600;">@_viewModel.CurrencySymbol</label>
-                                    <label style="margin-right:8px;font-size:14px;font-weight:600;"> @dayItem.TotalStr</label>
+                                    <label style="margin-bottom:4px;font-size:14px;font-weight:600;color:var(--text-color)">@dayItem.Date</label>
+                                    <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:600;color:var(--text-color)">@_viewModel.CurrencySymbol</label>
+                                    <label style="margin-right:8px;font-size:14px;font-weight:600;color:var(--text-color)"> @dayItem.TotalStr</label>
                                 </div>
                                 <div style="background-color:@dayItem.BarcolorCssHex;height:12px;width:@dayItem.BarWidthPercentage;margin-bottom:10px;margin-top:2px;border-radius:5px;"></div>
                             </div>
@@ -47,24 +47,25 @@
                             <ul class="list-group mt-2">
                                 @foreach (var expenseItem in dayItem.Expenses)
                                 {
-                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:white;"
+                                    <li class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:var(--list-sub-item-bg);"
                                         @onclick="() => OnExpenseItemClicked(expenseItem.ID)">
                                         <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
                                             <div style="display:flex; flex-direction:row;flex:1;">
-                                                <label style="margin-bottom:4px;font-size:14px;font-weight:500;">@expenseItem.Category</label>
-                                                <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:500;">@_viewModel.CurrencySymbol</label>
-                                                <label style="margin-right:8px;font-size:14px;font-weight:500;"> @expenseItem.AmountStr</label>
+                                                <label style="margin-bottom:4px;font-size:14px;font-weight:500;color:var(--text-color)">@expenseItem.Category</label>
+                                                <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:500;color:var(--text-color)">@_viewModel.CurrencySymbol</label>
+                                                <label style="margin-right:8px;font-size:14px;font-weight:500;color:var(--text-color)"> @expenseItem.AmountStr</label>
                                             </div>
                                             <div style="display:flex; flex-direction:row;flex:1;padding:0px;">
                                                 <label style="margin-right:10px;flex:1;overflow:hidden;
-                                                    display:-webkit-box;
-                                                    -webkit-box-orient:vertical;
-                                                    -webkit-line-clamp:2;
-                                                    line-height:1.2em;
-                                                    font-size:14px;
-                                                    text-overflow:ellipsis;">@expenseItem.Note</label>
-                                                <label style="margin-left:auto;margin-right:4px;font-size:14px;">@expenseItem.Date | </label>
-                                                <label style="margin-right:8px;font-size:14px;">@expenseItem.Time</label>
+                                                        display:-webkit-box;
+                                                        -webkit-box-orient:vertical;
+                                                        -webkit-line-clamp:2;
+                                                        line-height:1.2em;
+                                                        font-size:14px;
+                                                        color:var(--text-color);
+                                                        text-overflow:ellipsis;">@expenseItem.Note</label>
+                                                <label style="margin-left:auto;margin-right:4px;font-size:14px;color:var(--text-color)">@expenseItem.Date | </label>
+                                                <label style="margin-right:8px;font-size:14px;color:var(--text-color)">@expenseItem.Time</label>
                                             </div>
                                         </div>
                                     </li>
@@ -77,29 +78,33 @@
         }
     }
 
-    <MauiButton Text="@_viewModel.SelectDateButtonText" OnClickCallback="OnDateRangeButtonClick" IsEnabled="!_viewModel.IsBusy" />
+    @if (_isFirstLoad == false)
+    {
+        <MauiButton Text="@_viewModel.SelectDateButtonText" OnClickCallback="OnDateRangeButtonClick" IsEnabled="!_viewModel.IsBusy" />
+    }
+
 </div>
 
 
 @code {
-
-    bool expenseItemClicked = false;
+    bool _isFirstLoad = true;
+    bool _expenseItemClicked = false;
     private void OnExpenseItemClicked(long id)
     {
-        if (expenseItemClicked)
+        if (_expenseItemClicked)
             return;
-        expenseItemClicked = true;
-        MainThread.InvokeOnMainThreadAsync(() => _viewModel.UiExpenseItemSelectedAsync(id, () => expenseItemClicked = false));
+        _expenseItemClicked = true;
+        MainThread.InvokeOnMainThreadAsync(() => _viewModel.UiExpenseItemSelectedAsync(id, () => _expenseItemClicked = false));
     }
 
-    private void OnDateRangeButtonClick()
+    private async void OnDateRangeButtonClick()
     {
         _viewModel.SelectDateRangeCommand.Execute(null);
     }
 
     private void OnDayClicked(long id)
     {
-        if (expenseItemClicked)
+        if (_expenseItemClicked)
             return;
 
         var item = _viewModel.DailyItems.FirstOrDefault(i => i.ID == id);
@@ -115,14 +120,24 @@
         await base.OnInitializedAsync();
         _viewModel.StateHasChanged -= StateHasChanged;
         _viewModel.StateHasChanged += StateHasChanged;
+        if (App.IsDarkMode)
+            await JS.InvokeVoidAsync("setTheme", "dark");
+        else
+            await JS.InvokeVoidAsync("setTheme", "light");
         await _viewModel.LoadDataAsync();
+        App.OnThemeChanged = OnThemeChaconged;
+        _isFirstLoad = false;
     }
 
-    class ListItem
+    private void OnThemeChaconged(bool isDarkMode)
     {
-        public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public bool IsExpanded { get; set; }
-        public List<string> SubItems { get; set; } = new();
+        MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            if (isDarkMode)
+                await JS.InvokeVoidAsync("setTheme", "dark");
+            else
+                await JS.InvokeVoidAsync("setTheme", "light");
+            StateHasChanged();
+        });
     }
 }

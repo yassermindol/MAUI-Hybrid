@@ -1,4 +1,3 @@
-using Android.OS.Health;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -10,7 +9,6 @@ using ExpenseTracker.Features.ViewModels;
 using ExpenseTracker.Models;
 using ExpenseTracker.Models.DbEntities;
 using ExpenseTracker.Models.UI;
-using ExpenseTracker.PopupViews.SelectDateRange;
 using ExpenseTracker.PopupViews.SelectDateTime;
 using ExpenseTracker.Resources.Localization;
 using ExpenseTracker.Services;
@@ -18,7 +16,6 @@ using ExpenseTracker.Services.Api;
 using ExpenseTracker.Settings;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
-using Microsoft.VisualBasic;
 using Mopups.Services;
 using System.Collections.ObjectModel;
 
