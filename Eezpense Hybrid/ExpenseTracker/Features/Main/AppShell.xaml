@@ -13,8 +13,7 @@
     xmlns:weekly="clr-namespace:ExpenseTracker.Features.Weekly"
     Shell.FlyoutBackdrop="Gray"
     Shell.NavBarHasShadow="True"
-    Shell.TabBarBackgroundColor="{AppThemeBinding Light=White,
-                                                  Dark=Black}">
+    Shell.TabBarBackgroundColor="{AppThemeBinding Light=White,Dark=Black}">
     <!--
         Shell.TabBarBackgroundColor="White"
     -->

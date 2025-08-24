@@ -14,9 +14,24 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <BlazorWebView x:Name="webView" HostPage="wwwroot/index.html">
-        <BlazorWebView.RootComponents>
-            <RootComponent ComponentType="{x:Type daily:DailyRazorPage}" Selector="#app" />
-        </BlazorWebView.RootComponents>
-    </BlazorWebView>
+    <Grid RowDefinitions="*, Auto">
+        <BlazorWebView
+            x:Name="webView"
+            Grid.Row="0"
+            HostPage="wwwroot/index.html">
+            <BlazorWebView.RootComponents>
+                <RootComponent ComponentType="{x:Type daily:DailyRazorPage}" Selector="#app" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
+        <Button
+            Grid.Row="1"
+            Margin="20,10,20,10"
+            Command="{Binding SelectDateRangeCommand}"
+            CornerRadius="10"
+            HeightRequest="45"
+            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+            Text="{Binding SelectDateButtonText}"
+            VerticalOptions="End" />
+    </Grid>
+
 </ContentPage>

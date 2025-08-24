@@ -78,10 +78,10 @@
         }
     }
 
-    @if (_isFirstLoad == false)
+    @* @if (_isFirstLoad == false)
     {
         <MauiButton Text="@_viewModel.SelectDateButtonText" OnClickCallback="OnDateRangeButtonClick" IsEnabled="!_viewModel.IsBusy" />
-    }
+    } *@
 
 </div>
 

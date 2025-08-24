@@ -7,8 +7,8 @@
         border-radius: 10px;
         padding-left: 14px;
         padding-right: 14px;
-        padding-top: 8px;
-        padding-bottom: 12px;
+        padding-top: 9px;
+        padding-bottom: 11px;
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         font-size: 15px;
         height: 47px;
@@ -34,6 +34,15 @@
         transform: scale(0.96);
         background-color: #6f4fed;
     }
+
+        .maui-button:focus {
+            outline: none;
+        }
+
+        .maui-button:active {
+            outline: none;
+            border: none;
+        }
 </style>
 
 <button class="maui-button @(pressed ? "pressed" : "")" disabled="@(IsEnabled ? null : true)" @onclick="Clicked">@Text</button>

@@ -11,6 +11,7 @@ public partial class DailyPage : ContentPage
 	{
 		InitializeComponent();
         _viewModel = viewModel;
+        _viewModel.IsBusy = true;
         BindingContext = _viewModel;
         SetToolbarItems();
     }
