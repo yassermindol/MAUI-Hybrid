@@ -50,16 +50,11 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.GroupedByCategoryDateDescending;
+        var groupedItems = _uiDataProvider.GetGroupedByCategoryDateDescendingV2(_expenseEntities);
+        UiGroupByCategoryExpenses.Clear();
+        foreach (var item in groupedItems)
+            UiGroupByCategoryExpenses.Add(item);
         NotBusy();
-        return;
-        Task.Run(() =>
-        {
-            var expenses = _uiDataProvider.GetGroupedByCategoryDateDescending(_expenseEntities);            
-            UiExpenses.Clear();
-            _collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
-            foreach (var item in expenses)
-                UiExpenses.Add(item);
-        });
     }
 
     public async Task GroupByCategoryAmountDescendingAsync()
@@ -70,16 +65,12 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.GroupedByCategoryAmountDescending;
+        
+        var groupedExpenses = _uiDataProvider.GetGroupedByCategoryAmountDescendingV2(_expenseEntities);
+        UiGroupByCategoryExpenses.Clear();
+        foreach (var item in groupedExpenses)
+            UiGroupByCategoryExpenses.Add(item);
         NotBusy();
-        return;
-        Task.Run(() =>
-        {
-            var expenses = _uiDataProvider.GetGroupedByCategoryAmountDescending(_expenseEntities);
-            UiExpenses.Clear();
-            _collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
-            foreach (var item in expenses)
-                UiExpenses.Add(item);
-        });
     }
 
     public async Task SortbyDateDescendingAsync()
@@ -90,16 +81,11 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.DateDescending;
+        var expenses = _uiDataProvider.GetDateDescending(_expenseEntities);
+        UiExpenses.Clear();
+        foreach (var item in expenses)
+            UiExpenses.Add(item);
         NotBusy();
-        return;
-        Task.Run(() =>
-        {
-            var expenses = _uiDataProvider.GetDateDescending(_expenseEntities);
-            UiExpenses.Clear();
-            _collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
-            foreach (var item in expenses)
-                UiExpenses.Add(item);
-        });
     }
 
     public async Task SortbyAmountDescendingAsync()
@@ -110,16 +96,11 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.AmountDescending;
+        var expenses = _uiDataProvider.GetAmountDescending(_expenseEntities);
+        UiExpenses.Clear();
+        foreach (var item in expenses)
+            UiExpenses.Add(item);
         NotBusy();
-        return;
-        Task.Run(() =>
-        {
-            var expenses = _uiDataProvider.GetAmountDescending(_expenseEntities);
-            UiExpenses.Clear();
-            _collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
-            foreach (var item in expenses)
-                UiExpenses.Add(item);
-        });
     }
 
     public ICommand UiExpenseItemAppearingCommand => new Command<ItemVisibilityEventArgs>(UiExpenseItemAppearing);

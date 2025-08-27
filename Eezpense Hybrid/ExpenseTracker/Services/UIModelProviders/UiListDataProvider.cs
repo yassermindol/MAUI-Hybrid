@@ -175,7 +175,9 @@ public class UiListDataProvider
         foreach (var group in groups)
         {
             var groupedItem = new UiGroupByCategoryItem();
-            groupedItem.Category = group.First().Category;
+            var item = group.First();
+            groupedItem.Category = item.Category;
+            groupedItem.CategoryId = item.CategoryLocalID;
             double total = 0;
             var expensesList = sorter(group);
 
@@ -202,9 +204,6 @@ public class UiListDataProvider
         return groupedItems;
     }
 
-    /// <summary>
-    /// Date is descending here
-    /// </summary>
     public ObservableCollection<UiExpenseItem> GetGroupedByCategoryDateDescending(List<ExpenseEntity> expenses)
     {
         var groups = expenses.GroupBy(x => x.CategoryLocalID);
@@ -213,12 +212,28 @@ public class UiListDataProvider
         return GetUiDataForGroupedByCategory(groups, sorter);
     }
 
+    public ObservableCollection<UiGroupByCategoryItem> GetGroupedByCategoryDateDescendingV2(List<ExpenseEntity> expenses)
+    {
+        var groups = expenses.GroupBy(x => x.CategoryLocalID);
+        groups = groups.OrderByDescending(group => group.Max(item => item.Date));
+        Func<IGrouping<long, ExpenseEntity>, List<ExpenseEntity>> sorter = (x) => x.OrderByDescending(x => x.Date).ToList();
+        return GetUiDataForGroupedByCategoryV2(groups, sorter);
+    }
+
     public ObservableCollection<UiExpenseItem> GetGroupedByCategoryAmountDescending(List<ExpenseEntity> expenses)
     {
         var groups = expenses.GroupBy(item => item.CategoryLocalID);
         groups = groups.OrderByDescending(group => group.Sum(y => y.Amount));
         Func<IGrouping<long, ExpenseEntity>, List<ExpenseEntity>> sorter = (group) => group.OrderByDescending(x => x.Amount).ToList();
         return GetUiDataForGroupedByCategory(groups, sorter);
+    }
+
+    public ObservableCollection<UiGroupByCategoryItem> GetGroupedByCategoryAmountDescendingV2(List<ExpenseEntity> expenses)
+    {
+        var groups = expenses.GroupBy(item => item.CategoryLocalID);
+        groups = groups.OrderByDescending(group => group.Sum(y => y.Amount));
+        Func<IGrouping<long, ExpenseEntity>, List<ExpenseEntity>> sorter = (group) => group.OrderByDescending(x => x.Amount).ToList();
+        return GetUiDataForGroupedByCategoryV2(groups, sorter);
     }
 
     public UiExpenseItem GetUiExpenseHeader(UiExpenseItem expenseItem)

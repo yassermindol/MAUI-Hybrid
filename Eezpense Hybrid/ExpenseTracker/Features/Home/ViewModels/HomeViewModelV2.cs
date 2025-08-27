@@ -433,8 +433,6 @@ public partial class HomeViewModeV2 : ExpenseListBaseViewModel
     }
 
 
-    Color originalColor = Colors.Transparent;
-
     public bool IsKeyboardVisible { get; internal set; }
     public override SortType CurrentSortType
     {
@@ -461,8 +459,8 @@ public partial class HomeViewModeV2 : ExpenseListBaseViewModel
     {
         IsBusy = false;
         IsAddExpenseVisible = true;
-        IsNoRecordsToShowVisible = UiExpenses.Count == 0;
-        IsListVisible = UiExpenses.Count > 0;
+        IsNoRecordsToShowVisible = UiExpenses.Count == 0 && UiGroupByCategoryExpenses.Count == 0;
+        IsListVisible = !IsNoRecordsToShowVisible;
     }
 
     public async Task LoadDataAsync()
@@ -472,20 +470,35 @@ public partial class HomeViewModeV2 : ExpenseListBaseViewModel
         Busy();
         _expenseEntities = _homeService.GetRecent(SelectedStartDate, out _total);
         ObservableCollection<UiExpenseItem> expenses = new ObservableCollection<UiExpenseItem>();
+        ObservableCollection<UiGroupByCategoryItem> groupedExpenses = new ObservableCollection<UiGroupByCategoryItem>();
         if (CurrentSortType == SortType.DateDescending)
             expenses = _uiDataProvider.GetDateDescending(_expenseEntities);
         else if (CurrentSortType == SortType.AmountDescending)
             expenses = _uiDataProvider.GetAmountDescending(_expenseEntities);
         else if (CurrentSortType == SortType.GroupedByCategoryDateDescending)
-            expenses = _uiDataProvider.GetGroupedByCategoryDateDescending(_expenseEntities);
+            groupedExpenses = _uiDataProvider.GetGroupedByCategoryDateDescendingV2(_expenseEntities);
         else if (CurrentSortType == SortType.GroupedByCategoryAmountDescending)
-            expenses = _uiDataProvider.GetGroupedByCategoryAmountDescending(_expenseEntities);
+            groupedExpenses = _uiDataProvider.GetGroupedByCategoryAmountDescendingV2(_expenseEntities);
         TotalExpense = _total.ToMoney();
-        UiExpenses.Clear();
-        //_collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
-        foreach (var item in expenses)
-            UiExpenses.Add(item);
+        
+        if(expenses.Count > 0)
+        {
+            UiExpenses.Clear();
+            foreach (var item in expenses)
+                UiExpenses.Add(item);
+            IsExpenseListGroupedByCategory = false;
+        }
+        
+        if(groupedExpenses.Count > 0)
+        {
+            UiGroupByCategoryExpenses.Clear();
+            foreach (var item in groupedExpenses)
+                UiGroupByCategoryExpenses.Add(item);
+            IsExpenseListGroupedByCategory = true;
+        }        
+
         NotBusy();
+        StateHasChanged();
     }
 
     public async Task ReloadDataIfShouldAsync()

@@ -1,29 +1,22 @@
 ﻿@using ExpenseTracker.Features.Home.ViewModels;
 @inject HomeViewModeV2 _viewModel
 
-<div style="display:flex; flex-direction:column;height:100vh; overflow:hidden;background-color:red">
+<div style="display:flex; flex-direction:column;height:100vh; overflow:hidden;background-color:var(--bg-color)">
     @if (_viewModel.IsBusy)
     {
         <StatusRing />
     }
     else
     {
-        @if (_viewModel.IsNoRecordsToShowVisible)
+        @if (_viewModel.IsExpenseListGroupedByCategory)
         {
-            <div style="display:flex;flex:1;align-items:center; justify-content:center;">
-                <label style="font-size:15px;font-weight:400;color:var(--text-color)">No records to show.</label>
-            </div>
+            <ExpenseListByCategory ItemsSource="@_viewModel.UiGroupByCategoryExpenses"
+                                   ItemClicked="(id) => OnClickItem(id)" CurrencySymbol="@_viewModel.TotalCurrencySymbol" />
         }
         else
         {
-            @if(_viewModel.IsExpenseListGroupedByCategory)
-            {
-                <ExpenseListByCategory />
-            }
-            else
-            {
-                <ExpenseList/>
-            }
+            <ExpenseList ItemsSource="@_viewModel.UiExpenses"
+                         ItemClicked="(id) => OnClickItem(id)" CurrencySymbol="@_viewModel.TotalCurrencySymbol" />
         }
     }
 </div>
@@ -34,5 +27,10 @@
     {
         _viewModel.StateHasChanged = StateHasChanged;
         return base.OnInitializedAsync();
+    }
+
+    private void OnClickItem(long expenseID)
+    {
+
     }
 }

@@ -22,8 +22,6 @@ public partial class HomePage
         SetToolbar();
         _viewModel.RefreshUI = RefreshUI;
         _viewModel.LoadDataAsync();
-        //SizeChanged += MeasureDistance;
-        //expenseListView.ItemAppearing += ExpenseListView_ItemAppearing;
     }
 
     private void ExpenseListView_ItemAppearing(object? sender, ItemVisibilityEventArgs e)
