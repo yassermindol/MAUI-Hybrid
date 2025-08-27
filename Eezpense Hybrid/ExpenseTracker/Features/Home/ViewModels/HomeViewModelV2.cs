@@ -485,8 +485,6 @@ public partial class HomeViewModeV2 : ExpenseListBaseViewModel
         //_collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
         foreach (var item in expenses)
             UiExpenses.Add(item);
-
-        await Task.Delay(5000);
         NotBusy();
     }
 

@@ -14,6 +14,9 @@ using System.Windows.Input;
 namespace ExpenseTracker.Features.ViewModels;
 public abstract partial class ExpenseListBaseViewModel : BaseViewModel
 {
+
+    public Action StateHasChanged { get;set; }
+
     [ObservableProperty]
     ObservableCollection<UiExpenseItem> uiExpenses = new ObservableCollection<UiExpenseItem>();
 
@@ -47,7 +50,8 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.GroupedByCategoryDateDescending;
-
+        NotBusy();
+        return;
         Task.Run(() =>
         {
             var expenses = _uiDataProvider.GetGroupedByCategoryDateDescending(_expenseEntities);            
@@ -66,7 +70,8 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.GroupedByCategoryAmountDescending;
-
+        NotBusy();
+        return;
         Task.Run(() =>
         {
             var expenses = _uiDataProvider.GetGroupedByCategoryAmountDescending(_expenseEntities);
@@ -85,7 +90,8 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.DateDescending;
-
+        NotBusy();
+        return;
         Task.Run(() =>
         {
             var expenses = _uiDataProvider.GetDateDescending(_expenseEntities);
@@ -104,7 +110,8 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.AmountDescending;
-
+        NotBusy();
+        return;
         Task.Run(() =>
         {
             var expenses = _uiDataProvider.GetAmountDescending(_expenseEntities);

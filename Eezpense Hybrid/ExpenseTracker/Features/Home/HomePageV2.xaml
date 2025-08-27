@@ -110,12 +110,12 @@
             Grid.Row="0"
             Margin="0,0,0,10"
             HostPage="wwwroot/index.html"
-            IsVisible="{Binding IsListVisible}">
+            IsVisible="{Binding IsListVisible}"
+            VerticalOptions="FillAndExpand">
             <BlazorWebView.RootComponents>
                 <RootComponent ComponentType="{x:Type home:HomeRazorPage}" Selector="#app" />
             </BlazorWebView.RootComponents>
         </BlazorWebView>
-
     </StackLayout>
 
     <uranium:UraniumContentPage.Attachments>

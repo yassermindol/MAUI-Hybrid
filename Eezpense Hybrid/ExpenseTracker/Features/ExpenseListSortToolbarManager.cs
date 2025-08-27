@@ -27,7 +27,9 @@ public class ExpenseListSortToolbarManager
             Command = new Command(() =>
             {
                 SetActive(SortType.DateDescending);
-                viewModel.SortbyDateDescendingAsync();                
+                viewModel.IsExpenseListGroupedByCategory = false;
+                viewModel.SortbyDateDescendingAsync();
+                viewModel.StateHasChanged();
             }),
         };
         toolbarItems.Add(item1);
@@ -38,7 +40,9 @@ public class ExpenseListSortToolbarManager
         item2.Command = new Command(() =>
         {
             SetActive(SortType.AmountDescending);
-            viewModel.SortbyAmountDescendingAsync();            
+            viewModel.IsExpenseListGroupedByCategory = false;
+            viewModel.SortbyAmountDescendingAsync();
+            viewModel.StateHasChanged();
         });
         toolbarItems.Add(item2);
 
@@ -48,7 +52,9 @@ public class ExpenseListSortToolbarManager
         item3.Command = new Command(() =>
         {
             SetActive(SortType.GroupedByCategoryDateDescending);
-            viewModel.GroupByCategoryDateDescendingAsync();            
+            viewModel.IsExpenseListGroupedByCategory = true;
+            viewModel.GroupByCategoryDateDescendingAsync();
+            viewModel.StateHasChanged();
         });
         toolbarItems.Add(item3);
 
@@ -58,7 +64,9 @@ public class ExpenseListSortToolbarManager
         item4.Command = new Command(() =>
         {
             SetActive(SortType.GroupedByCategoryAmountDescending);
-            viewModel.GroupByCategoryAmountDescendingAsync();            
+            viewModel.IsExpenseListGroupedByCategory = true;
+            viewModel.GroupByCategoryAmountDescendingAsync();
+            viewModel.StateHasChanged();
         });
         toolbarItems.Add(item4);
 

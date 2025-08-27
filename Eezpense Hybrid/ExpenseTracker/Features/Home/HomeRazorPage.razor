@@ -1,5 +1,38 @@
-﻿<h3>HomeRazorPage</h3>
+﻿@using ExpenseTracker.Features.Home.ViewModels;
+@inject HomeViewModeV2 _viewModel
+
+<div style="display:flex; flex-direction:column;height:100vh; overflow:hidden;background-color:red">
+    @if (_viewModel.IsBusy)
+    {
+        <StatusRing />
+    }
+    else
+    {
+        @if (_viewModel.IsNoRecordsToShowVisible)
+        {
+            <div style="display:flex;flex:1;align-items:center; justify-content:center;">
+                <label style="font-size:15px;font-weight:400;color:var(--text-color)">No records to show.</label>
+            </div>
+        }
+        else
+        {
+            @if(_viewModel.IsExpenseListGroupedByCategory)
+            {
+                <ExpenseListByCategory />
+            }
+            else
+            {
+                <ExpenseList/>
+            }
+        }
+    }
+</div>
 
 @code {
 
+    protected override Task OnInitializedAsync()
+    {
+        _viewModel.StateHasChanged = StateHasChanged;
+        return base.OnInitializedAsync();
+    }
 }

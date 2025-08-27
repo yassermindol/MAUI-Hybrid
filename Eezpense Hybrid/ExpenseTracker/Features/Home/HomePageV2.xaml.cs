@@ -7,11 +7,12 @@ namespace ExpenseTracker.Features.Home;
 
 public partial class HomePageV2
 {
-    HomeViewModeV2 _viewModel = new();
+    HomeViewModeV2 _viewModel;
     ExpenseListSortToolbarManager _sortToolbarManager;
 
-    public HomePageV2()
+    public HomePageV2(HomeViewModeV2 viewModel)
     {
+        _viewModel = viewModel;
         InitializeComponent();
         _viewModel.SaveExpenseDelegate = OnExpenseSave;
         _viewModel.NoteCompletedDelegate = OnNoteCompleted;
