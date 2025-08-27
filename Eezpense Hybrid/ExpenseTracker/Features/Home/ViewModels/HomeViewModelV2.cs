@@ -1,0 +1,522 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using ExpenseTracker.Database;
+using ExpenseTracker.EventMessages;
+using ExpenseTracker.EventMessages.ExpenseCategoryEvents;
+using ExpenseTracker.ExtensionMethods;
+using ExpenseTracker.Features.ViewModels;
+using ExpenseTracker.Models;
+using ExpenseTracker.Models.DbEntities;
+using ExpenseTracker.Models.UI;
+using ExpenseTracker.PopupViews.SelectDateTime;
+using ExpenseTracker.Resources.Localization;
+using ExpenseTracker.Services;
+using ExpenseTracker.Services.Api;
+using ExpenseTracker.Settings;
+using Microsoft.Maui.Handlers;
+using Microsoft.Maui.Platform;
+using Mopups.Services;
+using System.Collections.ObjectModel;
+
+namespace ExpenseTracker.Features.Home.ViewModels;
+
+public partial class HomeViewModeV2 : ExpenseListBaseViewModel
+{
+    double _total = 0;
+
+    HomeService _homeService = new();
+    CalendarService _calendarService = new();
+
+    public Action<UiExpenseItem> SaveExpenseDelegate { get; set; }
+    public Action NoteCompletedDelegate { get; set; }
+    public Func<Task> AnimateClickDelegate { get; set; }
+
+    public HomeViewModeV2()
+    {
+        AddExpenseIconSource = IsDarkTheme ? "ic_expand_white.png" : "ic_expand.png";
+#if ANDROID
+        EntryHandler.Mapper.AppendToMapping(nameof(EntryHandler), (handler, view) => handler.PlatformView.UpdateReturnType(view));
+#endif
+        WeakReferenceMessenger.Default.Register<AddExpenseCategoryMessage>(this, OnAddedExpenseCategory);
+        WeakReferenceMessenger.Default.Register<SelectedExpenseCategoryMessage>(this, OnSelectedExpenseCategory);
+        WeakReferenceMessenger.Default.Register<EditExpenseCategoryMessage>(this, OnEditedExpenseCategory);
+        WeakReferenceMessenger.Default.Register<DeleteExpenseCategoryMessage>(this, OnDeleteExpenseCategory);
+        WeakReferenceMessenger.Default.Register<RestoreExpenseCategoryMessage>(this, OnRestoredExpenseCategory);
+        WeakReferenceMessenger.Default.Register<EditExpenseMessage>(this, OnEditExpense);
+        WeakReferenceMessenger.Default.Register<DeleteExpenseMessage>(this, OnDeleteExpense);
+        WeakReferenceMessenger.Default.Register<RestoreExpenseMessage>(this, OnRestoreExpense);
+        WeakReferenceMessenger.Default.Register<CurrencySymbolChangedMessage>(this, OnCurrencySymbolChanged);
+    }
+
+    private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)
+    {
+        string symbol = message.Value;
+        TotalCurrencySymbol = symbol;
+        foreach (var item in UiExpenses)
+        {
+            item.CurrencySymbol = symbol;
+        }
+    }
+
+    private void OnRestoreExpense(object recipient, RestoreExpenseMessage message)
+    {
+        ShouldRefreshData = true;
+    }
+
+    private void OnDeleteExpense(object recipient, DeleteExpenseMessage message)
+    {
+        ShouldRefreshData = true;
+    }
+
+    private void OnEditExpense(object recipient, EditExpenseMessage message)
+    {
+        ShouldRefreshData = true;
+    }
+
+    private void OnRestoredExpenseCategory(object recipient, RestoreExpenseCategoryMessage message)
+    {
+        ShouldRefreshData = true;
+    }
+
+    private void OnDeleteExpenseCategory(object recipient, DeleteExpenseCategoryMessage message)
+    {
+        ShouldRefreshData = true;
+    }
+
+    private void OnEditedExpenseCategory(object recipient, EditExpenseCategoryMessage message)
+    {
+        ShouldRefreshData = true;
+    }
+
+    private void OnAddedExpenseCategory(object recipient, AddExpenseCategoryMessage message)
+    {
+        SelectedExpenseCategory = message.Value;
+    }
+
+    private void OnSelectedExpenseCategory(object sender, SelectedExpenseCategoryMessage message)
+    {
+        var item = message.Value;
+        if (item != "Cancel")
+            SelectedExpenseCategory = item;
+    }
+
+    public async Task OpenSearchPageAsync()
+    {
+        OpenSearchPageAsync(SelectedStartDate.ToString("MMM-dd-yyyy"), "Present");
+    }
+
+    [ObservableProperty]
+    string totalCurrencySymbol = AppSettings.Account.CurrencySymbol;
+
+    [ObservableProperty]
+    bool isAddExpenseVisible = true;
+
+    [ObservableProperty]
+    string categorySelectionErrorText = string.Empty;
+
+    [ObservableProperty]
+    string amountErrorText = string.Empty;
+
+    [ObservableProperty]
+    string amountStr = string.Empty;
+
+    [ObservableProperty]
+    string note = string.Empty;
+
+    [ObservableProperty]
+    string selectedExpenseCategory = string.Empty;
+
+    [ObservableProperty]
+    Color clickableStackBackgroundColor = Colors.Transparent;
+
+    [ObservableProperty]
+    ImageSource addExpenseIconSource = "ic_expand.png";
+
+    [ObservableProperty]
+    bool isBottomSheetPresented = false;
+
+    DateTime selectedStartDate = AppSettings.Account.StartDateHome;
+    public DateTime SelectedStartDate
+    {
+        get
+        {
+            if (selectedStartDate == DateTime.MinValue)
+            {
+                selectedStartDate = DateTime.Now.Date;
+                AppSettings.Account.StartDateHome = selectedStartDate;
+            }
+            return selectedStartDate;
+        }
+        set
+        {
+            SetProperty(ref selectedStartDate, value);
+            AppSettings.Account.StartDateHome = value;
+        }
+    }
+
+    [ObservableProperty]
+    string totalExpense;
+
+    [RelayCommand]
+    private async Task UiExpenseSelectedAsync()
+    {
+        if (IsKeyboardVisible)
+            return;
+
+        if (_isItemClicked)
+            return;
+        _isItemClicked = true;
+        await OpenExpensePageAsync();
+        _isItemClicked = false;
+    }
+
+    partial void OnIsBottomSheetPresentedChanged(bool value)
+    {
+        if (IsDarkTheme)
+            AddExpenseIconSource = value ? "ic_collapse_white.png" : "ic_expand_white.png";
+        else
+            AddExpenseIconSource = value ? "ic_collapse.png" : "ic_expand.png";
+    }
+
+    private void ResetFields()
+    {
+        SelectedExpenseCategory = AppResources.ChooseExpenseCategory;
+        AmountStr = string.Empty;
+        Note = string.Empty;
+    }
+
+    private bool IsInputsValid()
+    {
+        AmountErrorText = string.Empty;
+        CategorySelectionErrorText = string.Empty;
+
+        bool isValid = true;
+        if (string.IsNullOrWhiteSpace(AmountStr))
+        {
+            AmountErrorText = "Amount input is required.";
+            isValid = false;
+        }
+        else
+        {
+            if (!double.TryParse(AmountStr, out double result))
+            {
+                AmountErrorText = "Amount input is invalid.";
+                isValid = false;
+            }
+        }
+
+        if (SelectedExpenseCategory.Equals(AppResources.ChooseExpenseCategory)
+            || string.IsNullOrWhiteSpace(SelectedExpenseCategory))
+        {
+            CategorySelectionErrorText = "Category selection is required.";
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    [RelayCommand]
+    private void DateSelected()
+    {
+        LoadDataAsync();
+    }
+
+    [RelayCommand]
+    private async Task NoteCompletedAsync()
+    {
+        if (SelectedExpenseCategory.Equals(AppResources.ChooseExpenseCategory) || string.IsNullOrWhiteSpace(SelectedExpenseCategory))
+            await ShowExpenseCategoryAsync();
+        NoteCompletedDelegate?.Invoke();
+    }
+
+
+    DateTime _selectedExpenseDate = DateTime.MinValue;
+
+    [RelayCommand]
+    private void Save()
+    {
+        if (!IsInputsValid())
+            return;
+        if (IsBusy)
+            return;
+        IsBusy = true;
+
+        double amount = double.Parse(AmountStr);
+        DateTime date = _selectedExpenseDate == DateTime.MinValue ? DateTime.Now : _selectedExpenseDate;
+        ExpenseEntity expenseEntity;
+        Save(amount, SelectedExpenseCategory, Note, date, out long Id, out expenseEntity);
+        _expenseEntities.Add(expenseEntity);
+        _total += amount;
+        TotalExpense = _total.ToMoney();
+
+        var expenseItem = new UiExpenseItem
+        {
+            Amount = amount,
+            Note = Note,
+            DateTime = date,
+            Category = SelectedExpenseCategory,
+            ID = Id,
+            ItemType = ExpenseItemType.ExpenseItem,
+        };
+
+        InsertAmount(expenseItem);
+        IsNoRecordsToShowVisible = UiExpenses.Count == 0;
+        SaveExpenseDelegate?.Invoke(expenseItem);
+        ResetFields();
+        IsBusy = false;
+        IsNoRecordsToShowVisible = false;
+        IsListVisible = true;
+        _selectedExpenseDate = DateTime.MinValue;
+    }
+
+    private void InsertAmount(UiExpenseItem expenseToInsert)
+    {
+        if (CurrentSortType == SortType.DateDescending)
+        {
+            int low = 0;
+            int high = UiExpenses.Count - 1;
+            int mid = 0;
+            while (low <= high)
+            {
+                mid = low + (high - low) / 2;
+                if (UiExpenses[mid].DateTime < expenseToInsert.DateTime)
+                {
+                    // If middle element is less than new, search the left half
+                    high = mid - 1;
+                }
+                else
+                {
+                    // If middle element is greater or equal, search the right half
+                    low = mid + 1;
+                }
+            }
+            // 'low' is the insertion index
+            if (UiExpenses.Count == low)
+                UiExpenses.Add(expenseToInsert);
+            else
+                UiExpenses.Insert(low, expenseToInsert);
+            //UiExpenses.Insert(0, expenseToInsert);
+        }
+        else if (CurrentSortType == SortType.AmountDescending)
+        {
+            int index = -1;
+            for (int i = 0; i < UiExpenses.Count; i++)
+            {
+                if (UiExpenses[i].Amount < expenseToInsert.Amount)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1)
+                UiExpenses.Add(expenseToInsert);
+            else
+                UiExpenses.Insert(index, expenseToInsert);
+        }
+        else if (CurrentSortType == SortType.GroupedByCategoryAmountDescending)
+        {
+            int allCount = UiExpenses.Count;
+            int categoryIndex = -1;
+            UiExpenseItem header = null;
+            for (int i = 0; i < allCount; i++)
+            {
+                var item = UiExpenses[i];
+                if (item.ItemType == ExpenseItemType.Header)
+                {
+                    if (item.Category == expenseToInsert.Category) // this is the header
+                    {
+                        header = item;
+                        header.CategoryTotal += expenseToInsert.Amount;
+                        categoryIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (categoryIndex == -1) // No header yet for this category
+            {
+                header = _uiDataProvider.GetUiExpenseHeader(expenseToInsert);
+                UiExpenses.Insert(0, expenseToInsert);
+                UiExpenses.Insert(0, header);
+                return;
+            }
+
+            int lastIndexInTheCategory = -1;
+            bool isAmountInserted = false;
+            for (int i = categoryIndex + 1; i < allCount; i++)
+            {
+                var item = UiExpenses[i];
+                lastIndexInTheCategory = i;
+                if (item.Amount < expenseToInsert.Amount)
+                {
+                    isAmountInserted = true;
+                    UiExpenses.Insert(i, expenseToInsert);
+                    break;
+                }
+            }
+
+            // If we reached here, it means the category of the entry is the last on the list and the amount is the last - lowest amount.
+            //so Insert function cannot be applied because the inserted entry will come first before the last.
+            if (!isAmountInserted)
+            {
+                UiExpenses.Add(expenseToInsert);
+            }
+        }
+        else if (CurrentSortType == SortType.GroupedByCategoryDateDescending)
+        {
+            int categoryIndex = -1;
+            UiExpenseItem header = null;
+            for (int i = 0; i < UiExpenses.Count; i++)
+            {
+                var item = UiExpenses[i];
+                if (item.ItemType == ExpenseItemType.Header)
+                {
+                    if (item.Category == expenseToInsert.Category)
+                    {
+                        header = item;
+                        header.CategoryTotal += expenseToInsert.Amount;
+                        categoryIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (categoryIndex == -1)
+            {
+                header = _uiDataProvider.GetUiExpenseHeader(expenseToInsert);
+                UiExpenses.Insert(0, expenseToInsert);
+                UiExpenses.Insert(0, header);
+            }
+            else
+            {
+                UiExpenses.Insert(categoryIndex + 1, expenseToInsert);
+            }
+        }
+    }
+
+    [RelayCommand]
+    private async Task SelectDateTimeAsync()
+    {
+        var viewModel = new SelectDateTimeViewModel(OnDateTimeSelected);
+        viewModel.SelectedDate = _selectedExpenseDate == DateTime.MinValue ? DateTime.Now.Date : _selectedExpenseDate.Date;
+        viewModel.SelectedTime = _selectedExpenseDate == DateTime.MinValue ? DateTime.Now.TimeOfDay : _selectedExpenseDate.TimeOfDay;
+        var page = new SelectDateTimePopup();
+        page.BindingContext = viewModel;
+        await MopupService.Instance.PushAsync(page);
+    }
+
+    private void OnDateTimeSelected(DateTime date, TimeSpan span)
+    {
+        if (date == DateTime.MinValue)
+            _selectedExpenseDate = DateTime.MinValue;
+        else
+            _selectedExpenseDate = date.Date.Add(span);
+    }
+
+    [RelayCommand]
+    private void ShowExpenseCategoryList()
+    {
+        if (IsBusy)
+            return;
+        IsBusy = true;
+        //if (DeviceInfo.Platform == DevicePlatform.iOS)
+        //{
+        //    var selectedValue = DisplayActionSheet("Select an option", "Cancel", null, "Option 1", "Option 2", "Option 3",
+        //    "Option 4", "Option 5", "Option 6", "Option 7", "Option 8", "Option 9").Result;
+        //}
+        //else
+        //{
+        //AnimateClickDelegate?.Invoke();
+        ShowExpenseCategoryAsync();
+        IsBusy = false;
+        //}
+    }
+
+
+    Color originalColor = Colors.Transparent;
+
+    public bool IsKeyboardVisible { get; internal set; }
+    public override SortType CurrentSortType
+    {
+        get => (SortType)AppSettings.Account.PreferredExpenseListSortTypeHome;
+        set => AppSettings.Account.PreferredExpenseListSortTypeHome = (int)value;
+    }
+
+    private async Task ShowExpenseCategoryAsync()
+    {
+        await MopupService.Instance.PushAsync(new CategoriesPopup());
+    }
+
+    protected override void Busy()
+    {
+        IsBusy = true;
+        IsAddExpenseVisible = false;
+        if (IsBottomSheetPresented)
+            IsBottomSheetPresented = false;
+        IsListVisible = false;
+        IsNoRecordsToShowVisible = false;
+    }
+
+    protected override void NotBusy()
+    {
+        IsBusy = false;
+        IsAddExpenseVisible = true;
+        IsNoRecordsToShowVisible = UiExpenses.Count == 0;
+        IsListVisible = UiExpenses.Count > 0;
+    }
+
+    public async Task LoadDataAsync()
+    {
+        if (IsBusy)
+            return;
+        Busy();
+        _expenseEntities = _homeService.GetRecent(SelectedStartDate, out _total);
+        ObservableCollection<UiExpenseItem> expenses = new ObservableCollection<UiExpenseItem>();
+        if (CurrentSortType == SortType.DateDescending)
+            expenses = _uiDataProvider.GetDateDescending(_expenseEntities);
+        else if (CurrentSortType == SortType.AmountDescending)
+            expenses = _uiDataProvider.GetAmountDescending(_expenseEntities);
+        else if (CurrentSortType == SortType.GroupedByCategoryDateDescending)
+            expenses = _uiDataProvider.GetGroupedByCategoryDateDescending(_expenseEntities);
+        else if (CurrentSortType == SortType.GroupedByCategoryAmountDescending)
+            expenses = _uiDataProvider.GetGroupedByCategoryAmountDescending(_expenseEntities);
+        TotalExpense = _total.ToMoney();
+        UiExpenses.Clear();
+        //_collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
+        foreach (var item in expenses)
+            UiExpenses.Add(item);
+
+        await Task.Delay(5000);
+        NotBusy();
+    }
+
+    public async Task ReloadDataIfShouldAsync()
+    {
+        if (ShouldRefreshData)
+        {
+            LoadDataAsync();
+            ShouldRefreshData = false;
+        }
+    }
+
+    private void Save(double amount, string selectedExpenseCategory, string note, DateTime date, out long dbId, out ExpenseEntity outExpenseEntity)
+    {
+        dbId = -1;
+        var category = SqLiteDb.Instance.Categories.GetAllNotDeleted().First(x => x.Name == selectedExpenseCategory);
+        int weekNumber = _calendarService.GetWeekOfYear(date).Number;
+        var entity = new ExpenseEntity
+        {
+            Amount = amount,
+            Note = note,
+            Date = date,
+            CategoryLocalID = category.ID,
+            Category = category.Name,
+            CategoryCentralID = category.CentralID,
+            WeekNumber = weekNumber,
+        };
+        outExpenseEntity = entity;
+        ExpenseTableDb.Add(entity);
+        dbId = entity.ID; // this is important
+        WeakReferenceMessenger.Default.Send(new AddExpenseMessage(entity));
+    }
+}

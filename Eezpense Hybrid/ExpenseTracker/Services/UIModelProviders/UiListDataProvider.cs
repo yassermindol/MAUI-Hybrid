@@ -150,12 +150,6 @@ public class UiListDataProvider
             {
                 var uiExpense = new UiExpenseItem();
                 var expense = expensesList[i];
-
-                //if (i % 2 == 0)
-                //    uiExpense.BackgroundColor = Colors.GhostWhite;
-                //else
-                //    uiExpense.BackgroundColor = Colors.WhiteSmoke;
-
                 uiExpense.ID = expense.ID;
                 uiExpense.CentralID = expense.CentralID;
                 uiExpense.Amount = expense.Amount;
@@ -172,6 +166,40 @@ public class UiListDataProvider
         }
 
         return uiSortedExpenses;
+    }
+
+    private ObservableCollection<UiGroupByCategoryItem> GetUiDataForGroupedByCategoryV2(IEnumerable<IGrouping<long, ExpenseEntity>> groups,
+       Func<IGrouping<long, ExpenseEntity>, List<ExpenseEntity>> sorter)
+    {
+        var groupedItems = new ObservableCollection<UiGroupByCategoryItem>();
+        foreach (var group in groups)
+        {
+            var groupedItem = new UiGroupByCategoryItem();
+            groupedItem.Category = group.First().Category;
+            double total = 0;
+            var expensesList = sorter(group);
+
+            for (int i = 0; i < expensesList.Count(); i++)
+            {
+                var uiExpense = new UiExpenseItem();
+                var expense = expensesList[i];
+                uiExpense.ID = expense.ID;
+                uiExpense.CentralID = expense.CentralID;
+                uiExpense.Amount = expense.Amount;
+                uiExpense.Category = expense.Category;
+                uiExpense.Note = expense.Note;
+                uiExpense.DateTime = expense.Date;
+                uiExpense.CategoryLocalID = expense.CategoryLocalID;
+                uiExpense.ItemType = Models.ExpenseItemType.ExpenseItem;
+                total += expense.Amount;
+                groupedItem.Expenses.Add(uiExpense);
+            }
+
+            groupedItem.Total = total.ToMoney();
+            groupedItems.Add(groupedItem);
+        }
+
+        return groupedItems;
     }
 
     /// <summary>

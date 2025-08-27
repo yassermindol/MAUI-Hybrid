@@ -30,7 +30,9 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-    <AndroidKeyStore>True</AndroidKeyStore>
+    <AndroidKeyStore>false</AndroidKeyStore>
+    <AndroidSigningStorePass>Y@nkee@1380</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>MyAndroidApp</AndroidSigningKeyAlias>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
@@ -54,6 +56,10 @@
 
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AndroidResource Remove="Platforms\Android\Resources\values\styles.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -94,6 +100,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Features\Home\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Features\Home\HomePageV2.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Features\Main\AppShell.xaml">

@@ -13,13 +13,14 @@
     xmlns:weekly="clr-namespace:ExpenseTracker.Features.Weekly"
     Shell.FlyoutBackdrop="Gray"
     Shell.NavBarHasShadow="True"
-    Shell.TabBarBackgroundColor="{AppThemeBinding Light=White,Dark=Black}">
+    Shell.TabBarBackgroundColor="{AppThemeBinding Light=White,
+                                                  Dark=Black}">
     <!--
         Shell.TabBarBackgroundColor="White"
     -->
 
     <Tab Title="Home" Icon="ic_home.png">
-        <ShellContent ContentTemplate="{DataTemplate home:HomePage}" />
+        <ShellContent ContentTemplate="{DataTemplate home:HomePageV2}" />
     </Tab>
     <Tab Title="Daily" Icon="ic_day.png">
         <ShellContent ContentTemplate="{DataTemplate daily:DailyPage}" />

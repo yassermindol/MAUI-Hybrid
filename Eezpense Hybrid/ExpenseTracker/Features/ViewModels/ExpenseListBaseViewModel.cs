@@ -18,6 +18,12 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
     ObservableCollection<UiExpenseItem> uiExpenses = new ObservableCollection<UiExpenseItem>();
 
     [ObservableProperty]
+    ObservableCollection<UiGroupByCategoryItem> uiGroupByCategoryExpenses = new ObservableCollection<UiGroupByCategoryItem>();
+
+    [ObservableProperty]
+    bool isExpenseListGroupedByCategory;
+
+    [ObservableProperty]
     UiExpenseItem uiExpenseSelectedItem;
 
     protected UiListDataProvider _uiDataProvider = new();

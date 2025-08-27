@@ -1,0 +1,11 @@
+﻿<resources>
+  <!-- NoActionBar variant suitable for MAUI with Material components -->
+  <style name="Maui.MainTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <!-- Optional colors (adjust to your palette) -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+  </style>
+
+  <style name="TextAppearance.App.Body1" parent="TextAppearance.MaterialComponents.Body1" />
+</resources>
