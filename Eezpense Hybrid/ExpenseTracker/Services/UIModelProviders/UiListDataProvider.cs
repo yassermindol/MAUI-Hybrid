@@ -43,23 +43,6 @@ public class UiListDataProvider
             uiWeek.BarWidth = widthService.GetWidth(uiWeek.Total);
         }
 
-        //Console.WriteLine("*************** List of Week Groups *****************");
-        /*
-        foreach (var z in groups)
-        {
-            var key = z.Key;
-            var wk = calendarService.WeeksOfYear.First(x => x.Number == key);
-            var val = z.ToList();
-            Console.WriteLine($"Week:{wk.Number} | Start Date:{wk.StartDate} | End Date:{wk.EndDate} ");
-            double total = 0;
-            foreach (var e in val)
-            {
-                Console.WriteLine($"Amount:{e.Amount} Date:{e.Date} ");
-                total += e.Amount;
-            }
-            Console.WriteLine($"Total:{total}");
-        }
-        */
         return uiWeekItems;
     }
 

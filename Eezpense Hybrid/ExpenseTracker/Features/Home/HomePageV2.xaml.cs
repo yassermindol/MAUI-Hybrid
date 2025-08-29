@@ -33,9 +33,6 @@ public partial class HomePageV2
 
         // Calculate the vertical distance
         double distance = Math.Abs(bottomUiPosition.Y - topUiPosition.Y);
-
-        // Optionally, do something with the distance
-        Console.WriteLine($"Distance: {distance}");
     }
 
     protected override void OnAppearing()

@@ -50,7 +50,6 @@ public partial class CategoriesViewModel : BaseViewModel
     private void OnEditExpenseMessage(object recipient, EditExpenseCategoryMessage message)
     {
         LoadData();
-        Console.WriteLine($"*********Category Count: {Categories.Count}*************");
     }
 
     //Because ItemsSource has been sent to an array, the content will not update as the underlying list or array changes.

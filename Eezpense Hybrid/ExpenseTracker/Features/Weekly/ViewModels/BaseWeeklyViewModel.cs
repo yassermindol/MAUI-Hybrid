@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ExpenseTracker.ExtensionMethods;
 using ExpenseTracker.Features.DetailsOfSummaryReport;
 using ExpenseTracker.Features.DetailsOfSummaryReport.ViewModels;
+using ExpenseTracker.Helpers;
 using ExpenseTracker.Models.UI;
 using ExpenseTracker.Settings;
 using System.Collections.ObjectModel;
@@ -39,6 +40,10 @@ public abstract partial class BaseWeeklyViewModel : BaseViewModel
         viewModel.IsDateRangeVisible = true;
         SummaryDetailsPage page = new();
         page.BindingContext = viewModel;
+        Type runtimeType = this.GetType();
+        string name = runtimeType.Name;
+        Console.WriteLine($"****************** Registering {name}");
+        DiContainerSummaryDetails.RegisterViewModel(name, viewModel);
         _summaryDetailsViewModel = viewModel;
         await _navigation.PushAsync(page);
         _strWeekNumberSelected = SelectedWeek.WeekNumber;

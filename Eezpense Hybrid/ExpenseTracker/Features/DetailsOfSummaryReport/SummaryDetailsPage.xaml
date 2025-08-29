@@ -127,5 +127,14 @@
             </ListView.Behaviors>
         </ListView>
 
+        <BlazorWebView
+            x:Name="webView"
+            Grid.Row="0"
+            HostPage="wwwroot/index.html">
+            <BlazorWebView.RootComponents>
+                <RootComponent ComponentType="{x:Type views:SummaryDetailsRazorPage}" Selector="#app" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
+
     </StackLayout>
 </ContentPage>

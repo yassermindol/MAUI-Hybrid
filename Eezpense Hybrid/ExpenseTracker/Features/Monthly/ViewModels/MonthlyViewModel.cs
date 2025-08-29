@@ -6,6 +6,7 @@ using ExpenseTracker.EventMessages.ExpenseCategoryEvents;
 using ExpenseTracker.ExtensionMethods;
 using ExpenseTracker.Features.DetailsOfSummaryReport;
 using ExpenseTracker.Features.DetailsOfSummaryReport.ViewModels;
+using ExpenseTracker.Helpers;
 using ExpenseTracker.Models.UI;
 using ExpenseTracker.Services.Api;
 using ExpenseTracker.Settings;
@@ -131,6 +132,10 @@ namespace ExpenseTracker.Features.Monthly.ViewModels
             SummaryDetailsPage page = new();
             page.BindingContext = viewModel;
             _summaryDetailsViewModel = viewModel;
+            Type runtimeType = this.GetType();
+            string name = runtimeType.Name;
+            Console.WriteLine($"****************** Registering {name}");
+            DiContainerSummaryDetails.RegisterViewModel(name, viewModel);
             await _navigation.PushAsync(page);          
             _strSelectedMonth = SelectedMonth.Month;
             SelectedMonth = null;

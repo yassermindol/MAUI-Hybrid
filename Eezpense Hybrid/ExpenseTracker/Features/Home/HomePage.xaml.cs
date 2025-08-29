@@ -26,7 +26,6 @@ public partial class HomePage
 
     private void ExpenseListView_ItemAppearing(object? sender, ItemVisibilityEventArgs e)
     {
-        Console.WriteLine($"************ Expense Listview Height:{expenseListView.Height}");
     }
 
     private void MeasureDistance(object? sender, EventArgs e)
@@ -37,9 +36,6 @@ public partial class HomePage
 
         // Calculate the vertical distance
         double distance = Math.Abs(bottomUiPosition.Y - topUiPosition.Y);
-
-        // Optionally, do something with the distance
-        Console.WriteLine($"Distance: {distance}");
     }
 
     protected override void OnAppearing()
@@ -50,7 +46,6 @@ public partial class HomePage
         _viewModel.ReloadDataIfShouldAsync();
 
         var screenHeight = DeviceDisplay.Current.MainDisplayInfo.Height;
-        Console.WriteLine($"**************** Screen Height: {screenHeight}");
         if (screenHeight == 1600)
         {
             expenseListView.HeightRequest = 560;

@@ -15,6 +15,7 @@ public partial class WeeksInMonthPage : ContentPage
 
     protected override void OnAppearing()
     {  
+        Console.WriteLine("*************** WeeksInMonthPage OnAppearing");
         base.OnAppearing();
         _viewModel.ReloadDataIfShouldAsync();
     }

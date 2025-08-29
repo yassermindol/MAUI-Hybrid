@@ -38,7 +38,6 @@ public static class ColorExtensions
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
             throw;
         }      
     }

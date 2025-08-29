@@ -106,21 +106,12 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
     public ICommand UiExpenseItemAppearingCommand => new Command<ItemVisibilityEventArgs>(UiExpenseItemAppearing);
     private void UiExpenseItemAppearing(ItemVisibilityEventArgs e)
     {
-        /*
-        if (e.Item == null)
-            return;
 
-        if (e.Item is UiExpenseItem item)
-        {
-            Console.WriteLine($"****************** UiExpenseItemAppearing: Item added: ID: {item.ID} Category:{item.Category}");
-        }
-        */
     }
 
     [RelayCommand]
     private void UiExpenseSizeChanged(EventArgs e)
     {
-        Console.WriteLine($"****************** UiExpenseSizeChanged");
     }
 
     protected async Task OpenSearchPageAsync(string startDate, string endDate)

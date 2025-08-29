@@ -20,6 +20,7 @@ public partial class WeeksInYearPage : ContentPage
 
     protected override void OnAppearing()
     {
+        Console.WriteLine("*************** WeeksInYearPage OnAppearing");
         base.OnAppearing();
         _viewModel.ReloadDataIfShouldAsync();
     }

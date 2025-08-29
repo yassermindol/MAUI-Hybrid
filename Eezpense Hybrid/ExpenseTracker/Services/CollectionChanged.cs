@@ -20,16 +20,13 @@ public class CollectionChanged
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                Console.WriteLine($"*******************Items added new items count: {e.NewItems?.Count}");
                 foreach (var item in e.NewItems)
                 {
                     if (item is UiExpenseItem uiExpenseItem)
                     {
                         counter++;
-                        Console.WriteLine($"******************Counter:{counter} | Item added: ID: {uiExpenseItem.ID} Category:{uiExpenseItem.Category}");
                         if (newCount == counter)
                         {
-                            Console.WriteLine($"****************** All items added. Set Busy = false: {newCount}");
                             newCount = 0;
                             counter = 0;
                             MainThread.InvokeOnMainThreadAsync(async () =>
@@ -65,16 +62,13 @@ public class CollectionChanged
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                Console.WriteLine($"*******************Items added new items count: {e.NewItems?.Count}");
                 foreach (var item in e.NewItems)
                 {
                     if (item is UiWeekItem uiWeekItem)
                     {
                         counter++;
-                        Console.WriteLine($"******************Counter:{counter} | Item added: Week number: {uiWeekItem.WeekNumber}");
                         if (newCount == counter)
                         {
-                            Console.WriteLine($"****************** All items added. Set Busy = false: {newCount}");
                             newCount = 0;
                             counter = 0;
                             MainThread.InvokeOnMainThreadAsync(async () =>
@@ -108,16 +102,13 @@ public class CollectionChanged
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                Console.WriteLine($"*******************Items added new items count: {e.NewItems?.Count}");
                 foreach (var item in e.NewItems)
                 {
                     if (item is UiMonthItem uiMonthItem)
                     {
                         counter++;
-                        Console.WriteLine($"******************Counter:{counter} | Item added: Month number: {uiMonthItem.Month}");
                         if (newCount == counter)
                         {
-                            Console.WriteLine($"****************** All items added. Set Busy = false: {newCount}");
                             newCount = 0;
                             counter = 0;
                             MainThread.InvokeOnMainThreadAsync(async () =>
@@ -152,16 +143,13 @@ public class CollectionChanged
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                Console.WriteLine($"*******************Items added new items count: {e.NewItems?.Count}");
                 foreach (var item in e.NewItems)
                 {
                     if (item is UiDayItem uiDayItem)
                     {
                         counter++;
-                        Console.WriteLine($"******************Counter:{counter} | Item added: Date: {uiDayItem.Date}");
                         if (newCount == counter)
                         {
-                            Console.WriteLine($"****************** All items added. Set Busy = false: {newCount}");
                             newCount = 0;
                             counter = 0;
                             MainThread.InvokeOnMainThreadAsync(async () =>
