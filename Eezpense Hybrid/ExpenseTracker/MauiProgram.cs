@@ -30,7 +30,6 @@ namespace ExpenseTracker
 
             var services = builder.Services;
             services.AddSingleton<DailyViewModel>();
-            services.AddSingleton<HomeViewModeV2>();
 
 #if DEBUG
             builder.Logging.AddDebug();

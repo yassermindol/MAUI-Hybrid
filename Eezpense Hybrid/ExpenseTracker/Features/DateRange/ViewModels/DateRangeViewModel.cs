@@ -140,7 +140,7 @@ public partial class DateRangeViewModel : ExpenseListBaseViewModel
     }
 
     string currencySymbol = AppSettings.Account.CurrencySymbol;
-    public string CurrencySymbol
+    public new string CurrencySymbol
     {
         get => currencySymbol;
         set

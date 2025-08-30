@@ -42,7 +42,6 @@ public abstract partial class BaseWeeklyViewModel : BaseViewModel
         page.BindingContext = viewModel;
         Type runtimeType = this.GetType();
         string name = runtimeType.Name;
-        Console.WriteLine($"****************** Registering {name}");
         DiContainerSummaryDetails.RegisterViewModel(name, viewModel);
         _summaryDetailsViewModel = viewModel;
         await _navigation.PushAsync(page);
@@ -55,11 +54,7 @@ public abstract partial class BaseWeeklyViewModel : BaseViewModel
     UiWeekItem selectedWeek;
 
     [ObservableProperty]
-    string currencySymbol = AppSettings.Account.CurrencySymbol;
-
-    [ObservableProperty]
     ObservableCollection<UiWeekItem> weekItems = new ObservableCollection<UiWeekItem>();
-
 
     protected abstract void NotBusy();
     protected abstract void Busy();

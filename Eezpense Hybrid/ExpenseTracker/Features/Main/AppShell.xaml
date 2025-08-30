@@ -20,7 +20,7 @@
     -->
 
     <Tab Title="Home" Icon="ic_home.png">
-        <ShellContent ContentTemplate="{DataTemplate home:HomePageV2}" />
+        <ShellContent ContentTemplate="{DataTemplate home:HomePage}" />
     </Tab>
     <Tab Title="Daily" Icon="ic_day.png">
         <ShellContent ContentTemplate="{DataTemplate daily:DailyPage}" />

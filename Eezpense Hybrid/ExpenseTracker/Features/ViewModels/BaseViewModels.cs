@@ -4,6 +4,7 @@ using ExpenseTracker.Models.DbEntities;
 using ExpenseTracker.Resources.Localization;
 using ExpenseTracker.Services;
 using ExpenseTracker.Services.Navigation;
+using ExpenseTracker.Settings;
 
 namespace ExpenseTracker.Features;
 
@@ -19,6 +20,9 @@ public abstract partial class BaseViewModel : ObservableObject
     [ObservableProperty]
     bool isBusy;
     Page MainPage => Application.Current.MainPage;
+
+    [ObservableProperty]
+    string currencySymbol = AppSettings.Account.CurrencySymbol;
 
     [ObservableProperty]
     bool isNoRecordsToShowVisible = true;

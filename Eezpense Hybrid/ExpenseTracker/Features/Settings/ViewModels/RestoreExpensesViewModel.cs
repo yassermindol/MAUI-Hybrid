@@ -26,9 +26,6 @@ public partial class RestoreExpenseViewModel : BaseViewModel
     }
 
     [ObservableProperty]
-    string currencySymbol = AppSettings.Account.CurrencySymbol;
-
-    [ObservableProperty]
     ObservableCollection<UiDeletedExpenseItem> deletedExpenses = new();
 
     [ObservableProperty]

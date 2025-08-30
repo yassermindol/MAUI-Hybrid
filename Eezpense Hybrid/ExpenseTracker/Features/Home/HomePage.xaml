@@ -5,9 +5,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:ExpenseTracker.Controls"
     xmlns:converters="clr-namespace:ExpenseTracker.Converters"
+    xmlns:home="clr-namespace:ExpenseTracker.Features.Home"
     xmlns:localize="clr-namespace:ExpenseTracker.Resources.Localization"
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:materialSymbols="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
+    xmlns:razor="clr-namespace:ExpenseTracker.Features.RazorComponent"
     xmlns:templates="clr-namespace:ExpenseTracker.Features.Templates"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
@@ -84,23 +86,17 @@
             Text="No records to show."
             VerticalOptions="CenterAndExpand" />
 
-        <ListView
-            x:Name="expenseListView"
+        <BlazorWebView
+            x:Name="webView"
+            Grid.Row="0"
             Margin="0,0,0,10"
-            CachingStrategy="RetainElement"
-            HasUnevenRows="True"
-            IsEnabled="True"
+            HostPage="wwwroot/index.html"
             IsVisible="{Binding IsListVisible}"
-            ItemTemplate="{StaticResource MyTemplateSelector}"
-            ItemsSource="{Binding UiExpenses}"
-            RowHeight="55"
-            SelectedItem="{Binding UiExpenseSelectedItem, Mode=TwoWay}"
-            VerticalOptions="Start">
-            <ListView.Behaviors>
-                <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSelectedCommand}" EventName="ItemSelected" />
-                <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSizeChangedCommand}" EventName="SizeChanged" />
-            </ListView.Behaviors>
-        </ListView>
+            VerticalOptions="FillAndExpand">
+            <BlazorWebView.RootComponents>
+                <RootComponent ComponentType="{x:Type razor:ExpenseList}" Selector="#app" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
     </StackLayout>
 
     <uranium:UraniumContentPage.Attachments>

@@ -102,9 +102,6 @@
     <MauiXaml Update="Features\Home\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Features\Home\HomePageV2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
     <MauiXaml Update="Features\Main\AppShell.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -209,6 +206,9 @@
   <ItemGroup>
     <Compile Update="Features\Daily\DailyPage.xaml.cs">
       <DependentUpon>DailyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Home\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

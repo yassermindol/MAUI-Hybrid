@@ -6,6 +6,7 @@
     xmlns:controls="clr-namespace:ExpenseTracker.Controls"
     xmlns:converters="clr-namespace:ExpenseTracker.Converters"
     xmlns:oxy="clr-namespace:OxyPlot.Maui.Skia;assembly=OxyPlot.Maui.Skia"
+    xmlns:razor="clr-namespace:ExpenseTracker.Features.RazorComponent"
     xmlns:templates="clr-namespace:ExpenseTracker.Features.Templates"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:ExpenseTracker.Features.DetailsOfSummaryReport"
@@ -114,25 +115,14 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <ListView
-            CachingStrategy="RetainElement"
-            HasUnevenRows="True"
-            IsVisible="{Binding IsListVisible}"
-            ItemTemplate="{StaticResource MyTemplateSelector}"
-            ItemsSource="{Binding UiExpenses}"
-            RowHeight="55"
-            SelectedItem="{Binding UiExpenseSelectedItem, Mode=TwoWay}">
-            <ListView.Behaviors>
-                <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSelectedCommand}" EventName="ItemSelected" />
-            </ListView.Behaviors>
-        </ListView>
 
         <BlazorWebView
             x:Name="webView"
             Grid.Row="0"
-            HostPage="wwwroot/index.html">
+            HostPage="wwwroot/index.html"
+            IsVisible="{Binding IsListVisible}">
             <BlazorWebView.RootComponents>
-                <RootComponent ComponentType="{x:Type views:SummaryDetailsRazorPage}" Selector="#app" />
+                <RootComponent ComponentType="{x:Type razor:ExpenseList}" Selector="#app" />
             </BlazorWebView.RootComponents>
         </BlazorWebView>
 

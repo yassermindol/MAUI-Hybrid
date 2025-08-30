@@ -134,7 +134,6 @@ namespace ExpenseTracker.Features.Monthly.ViewModels
             _summaryDetailsViewModel = viewModel;
             Type runtimeType = this.GetType();
             string name = runtimeType.Name;
-            Console.WriteLine($"****************** Registering {name}");
             DiContainerSummaryDetails.RegisterViewModel(name, viewModel);
             await _navigation.PushAsync(page);          
             _strSelectedMonth = SelectedMonth.Month;

@@ -34,9 +34,6 @@ public partial class DailyViewModel : BaseViewModel
     [ObservableProperty]
     bool isTotalVisible;
 
-    [ObservableProperty]
-    string currencySymbol = AppSettings.Account.CurrencySymbol;
-
     public Action StateHasChanged { get; set; }
 
     public DailyViewModel()

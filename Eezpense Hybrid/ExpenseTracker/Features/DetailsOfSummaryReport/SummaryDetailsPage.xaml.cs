@@ -23,7 +23,7 @@ public partial class SummaryDetailsPage
     {
         Console.WriteLine("*************** SummaryDetailsPage OnAppearing");
         base.OnAppearing();
-        _viewModel.ReloadDataIfShouldAsync();        
+        _viewModel.ReloadDataIfShouldAsync();
     }
 
     protected override void OnBindingContextChanged()
@@ -68,6 +68,7 @@ public partial class SummaryDetailsPage
         _viewModel.ViewTypeText = AppResources.ViewChart;
         _viewModel.IsListVisible = true;
         _viewModel.IsPieChartVisible = false;
+        _viewModel?.StateHasChanged?.Invoke();
     }
 
     private void OnSearchClicked(object? sender, EventArgs e)
@@ -87,5 +88,6 @@ public partial class SummaryDetailsPage
         _viewModel.ViewTypeText = AppResources.ViewList;
         _viewModel.IsListVisible = false;
         _viewModel.IsPieChartVisible = true;
+        _viewModel?.StateHasChanged?.Invoke();
     }
 }

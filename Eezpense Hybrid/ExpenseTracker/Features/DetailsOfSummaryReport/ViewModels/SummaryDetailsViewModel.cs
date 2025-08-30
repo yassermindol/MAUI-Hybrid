@@ -8,7 +8,6 @@ using ExpenseTracker.Models.UI;
 using ExpenseTracker.Resources.Localization;
 using ExpenseTracker.Services.UIModelGenerators;
 using ExpenseTracker.Settings;
-using IntelliJ.Lang.Annotations;
 using OxyPlot;
 using System.Collections.ObjectModel;
 
@@ -19,7 +18,7 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
     public string Title => $"{TitlePartial}: {CurrencySymbol} {AmountStr}";
 
     string currencySymbol = AppSettings.Account.CurrencySymbol;
-    public string CurrencySymbol
+    public new string CurrencySymbol
     {
         get => currencySymbol;
         set
@@ -102,7 +101,7 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
     protected override void NotBusy()
     {
         IsBusy = false;
-        if (UiExpenses.Count == 0)
+        if (UiExpenses.Count == 0 && UiGroupByCategoryExpenses.Count == 0)
         {
             IsNoRecordsToShowVisible = true;
             IsPieChartVisible = false;
@@ -122,6 +121,9 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
                 IsListVisible = true;
             }
         }
+
+        //IsNoRecordsToShowVisible = UiExpenses.Count == 0 && UiGroupByCategoryExpenses.Count == 0;
+        //IsListVisible = !IsNoRecordsToShowVisible;
     }
 
     public async Task LoadDataAsync()
@@ -146,11 +148,11 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
 
         double total = _expenseEntities.Sum(x => x.Amount);
         AmountStr = total.ToMoney();
-
         UiExpenses.Clear();
-        _collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
         foreach (var item in expenses)
             UiExpenses.Add(item);
+        NotBusy();
+        StateHasChanged();
     }
 
     public void OpenSearchPageAsync()

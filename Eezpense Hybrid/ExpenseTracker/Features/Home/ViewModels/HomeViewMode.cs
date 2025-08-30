@@ -21,7 +21,7 @@ using System.Collections.ObjectModel;
 
 namespace ExpenseTracker.Features.Home.ViewModels;
 
-public partial class HomeViewModeV2 : ExpenseListBaseViewModel
+public partial class HomeViewModel : ExpenseListBaseViewModel
 {
     double _total = 0;
 
@@ -32,7 +32,7 @@ public partial class HomeViewModeV2 : ExpenseListBaseViewModel
     public Action NoteCompletedDelegate { get; set; }
     public Func<Task> AnimateClickDelegate { get; set; }
 
-    public HomeViewModeV2()
+    public HomeViewModel()
     {
         AddExpenseIconSource = IsDarkTheme ? "ic_expand_white.png" : "ic_expand.png";
 #if ANDROID

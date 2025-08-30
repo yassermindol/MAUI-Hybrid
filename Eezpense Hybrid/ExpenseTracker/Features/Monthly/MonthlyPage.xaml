@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:ExpenseTracker.Converters"
     xmlns:localize="clr-namespace:ExpenseTracker.Resources.Localization"
+    xmlns:razor="clr-namespace:ExpenseTracker.Features.RazorComponent"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="{localize:Translate MonthlySummaryReport}">
     <ContentPage.Resources>

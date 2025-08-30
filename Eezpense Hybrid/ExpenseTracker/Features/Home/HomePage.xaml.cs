@@ -1,8 +1,8 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using ExpenseTracker.EventMessages;
 using ExpenseTracker.Features.Home.ViewModels;
+using ExpenseTracker.Helpers;
 using ExpenseTracker.Models.UI;
-using ExpenseTracker.Settings;
 
 namespace ExpenseTracker.Features.Home;
 
@@ -24,9 +24,6 @@ public partial class HomePage
         _viewModel.LoadDataAsync();
     }
 
-    private void ExpenseListView_ItemAppearing(object? sender, ItemVisibilityEventArgs e)
-    {
-    }
 
     private void MeasureDistance(object? sender, EventArgs e)
     {
@@ -41,20 +38,10 @@ public partial class HomePage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        DiContainerSummaryDetails.RegisterViewModel(nameof(HomePage), _viewModel);
         WeakReferenceMessenger.Default.Unregister<KeyboardVisibilityMessage>(this);
         WeakReferenceMessenger.Default.Register<KeyboardVisibilityMessage>(this, HandleKeyboardVisibility);
         _viewModel.ReloadDataIfShouldAsync();
-
-        var screenHeight = DeviceDisplay.Current.MainDisplayInfo.Height;
-        if (screenHeight == 1600)
-        {
-            expenseListView.HeightRequest = 560;
-        }
-        else
-        {
-            double height = (560 * screenHeight) / 1600; // using ratio and proportion my phone as reference.
-            expenseListView.HeightRequest = height - 200; 
-        }
     }
 
     private void HandleKeyboardVisibility(object recipient, KeyboardVisibilityMessage message)
@@ -108,12 +95,10 @@ public partial class HomePage
     private void OnExpenseSave(UiExpenseItem item)
     {
         InvalidateMeasure();
-        expenseListView.ScrollTo(item, position: ScrollToPosition.MakeVisible, animated: false);
     }
 
     protected override void OnDisappearing()
     {
         WeakReferenceMessenger.Default.Unregister<KeyboardVisibilityMessage>(this);
-        AppConstants.BoxViewMaxWidth = expenseListView.Width;
     }
 }
