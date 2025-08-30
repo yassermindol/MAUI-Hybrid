@@ -118,9 +118,9 @@
 
         <BlazorWebView
             x:Name="webView"
-            Grid.Row="0"
             HostPage="wwwroot/index.html"
-            IsVisible="{Binding IsListVisible}">
+            IsVisible="{Binding IsListVisible}"
+            VerticalOptions="FillAndExpand">
             <BlazorWebView.RootComponents>
                 <RootComponent ComponentType="{x:Type razor:ExpenseList}" Selector="#app" />
             </BlazorWebView.RootComponents>

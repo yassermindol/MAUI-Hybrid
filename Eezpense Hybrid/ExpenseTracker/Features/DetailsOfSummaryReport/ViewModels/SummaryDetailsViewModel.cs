@@ -6,6 +6,7 @@ using ExpenseTracker.Models;
 using ExpenseTracker.Models.DbEntities;
 using ExpenseTracker.Models.UI;
 using ExpenseTracker.Resources.Localization;
+using ExpenseTracker.Services.Api;
 using ExpenseTracker.Services.UIModelGenerators;
 using ExpenseTracker.Settings;
 using OxyPlot;
@@ -15,6 +16,7 @@ namespace ExpenseTracker.Features.DetailsOfSummaryReport.ViewModels;
 
 public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
 {
+    BaseApiService _service = new BaseApiService();
     public string Title => $"{TitlePartial}: {CurrencySymbol} {AmountStr}";
 
     string currencySymbol = AppSettings.Account.CurrencySymbol;
@@ -84,7 +86,7 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
             if (IsBusy)
                 return;
             Busy();
-            _expenseEntities = await ExpenseTableDb.Get(_startDate, _endDate);
+            _expenseEntities = await _service.GetExpenses(_startDate, _endDate);
             await LoadDataAsync();
             ShouldRefreshData = false;
         }
@@ -137,20 +139,35 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
         InvalidateOxyPlot?.Invoke();
 
         ObservableCollection<UiExpenseItem> expenses = new ObservableCollection<UiExpenseItem>();
+        ObservableCollection<UiGroupByCategoryItem> groupedExpenses = new ObservableCollection<UiGroupByCategoryItem>();
         if (CurrentSortType == SortType.DateDescending)
             expenses = _uiDataProvider.GetDateDescending(_expenseEntities);
         else if (CurrentSortType == SortType.AmountDescending)
             expenses = _uiDataProvider.GetAmountDescending(_expenseEntities);
         else if (CurrentSortType == SortType.GroupedByCategoryDateDescending)
-            expenses = _uiDataProvider.GetGroupedByCategoryDateDescending(_expenseEntities);
+            groupedExpenses = _uiDataProvider.GetGroupedByCategoryDateDescendingV2(_expenseEntities);
         else if (CurrentSortType == SortType.GroupedByCategoryAmountDescending)
-            expenses = _uiDataProvider.GetGroupedByCategoryAmountDescending(_expenseEntities);
+            groupedExpenses = _uiDataProvider.GetGroupedByCategoryAmountDescendingV2(_expenseEntities);
 
         double total = _expenseEntities.Sum(x => x.Amount);
         AmountStr = total.ToMoney();
-        UiExpenses.Clear();
-        foreach (var item in expenses)
-            UiExpenses.Add(item);
+
+        if (expenses.Count > 0)
+        {
+            UiExpenses.Clear();
+            foreach (var item in expenses)
+                UiExpenses.Add(item);
+            IsExpenseListGroupedByCategory = false;
+        }
+
+        if (groupedExpenses.Count > 0)
+        {
+            UiGroupByCategoryExpenses.Clear();
+            foreach (var item in groupedExpenses)
+                UiGroupByCategoryExpenses.Add(item);
+            IsExpenseListGroupedByCategory = true;
+        }
+
         NotBusy();
         StateHasChanged();
     }

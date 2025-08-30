@@ -15,7 +15,7 @@ public class WeeksInMothService : BaseApiService
         // End date: last day of the month
         int daysInMonth = DateTime.DaysInMonth(year, month);
         var end = new DateTime(year, month, daysInMonth, 23, 59, 59);
-        var result = await _localDb.Expenses.Get(start, end);
+        var result = await GetExpenses(start, end);
         return result;
     }
 
