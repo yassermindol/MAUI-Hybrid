@@ -107,7 +107,7 @@ public partial class DateRangeViewModel : ExpenseListBaseViewModel
         accounSettings.EndDateRange = endDate;
         DateRangeButtonText = GetDateRangeStr();
         await MopupService.Instance.PopAsync();
-        LoadDataAsync();        
+        LoadDataAsync();
     }
 
     private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)
@@ -153,14 +153,14 @@ public partial class DateRangeViewModel : ExpenseListBaseViewModel
     protected override void NotBusy()
     {
         IsBusy = false;
-        if (UiExpenses.Count == 0)
+        if (UiExpenses.Count == 0 && UiGroupByCategoryExpenses.Count == 0)
         {
             IsNoRecordsToShowVisible = true;
             IsPieChartVisible = false;
             IsListVisible = false;
         }
         else
-        {            
+        {
             IsNoRecordsToShowVisible = false;
             if (ViewTypeText == AppResources.ViewList)
             {
@@ -201,18 +201,35 @@ public partial class DateRangeViewModel : ExpenseListBaseViewModel
 
         _expenseEntities = service.ExpenseEntities;
         ObservableCollection<UiExpenseItem> expenses = new ObservableCollection<UiExpenseItem>();
+        ObservableCollection<UiGroupByCategoryItem> groupedExpenses = new ObservableCollection<UiGroupByCategoryItem>();
         if (CurrentSortType == SortType.DateDescending)
             expenses = _uiDataProvider.GetDateDescending(_expenseEntities);
         else if (CurrentSortType == SortType.AmountDescending)
             expenses = _uiDataProvider.GetAmountDescending(_expenseEntities);
         else if (CurrentSortType == SortType.GroupedByCategoryDateDescending)
-            expenses = _uiDataProvider.GetGroupedByCategoryDateDescending(_expenseEntities);
+            groupedExpenses = _uiDataProvider.GetGroupedByCategoryDateDescendingV2(_expenseEntities);
         else if (CurrentSortType == SortType.GroupedByCategoryAmountDescending)
-            expenses = _uiDataProvider.GetGroupedByCategoryAmountDescending(_expenseEntities);
+            groupedExpenses = _uiDataProvider.GetGroupedByCategoryAmountDescendingV2(_expenseEntities);
+
         UiExpenses.Clear();
-        _collectionChanged.Monitor(UiExpenses, expenses.Count, NotBusy, RefreshUI);
-        foreach (var item in expenses)
-            UiExpenses.Add(item);
+        UiGroupByCategoryExpenses.Clear();
+
+        if (expenses.Count > 0)
+        {
+            foreach (var item in expenses)
+                UiExpenses.Add(item);
+            IsExpenseListGroupedByCategory = false;
+        }
+
+        if (groupedExpenses.Count > 0)
+        {
+            foreach (var item in groupedExpenses)
+                UiGroupByCategoryExpenses.Add(item);
+            IsExpenseListGroupedByCategory = true;
+        }
+
+        NotBusy();
+        StateHasChanged();
     }
 
     [ObservableProperty]

@@ -259,10 +259,10 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
         };
 
         InsertAmountToUiList(expenseItem);
-        IsNoRecordsToShowVisible = UiExpenses.Count == 0;
         SaveExpenseDelegate?.Invoke(expenseItem);
         ResetFields();
         IsNoRecordsToShowVisible = false;
+        IsListVisible = true;
         _selectedExpenseDate = DateTime.MinValue;
         IsBusy = false;
         StateHasChanged();

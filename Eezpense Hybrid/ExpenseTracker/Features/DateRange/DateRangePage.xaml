@@ -7,6 +7,7 @@
     xmlns:localize="clr-namespace:ExpenseTracker.Resources.Localization"
     xmlns:oxy="clr-namespace:OxyPlot.Maui.Skia;assembly=OxyPlot.Maui.Skia"
     xmlns:templates="clr-namespace:ExpenseTracker.Features.Templates"
+    xmlns:razor="clr-namespace:ExpenseTracker.Features.RazorComponent"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="{Binding Title}">
     <ContentPage.Resources>
@@ -33,14 +34,6 @@
             </templates:MyDataTemplateSelector>
         </ResourceDictionary>
     </ContentPage.Resources>
-
-    <!--
-    <ContentPage.ToolbarItems>
-        <ToolbarItem
-            Command="{Binding ToggleViewCommand}"
-            Text="{Binding ViewTypeText}"/>
-    </ContentPage.ToolbarItems>
-    -->
 
     <StackLayout>
         <StackLayout IsVisible="{Binding IsBusy}" VerticalOptions="CenterAndExpand">
@@ -120,20 +113,16 @@
             </ListView>
         </Grid>
 
-        <ListView
-            Margin="10,0,10,0"
-            CachingStrategy="RetainElement"
-            HasUnevenRows="True"
-            IsEnabled="True"
+        <BlazorWebView
+            x:Name="webView"
+            HostPage="wwwroot/index.html"
             IsVisible="{Binding IsListVisible}"
-            ItemTemplate="{StaticResource MyTemplateSelector}"
-            ItemsSource="{Binding UiExpenses}"
-            RowHeight="55"
-            SelectedItem="{Binding UiExpenseSelectedItem, Mode=TwoWay}">
-            <ListView.Behaviors>
-                <toolkit:EventToCommandBehavior Command="{Binding UiExpenseSelectedCommand}" EventName="ItemSelected" />
-            </ListView.Behaviors>
-        </ListView>
+            VerticalOptions="FillAndExpand">
+            <BlazorWebView.RootComponents>
+                <RootComponent ComponentType="{x:Type razor:ExpenseList}" Selector="#app" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
+
 
         <Button
             Margin="20,10,20,10"

@@ -1,4 +1,6 @@
 using ExpenseTracker.Features.DateRange.ViewModels;
+using ExpenseTracker.Features.Home;
+using ExpenseTracker.Helpers;
 using ExpenseTracker.Resources.Localization;
 
 namespace ExpenseTracker.Features.DateRange;
@@ -21,6 +23,7 @@ public partial class DateRangePage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        DiContainerSummaryDetails.RegisterViewModel(nameof(DateRangePage), _viewModel);
         _viewModel.ReloadDataIfShouldAsync();
     }
 

@@ -123,9 +123,6 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
                 IsListVisible = true;
             }
         }
-
-        //IsNoRecordsToShowVisible = UiExpenses.Count == 0 && UiGroupByCategoryExpenses.Count == 0;
-        //IsListVisible = !IsNoRecordsToShowVisible;
     }
 
     public async Task LoadDataAsync()
@@ -152,17 +149,18 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
         double total = _expenseEntities.Sum(x => x.Amount);
         AmountStr = total.ToMoney();
 
+        UiExpenses.Clear();
+        UiGroupByCategoryExpenses.Clear();
+
         if (expenses.Count > 0)
-        {
-            UiExpenses.Clear();
+        {            
             foreach (var item in expenses)
                 UiExpenses.Add(item);
             IsExpenseListGroupedByCategory = false;
         }
 
         if (groupedExpenses.Count > 0)
-        {
-            UiGroupByCategoryExpenses.Clear();
+        {            
             foreach (var item in groupedExpenses)
                 UiGroupByCategoryExpenses.Add(item);
             IsExpenseListGroupedByCategory = true;
