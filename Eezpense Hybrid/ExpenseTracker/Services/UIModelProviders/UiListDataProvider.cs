@@ -160,7 +160,7 @@ public class UiListDataProvider
             var groupedItem = new UiGroupByCategoryItem();
             var item = group.First();
             groupedItem.Category = item.Category;
-            groupedItem.CategoryId = item.CategoryLocalID;
+            groupedItem.CategoryLocalId = item.CategoryLocalID;
             double total = 0;
             var expensesList = sorter(group);
 
@@ -180,7 +180,7 @@ public class UiListDataProvider
                 groupedItem.Expenses.Add(uiExpense);
             }
 
-            groupedItem.Total = total.ToMoney();
+            groupedItem.Total = total;
             groupedItems.Add(groupedItem);
         }
 

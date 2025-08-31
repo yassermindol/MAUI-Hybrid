@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Android.Webkit;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ExpenseTracker.Database;
@@ -239,159 +240,99 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
             return;
         if (IsBusy)
             return;
-        IsBusy = true;
 
+        IsBusy = true;
         double amount = double.Parse(AmountStr);
         DateTime date = _selectedExpenseDate == DateTime.MinValue ? DateTime.Now : _selectedExpenseDate;
         ExpenseEntity expenseEntity;
-        Save(amount, SelectedExpenseCategory, Note, date, out long Id, out expenseEntity);
+        SaveToDb(amount, SelectedExpenseCategory, Note, date, out long Id, out expenseEntity);
         _expenseEntities.Add(expenseEntity);
         _total += amount;
         TotalExpense = _total.ToMoney();
-
         var expenseItem = new UiExpenseItem
         {
             Amount = amount,
             Note = Note,
             DateTime = date,
-            Category = SelectedExpenseCategory,
-            ID = Id,
+            Category = SelectedExpenseCategory,            
             ItemType = ExpenseItemType.ExpenseItem,
         };
 
-        InsertAmount(expenseItem);
+        InsertAmountToUiList(expenseItem);
         IsNoRecordsToShowVisible = UiExpenses.Count == 0;
         SaveExpenseDelegate?.Invoke(expenseItem);
         ResetFields();
-        IsBusy = false;
         IsNoRecordsToShowVisible = false;
-        IsListVisible = true;
         _selectedExpenseDate = DateTime.MinValue;
+        IsBusy = false;
+        StateHasChanged();
     }
 
-    private void InsertAmount(UiExpenseItem expenseToInsert)
+    private void InsertAmountToUiList(UiExpenseItem expenseToInsert)
     {
         if (CurrentSortType == SortType.DateDescending)
         {
-            int low = 0;
-            int high = UiExpenses.Count - 1;
-            int mid = 0;
-            while (low <= high)
-            {
-                mid = low + (high - low) / 2;
-                if (UiExpenses[mid].DateTime < expenseToInsert.DateTime)
-                {
-                    // If middle element is less than new, search the left half
-                    high = mid - 1;
-                }
-                else
-                {
-                    // If middle element is greater or equal, search the right half
-                    low = mid + 1;
-                }
-            }
-            // 'low' is the insertion index
-            if (UiExpenses.Count == low)
-                UiExpenses.Add(expenseToInsert);
-            else
-                UiExpenses.Insert(low, expenseToInsert);
-            //UiExpenses.Insert(0, expenseToInsert);
+            InsertToDateDescendingList(UiExpenses, expenseToInsert);
         }
         else if (CurrentSortType == SortType.AmountDescending)
         {
-            int index = -1;
-            for (int i = 0; i < UiExpenses.Count; i++)
-            {
-                if (UiExpenses[i].Amount < expenseToInsert.Amount)
-                {
-                    index = i;
-                    break;
-                }
-            }
-            if (index == -1)
-                UiExpenses.Add(expenseToInsert);
-            else
-                UiExpenses.Insert(index, expenseToInsert);
+            InsertToAmountDescendingList(UiExpenses, expenseToInsert);
         }
         else if (CurrentSortType == SortType.GroupedByCategoryAmountDescending)
         {
-            int allCount = UiExpenses.Count;
-            int categoryIndex = -1;
-            UiExpenseItem header = null;
-            for (int i = 0; i < allCount; i++)
-            {
-                var item = UiExpenses[i];
-                if (item.ItemType == ExpenseItemType.Header)
-                {
-                    if (item.Category == expenseToInsert.Category) // this is the header
-                    {
-                        header = item;
-                        header.CategoryTotal += expenseToInsert.Amount;
-                        categoryIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            if (categoryIndex == -1) // No header yet for this category
-            {
-                header = _uiDataProvider.GetUiExpenseHeader(expenseToInsert);
-                UiExpenses.Insert(0, expenseToInsert);
-                UiExpenses.Insert(0, header);
-                return;
-            }
-
-            int lastIndexInTheCategory = -1;
-            bool isAmountInserted = false;
-            for (int i = categoryIndex + 1; i < allCount; i++)
-            {
-                var item = UiExpenses[i];
-                lastIndexInTheCategory = i;
-                if (item.Amount < expenseToInsert.Amount)
-                {
-                    isAmountInserted = true;
-                    UiExpenses.Insert(i, expenseToInsert);
-                    break;
-                }
-            }
-
-            // If we reached here, it means the category of the entry is the last on the list and the amount is the last - lowest amount.
-            //so Insert function cannot be applied because the inserted entry will come first before the last.
-            if (!isAmountInserted)
-            {
-                UiExpenses.Add(expenseToInsert);
-            }
+            var group = UiGroupByCategoryExpenses.First(x => x.Category == expenseToInsert.Category);
+            group.Total += expenseToInsert.Amount;
+            InsertToAmountDescendingList(group.Expenses, expenseToInsert);
         }
         else if (CurrentSortType == SortType.GroupedByCategoryDateDescending)
         {
-            int categoryIndex = -1;
-            UiExpenseItem header = null;
-            for (int i = 0; i < UiExpenses.Count; i++)
-            {
-                var item = UiExpenses[i];
-                if (item.ItemType == ExpenseItemType.Header)
-                {
-                    if (item.Category == expenseToInsert.Category)
-                    {
-                        header = item;
-                        header.CategoryTotal += expenseToInsert.Amount;
-                        categoryIndex = i;
-                        break;
-                    }
-                }
-            }
+            var group = UiGroupByCategoryExpenses.First(x => x.Category == expenseToInsert.Category);
+            group.Total += expenseToInsert.Amount;
+            InsertToDateDescendingList(group.Expenses, expenseToInsert);
+        }
+    }
 
-            if (categoryIndex == -1)
+    private void InsertToDateDescendingList(ObservableCollection<UiExpenseItem> list, UiExpenseItem itemToInsert)
+    {
+        int low = 0;
+        int high = list.Count - 1;
+        int mid = 0;
+        while (low <= high)
+        {
+            mid = low + (high - low) / 2;
+            if (list[mid].DateTime < itemToInsert.DateTime)
             {
-                header = _uiDataProvider.GetUiExpenseHeader(expenseToInsert);
-                UiExpenses.Insert(0, expenseToInsert);
-                UiExpenses.Insert(0, header);
+                // If middle element is less than new, search the left half
+                high = mid - 1;
             }
             else
             {
-                UiExpenses.Insert(categoryIndex + 1, expenseToInsert);
+                // If middle element is greater or equal, search the right half
+                low = mid + 1;
             }
         }
+        // 'low' is the insertion index
+        if (list.Count == low)
+            list.Add(itemToInsert);
+        else
+            list.Insert(low, itemToInsert);
+    }
+
+    private void InsertToAmountDescendingList(ObservableCollection<UiExpenseItem> list, UiExpenseItem itemToInsert)
+    {
+        int index = -1;
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i].Amount < itemToInsert.Amount)
+            {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1)
+            list.Add(itemToInsert);
+        else
+            list.Insert(index, itemToInsert);
     }
 
     [RelayCommand]
@@ -480,22 +421,23 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
         else if (CurrentSortType == SortType.GroupedByCategoryAmountDescending)
             groupedExpenses = _uiDataProvider.GetGroupedByCategoryAmountDescendingV2(_expenseEntities);
         TotalExpense = _total.ToMoney();
-        
-        if(expenses.Count > 0)
-        {
-            UiExpenses.Clear();
+
+        UiExpenses.Clear();
+        UiGroupByCategoryExpenses.Clear();
+
+        if (expenses.Count > 0)
+        {            
             foreach (var item in expenses)
                 UiExpenses.Add(item);
             IsExpenseListGroupedByCategory = false;
         }
-        
-        if(groupedExpenses.Count > 0)
-        {
-            UiGroupByCategoryExpenses.Clear();
+
+        if (groupedExpenses.Count > 0)
+        {            
             foreach (var item in groupedExpenses)
                 UiGroupByCategoryExpenses.Add(item);
             IsExpenseListGroupedByCategory = true;
-        }        
+        }
 
         NotBusy();
         StateHasChanged();
@@ -510,10 +452,10 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
         }
     }
 
-    private void Save(double amount, string selectedExpenseCategory, string note, DateTime date, out long dbId, out ExpenseEntity outExpenseEntity)
+    private void SaveToDb(double amount, string selectedExpenseCategory, string note, DateTime date, out long dbId, out ExpenseEntity outExpenseEntity)
     {
         dbId = -1;
-        var category = SqLiteDb.Instance.Categories.GetAllNotDeleted().First(x => x.Name == selectedExpenseCategory);
+        var category = CategoriesDb.First(x => x.Name == selectedExpenseCategory);
         int weekNumber = _calendarService.GetWeekOfYear(date).Number;
         var entity = new ExpenseEntity
         {

@@ -18,13 +18,13 @@
             <ul class="list-group" style="flex:1; overflow-y:auto;">
                 @foreach (var group in _viewModel.UiGroupByCategoryExpenses)
                 {
-                    <li class="list-group-item" style="padding:0;padding-top:10px;background-color:var(--list-item-main-bg);" @key="group.CategoryId">
+                    <li class="list-group-item" style="padding:0;padding-top:10px;background-color:var(--list-item-main-bg);" @key="group.CategoryLocalId">
                         <div style="display:flex; flex-direction:row; align-items:center; margin-left:10px;margin-right:10px;">
                             <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-right:10px;">
                                 <div style="display:flex; flex-direction:row;">
                                     <label style="margin-bottom:4px;font-size:14px;font-weight:600;color:var(--text-color)">@group.Category</label>
                                     <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:600;color:var(--text-color)">@_viewModel.CurrencySymbol</label>
-                                    <label style="margin-right:8px;font-size:14px;font-weight:600;color:var(--text-color)"> @group.Total</label>
+                                    <label style="margin-right:8px;font-size:14px;font-weight:600;color:var(--text-color)"> @group.TotalStr</label>
                                 </div>
                             </div>
                         </div>
