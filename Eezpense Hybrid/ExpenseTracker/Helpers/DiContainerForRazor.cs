@@ -22,7 +22,7 @@ public class DiContainerForRazor
             
         _viewModels.Add(parentPage, viewModel);
         lastAppearedParentPageVm = parentPage;
-        Console.WriteLine($"************ Registering viewmodel: {viewModel.GetType().Name} for parent:{parentPage}");
+        //Console.WriteLine($"************ Registering viewmodel: {viewModel.GetType().Name} for parent:{parentPage}");
     }
 
     public static BaseViewModel GetViewModel(out string parent)
@@ -32,7 +32,7 @@ public class DiContainerForRazor
             parent = lastAppearedParentPageVm;
         else
             parent = "No Parent Page";
-        Console.WriteLine($"************ Getting viewmodel: {viewModel.GetType().Name} for parent:{parent}");
+        //Console.WriteLine($"************ Getting viewmodel: {viewModel.GetType().Name} for parent:{parent}");
         return viewModel;
     }
 }

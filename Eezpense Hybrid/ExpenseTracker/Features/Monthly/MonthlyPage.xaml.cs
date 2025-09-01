@@ -22,7 +22,7 @@ public partial class MonthlyPage : ContentPage
 
     protected override void OnAppearing()
     {
-        Console.WriteLine("*************** MonthlyPage OnAppearing");
+        //Console.WriteLine("*************** MonthlyPage OnAppearing");
         base.OnAppearing();
         _viewModel.ReloadDataIfShouldAsync();
     }

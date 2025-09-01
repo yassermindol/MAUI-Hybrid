@@ -21,7 +21,7 @@ public partial class SummaryDetailsPage
 
     protected override void OnAppearing()
     {
-        Console.WriteLine("*************** SummaryDetailsPage OnAppearing");
+        //Console.WriteLine("*************** SummaryDetailsPage OnAppearing");
         base.OnAppearing();
         _viewModel.ReloadDataIfShouldAsync();
     }
