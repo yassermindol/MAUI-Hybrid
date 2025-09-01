@@ -14,8 +14,9 @@ public abstract partial class BaseViewModel : ObservableObject
     protected bool IsDarkTheme => App.IsDarkMode;
     protected NavigationService _navigation = new();
     protected bool isLoaded;
-
     protected CollectionChanged _collectionChanged = new();
+
+    public Action StateHasChanged { get; set; }
 
     [ObservableProperty]
     bool isBusy;

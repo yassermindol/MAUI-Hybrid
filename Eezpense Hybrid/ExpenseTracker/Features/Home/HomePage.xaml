@@ -61,7 +61,7 @@
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text=" to Present:  " />
-                        <Span FontAttributes="Bold" Text="{Binding TotalCurrencySymbol}" />
+                        <Span FontAttributes="Bold" Text="{Binding CurrencySymbol}" />
                         <Span Text=" " />
                         <Span FontAttributes="Bold" Text="{Binding TotalExpense}" />
                     </FormattedString>

@@ -116,7 +116,7 @@ public partial class EditCategoryViewModel : BaseViewModel
 
     private bool IsEdited()
     {
-        return !CategoryName.Equals(NewCategoryName);
+        return !CategoryName.Equals(NewCategoryName, StringComparison.Ordinal);
     }
 
     [ObservableProperty]

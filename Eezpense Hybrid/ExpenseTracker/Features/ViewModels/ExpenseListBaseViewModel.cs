@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using ExpenseTracker.EventMessages;
 using ExpenseTracker.Features.DetailsOfExpenseList;
 using ExpenseTracker.Features.DetailsOfExpenseList.ViewModels;
 using ExpenseTracker.Features.SearchExpenseList;
@@ -14,9 +16,6 @@ using System.Windows.Input;
 namespace ExpenseTracker.Features.ViewModels;
 public abstract partial class ExpenseListBaseViewModel : BaseViewModel
 {
-
-    public Action StateHasChanged { get;set; }
-
     [ObservableProperty]
     ObservableCollection<UiExpenseItem> uiExpenses = new ObservableCollection<UiExpenseItem>();
 
@@ -65,7 +64,7 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
             return;
         Busy();
         CurrentSortType = SortType.GroupedByCategoryAmountDescending;
-        
+
         var groupedExpenses = _uiDataProvider.GetGroupedByCategoryAmountDescendingV2(_expenseEntities);
         UiGroupByCategoryExpenses.Clear();
         foreach (var item in groupedExpenses)

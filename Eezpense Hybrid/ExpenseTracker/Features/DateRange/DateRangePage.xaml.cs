@@ -1,5 +1,4 @@
 using ExpenseTracker.Features.DateRange.ViewModels;
-using ExpenseTracker.Features.Home;
 using ExpenseTracker.Helpers;
 using ExpenseTracker.Resources.Localization;
 
@@ -14,6 +13,7 @@ public partial class DateRangePage : ContentPage
     {
         InitializeComponent();
         BindingContext = _viewModel;
+        DiContainerForRazor.RegisterViewModel(nameof(DateRangePage), _viewModel);
         _sortToolbarManager = new ExpenseListSortToolbarManager(ToolbarItems);
         _viewModel.RefreshUI = RefreshUI;
         _viewModel.InvalidateOxyPlot = InvalidateOxyPlot;
@@ -22,8 +22,7 @@ public partial class DateRangePage : ContentPage
 
     protected override void OnAppearing()
     {
-        base.OnAppearing();
-        DiContainerSummaryDetails.RegisterViewModel(nameof(DateRangePage), _viewModel);
+        base.OnAppearing();        
         _viewModel.ReloadDataIfShouldAsync();
     }
 

@@ -107,7 +107,7 @@
     {
         await base.OnInitializedAsync();
         string parent = string.Empty;
-        _viewModel = (ExpenseListBaseViewModel)DiContainerSummaryDetails.GetViewModel(out parent);
+        _viewModel = (ExpenseListBaseViewModel)DiContainerForRazor.GetViewModel(out parent);
         _viewModel.StateHasChanged = StateHasChanged;
     }
 

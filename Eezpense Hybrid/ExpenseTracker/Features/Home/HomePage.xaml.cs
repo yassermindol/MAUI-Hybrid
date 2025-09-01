@@ -18,6 +18,7 @@ public partial class HomePage
         _viewModel.NoteCompletedDelegate = OnNoteCompleted;
         _viewModel.AnimateClickDelegate = OnAnimateClick; ;
         BindingContext = _viewModel;
+        DiContainerForRazor.RegisterViewModel(nameof(HomePage), _viewModel);
         _sortToolbarManager = new ExpenseListSortToolbarManager(ToolbarItems);
         SetToolbar();
         _viewModel.RefreshUI = RefreshUI;
@@ -37,8 +38,7 @@ public partial class HomePage
 
     protected override void OnAppearing()
     {
-        base.OnAppearing();
-        DiContainerSummaryDetails.RegisterViewModel(nameof(HomePage), _viewModel);
+        base.OnAppearing();        
         WeakReferenceMessenger.Default.Unregister<KeyboardVisibilityMessage>(this);
         WeakReferenceMessenger.Default.Register<KeyboardVisibilityMessage>(this, HandleKeyboardVisibility);
         _viewModel.ReloadDataIfShouldAsync();

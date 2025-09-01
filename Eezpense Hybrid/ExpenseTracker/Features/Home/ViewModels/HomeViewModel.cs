@@ -52,12 +52,8 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
 
     private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)
     {
-        string symbol = message.Value;
-        TotalCurrencySymbol = symbol;
-        foreach (var item in UiExpenses)
-        {
-            item.CurrencySymbol = symbol;
-        }
+        CurrencySymbol = message.Value;
+        StateHasChanged();
     }
 
     private void OnRestoreExpense(object recipient, RestoreExpenseMessage message)
@@ -106,9 +102,6 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
     {
         OpenSearchPageAsync(SelectedStartDate.ToString("MMM-dd-yyyy"), "Present");
     }
-
-    [ObservableProperty]
-    string totalCurrencySymbol = AppSettings.Account.CurrencySymbol;
 
     [ObservableProperty]
     bool isAddExpenseVisible = true;

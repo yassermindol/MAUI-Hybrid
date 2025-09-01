@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using ExpenseTracker.EventMessages;
 using ExpenseTracker.ExtensionMethods;
 using ExpenseTracker.Features.ViewModels;
 using ExpenseTracker.Models;
@@ -19,15 +21,11 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
     BaseApiService _service = new BaseApiService();
     public string Title => $"{TitlePartial}: {CurrencySymbol} {AmountStr}";
 
-    string currencySymbol = AppSettings.Account.CurrencySymbol;
-    public new string CurrencySymbol
+    private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)
     {
-        get => currencySymbol;
-        set
-        {
-            SetProperty(ref currencySymbol, value);
-            OnPropertyChanged(nameof(Title));
-        }
+        CurrencySymbol = message.Value;
+        StateHasChanged();
+        OnPropertyChanged(nameof(Title));
     }
 
     string amountStr;
@@ -50,6 +48,7 @@ public partial class SummaryDetailsViewModel : ExpenseListBaseViewModel
         _startDate = startDate;
         _endDate = endDate;
         _expenseEntities = expenses;
+        WeakReferenceMessenger.Default.Register<CurrencySymbolChangedMessage>(this, OnCurrencySymbolChanged);
     }
 
     [RelayCommand]

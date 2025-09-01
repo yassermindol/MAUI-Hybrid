@@ -34,6 +34,15 @@ public partial class DateRangeViewModel : ExpenseListBaseViewModel
         WeakReferenceMessenger.Default.Register<CurrencySymbolChangedMessage>(this, OnCurrencySymbolChanged);
     }
 
+    private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)
+    {
+        CurrencySymbol = message.Value;        
+        foreach (var legend in Legends)
+            legend.CurrencySymbol = CurrencySymbol;
+        OnPropertyChanged(nameof(Title));
+        StateHasChanged();
+    }
+
     private void OnRestoreExpense(object recipient, RestoreExpenseMessage message)
     {
         ShouldRefreshData = true;
@@ -110,19 +119,6 @@ public partial class DateRangeViewModel : ExpenseListBaseViewModel
         LoadDataAsync();
     }
 
-    private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)
-    {
-        string symbol = message.Value;
-
-        CurrencySymbol = symbol;
-
-        foreach (var legend in Legends)
-            legend.CurrencySymbol = symbol;
-
-        foreach (var item in UiExpenses)
-            item.CurrencySymbol = symbol;
-    }
-
     [ObservableProperty]
     PlotModel pieChartModel;
 
@@ -135,17 +131,6 @@ public partial class DateRangeViewModel : ExpenseListBaseViewModel
         set
         {
             SetProperty(ref amountStr, value);
-            OnPropertyChanged(nameof(Title));
-        }
-    }
-
-    string currencySymbol = AppSettings.Account.CurrencySymbol;
-    public new string CurrencySymbol
-    {
-        get => currencySymbol;
-        set
-        {
-            SetProperty(ref currencySymbol, value);
             OnPropertyChanged(nameof(Title));
         }
     }

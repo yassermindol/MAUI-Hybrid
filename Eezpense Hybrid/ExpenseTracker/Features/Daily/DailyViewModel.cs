@@ -56,22 +56,8 @@ public partial class DailyViewModel : BaseViewModel
     private void OnCurrencySymbolChanged(object recipient, CurrencySymbolChangedMessage message)
     {
         CurrencySymbol = message.Value;
-        string symbol = message.Value;
-        foreach (var item in DailyItems)
-        {
-            item.CurrencySymbol = symbol;
-            if (item.ItemType == Models.ExpenseItemType.Header)
-            {
-                foreach (var expense in item.Expenses)
-                {
-                    expense.CurrencySymbol = symbol;
-                }
-            }
-        }
-
         StateHasChanged();
     }
-
 
     private void OnRestoreExpense(object recipient, RestoreExpenseMessage message)
     {

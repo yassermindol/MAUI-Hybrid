@@ -1,13 +1,13 @@
-﻿using ExpenseTracker.Features;
-using ExpenseTracker.Features.DetailsOfSummaryReport.ViewModels;
-using ExpenseTracker.Features.ViewModels;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ExpenseTracker.EventMessages;
+using ExpenseTracker.Features;
 
 namespace ExpenseTracker.Helpers;
 
 /// <summary>
 /// DI Container Summary Details viewmodel
 /// </summary>
-public class DiContainerSummaryDetails
+public class DiContainerForRazor
 {
     private static string lastAppearedParentPageVm = string.Empty;
 
@@ -15,7 +15,11 @@ public class DiContainerSummaryDetails
     public static void RegisterViewModel(string parentPage, BaseViewModel viewModel)
     {
         if (_viewModels.ContainsKey(parentPage))
+        {
+            WeakReferenceMessenger.Default.Unregister<CurrencySymbolChangedMessage>(_viewModels[parentPage]);
             _viewModels.Remove(parentPage);
+        }
+            
         _viewModels.Add(parentPage, viewModel);
         lastAppearedParentPageVm = parentPage;
         Console.WriteLine($"************ Registering viewmodel: {viewModel.GetType().Name} for parent:{parentPage}");

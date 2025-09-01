@@ -42,7 +42,7 @@ public abstract partial class BaseWeeklyViewModel : BaseViewModel
         page.BindingContext = viewModel;
         Type runtimeType = this.GetType();
         string name = runtimeType.Name;
-        DiContainerSummaryDetails.RegisterViewModel(name, viewModel);
+        DiContainerForRazor.RegisterViewModel(name, viewModel);
         _summaryDetailsViewModel = viewModel;
         await _navigation.PushAsync(page);
         _strWeekNumberSelected = SelectedWeek.WeekNumber;
