@@ -3,6 +3,7 @@ using ExpenseTracker.EventMessages;
 using ExpenseTracker.Features.Home.ViewModels;
 using ExpenseTracker.Helpers;
 using ExpenseTracker.Models.UI;
+using ExpenseTracker.Test;
 
 namespace ExpenseTracker.Features.Home;
 
@@ -42,6 +43,11 @@ public partial class HomePage
         WeakReferenceMessenger.Default.Unregister<KeyboardVisibilityMessage>(this);
         WeakReferenceMessenger.Default.Register<KeyboardVisibilityMessage>(this, HandleKeyboardVisibility);
         _viewModel.ReloadDataIfShouldAsync();
+
+#if DEBUG
+        //DummyDataGenerator dummy = new DummyDataGenerator();
+        //dummy.SeedDataBase();
+#endif
     }
 
     private void HandleKeyboardVisibility(object recipient, KeyboardVisibilityMessage message)
