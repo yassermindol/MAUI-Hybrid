@@ -74,6 +74,11 @@
                         Text="Amount: "
                         VerticalOptions="Center" />
                     <Label
+                        Margin="0,0,5,0"
+                        FontSize="16"
+                        Text="{Binding CurrencySymbol}"
+                        VerticalOptions="Center" />
+                    <Label
                         FontFamily="Lobster"
                         FontSize="16"
                         HorizontalOptions="Fill"
