@@ -55,7 +55,7 @@
             <div>
                 <div class="progress-ring"></div>
                 <label style="margin-top: 5px; font-size:14px;">Loading...</label>
-            </div>            
+            </div>
         </div>
     </div>
 
@@ -66,7 +66,21 @@
         <a class="dismiss">🗙</a>
     </div>
 
+    <script>
+        window.blazorScrollToElement = (elementId) => {
+            console.log(`Scrolling to element with ID: ${elementId}`);
+            const el = document.getElementById(elementId);
+            if (!el) return;
 
+            // Optional header offset (e.g., if you have a fixed header)
+            const headerOffset = 0;//60;
+
+            const elementTop = el.getBoundingClientRect().top + window.pageYOffset;
+            const scrollTo = Math.max(0, elementTop - headerOffset);
+
+            window.scrollTo({ top: scrollTo, behavior: 'smooth' });
+        };
+    </script>
     <script src="_framework/blazor.webview.js" autostart="false"></script>
     <script>
         function setTheme(theme) {

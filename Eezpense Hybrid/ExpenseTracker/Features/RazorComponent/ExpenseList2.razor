@@ -1,0 +1,140 @@
+﻿@using ExpenseTracker.Features.DateRange.ViewModels
+@using ExpenseTracker.Features.DetailsOfSummaryReport.ViewModels
+@using ExpenseTracker.Features.Home.ViewModels;
+@using ExpenseTracker.Features.ViewModels
+@using ExpenseTracker.Helpers
+@using ExpenseTracker.Models.UI
+@using System.Globalization
+@inject IJSRuntime Js
+
+<div style="display:flex;flex-direction:column;">
+
+     @if (_viewModel.IsBusy)
+    {
+        <StatusRing />
+    }
+    else
+    {
+        @if (_viewModel.IsExpenseListGroupedByCategory)
+        {
+            <ul class="list-group" style="flex:1; overflow-y:auto;">
+                @foreach (var group in _viewModel.UiGroupByCategoryExpenses)
+                {
+                    <li class="list-group-item" style="padding:0;padding-top:10px;background-color:var(--list-item-main-bg);" @key="group.CategoryLocalId">
+                        <div style="display:flex; flex-direction:row; align-items:center; margin-left:10px;margin-right:10px;">
+                            <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;margin-right:10px;">
+                                <div style="display:flex; flex-direction:row;">
+                                    <label style="margin-bottom:4px;font-size:14px;font-weight:600;color:var(--text-color)">@group.Category</label>
+                                    <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:600;color:var(--text-color)">@_viewModel.CurrencySymbol</label>
+                                    <label style="margin-right:8px;font-size:14px;font-weight:600;color:var(--text-color)"> @group.TotalStr</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (group.Expenses?.Any() == true)
+                        {
+                            <ul class="list-group mt-2">
+                                @foreach (var expenseItem in group.Expenses)
+                                {
+                                    <li id=@expenseItem.ID class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:var(--list-sub-item-bg);"
+                                        @onclick="() => OnExpenseItemClicked(expenseItem)">
+                                        <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
+                                            <div style="display:flex; flex-direction:row;flex:1;">
+                                                <label style="margin-bottom:4px;font-size:14px;font-weight:500;color:var(--text-color)">@expenseItem.Category</label>
+                                                <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:500;color:var(--text-color)">@_viewModel.CurrencySymbol</label>
+                                                <label style="margin-right:8px;font-size:14px;font-weight:500;color:var(--text-color)"> @expenseItem.AmountStr</label>
+                                            </div>
+                                            <div style="display:flex; flex-direction:row;flex:1;padding:0px;">
+                                                <label style="margin-right:10px;flex:1;overflow:hidden;
+                                                                    display:-webkit-box;
+                                                                    -webkit-box-orient:vertical;
+                                                                    -webkit-line-clamp:2;
+                                                                    line-height:1.2em;
+                                                                    font-size:14px;
+                                                                    color:var(--text-color);
+                                                                    text-overflow:ellipsis;">@expenseItem.Note</label>
+                                                <label style="margin-left:auto;margin-right:4px;font-size:14px;color:var(--text-color)">@expenseItem.Date | </label>
+                                                <label style="margin-right:8px;font-size:14px;color:var(--text-color)">@expenseItem.Time</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <ul class="list-group mt-2" style="flex:1; overflow-y:auto;">
+                @foreach (var item in _viewModel.UiExpenses)
+                {
+                    <li id=@item.ID class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:var(--list-sub-item-bg);">
+                        <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
+                            <div style="display:flex; flex-direction:row;flex:1;">
+                                <label style="margin-bottom:4px;font-size:14px;font-weight:500;color:var(--text-color)">@item.Category</label>
+                                <label style="margin-left:auto;margin-right:4px;font-size:14px;font-weight:500;color:var(--text-color)">@_viewModel.CurrencySymbol</label>
+                                <label style="margin-right:8px;font-size:14px;font-weight:500;color:var(--text-color)"> @item.AmountStr</label>
+                            </div>
+                            <div style="display:flex; flex-direction:row;flex:1;padding:0px;">
+                                <label style="margin-right:10px;flex:1;overflow:hidden;
+                                            display:-webkit-box;
+                                            -webkit-box-orient:vertical;
+                                            -webkit-line-clamp:2;
+                                            line-height:1.2em;
+                                            font-size:14px;
+                                            color:var(--text-color);
+                                            text-overflow:ellipsis;">@item.Note</label>
+                                <label style="margin-left:auto;margin-right:4px;font-size:14px;color:var(--text-color)">@item.Date | </label>
+                                <label style="margin-right:8px;font-size:14px;color:var(--text-color)">@item.Time</label>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    }
+</div>
+
+@code {
+
+    ExpenseListBaseViewModel _viewModel;
+    bool _isFirstLoad = true;
+    bool _expenseItemClicked = false;
+
+    private async Task FocusExpenseAsync(long id)
+    {
+        await Js.InvokeVoidAsync("blazorScrollToElement", id);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        string parent = string.Empty;
+        _viewModel = (ExpenseListBaseViewModel)DiContainerForRazor.GetViewModel(out parent);
+        _viewModel.StateHasChanged = StateHasChanged;
+        _viewModel.ScrollToItem = (id) => FocusExpenseAsync(id);
+    }
+
+    private void OnExpenseItemClicked(UiExpenseItem item)
+    {
+        if (_expenseItemClicked)
+            return;
+        _expenseItemClicked = true;
+        _viewModel.UiExpenseSelectedItem = item;
+        if (_viewModel is HomeViewModel)
+        {
+            MainThread.BeginInvokeOnMainThread(() => (_viewModel as HomeViewModel).UiExpenseSelectedCommand.Execute(null));
+        }
+        else if (_viewModel is DateRangeViewModel)
+        {
+            MainThread.BeginInvokeOnMainThread(() => (_viewModel as DateRangeViewModel).UiExpenseSelectedCommand.Execute(null));
+        }
+        else if (_viewModel is SummaryDetailsViewModel)
+        {
+            MainThread.BeginInvokeOnMainThread(() => (_viewModel as SummaryDetailsViewModel).UiExpenseSelectedCommand.Execute(null));
+        }
+        _expenseItemClicked = false;
+    }
+}

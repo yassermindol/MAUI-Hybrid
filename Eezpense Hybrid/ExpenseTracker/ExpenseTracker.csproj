@@ -198,7 +198,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
     <Folder Include="Features\OnBoarding\Templates\" />
     <Folder Include="Platforms\Android\Resources\mipmap-ldpi\" />
     <Folder Include="Resources\AppIcon\" />

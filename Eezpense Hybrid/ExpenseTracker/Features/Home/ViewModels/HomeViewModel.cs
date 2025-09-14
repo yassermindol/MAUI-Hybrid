@@ -244,6 +244,7 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
         TotalExpense = _total.ToMoney();
         var expenseItem = new UiExpenseItem
         {
+            ID = Id,
             Amount = amount,
             Note = Note,
             DateTime = date,
@@ -259,6 +260,7 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
         _selectedExpenseDate = DateTime.MinValue;
         IsBusy = false;
         StateHasChanged();
+        ScrollToItem(Id);
     }
 
     private void InsertAmountToUiList(UiExpenseItem expenseToInsert)

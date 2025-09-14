@@ -34,6 +34,8 @@ public abstract partial class ExpenseListBaseViewModel : BaseViewModel
     [ObservableProperty]
     string viewTypeText = AppResources.ViewList;
 
+    public Action<long> ScrollToItem { get; set; }
+
     protected abstract void NotBusy();
     protected abstract void Busy();
 

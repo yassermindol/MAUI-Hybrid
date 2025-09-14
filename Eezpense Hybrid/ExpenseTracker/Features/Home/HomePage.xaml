@@ -94,7 +94,7 @@
             IsVisible="{Binding IsListVisible}"
             VerticalOptions="FillAndExpand">
             <BlazorWebView.RootComponents>
-                <RootComponent ComponentType="{x:Type razor:ExpenseList}" Selector="#app" />
+                <RootComponent ComponentType="{x:Type razor:ExpenseList2}" Selector="#app" />
             </BlazorWebView.RootComponents>
         </BlazorWebView>
     </StackLayout>
