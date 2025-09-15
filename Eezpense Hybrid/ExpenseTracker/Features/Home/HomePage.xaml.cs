@@ -45,8 +45,8 @@ public partial class HomePage
         _viewModel.ReloadDataIfShouldAsync();
 
 #if DEBUG
-        //DummyDataGenerator dummy = new DummyDataGenerator();
-        //dummy.SeedDataBase();
+        DummyDataGenerator dummy = new DummyDataGenerator();
+        dummy.SeedDataBase();
 #endif
     }
 

@@ -80,6 +80,9 @@ public class DummyDataGenerator : BaseViewModel
     CalendarService _calendarService = new CalendarService();
     public void SeedDataBase()
     {
+        if (ExpenseTableDb.GetAll().Count > 0)
+            return;
+
         foreach (var item in Categories)
         {
             CategoryTableDb.Add(item);
