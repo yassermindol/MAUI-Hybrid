@@ -89,7 +89,7 @@
         <BlazorWebView
             x:Name="webView"
             Grid.Row="0"
-            Margin="0,0,0,10"
+            Margin="0,0,0,60"
             HostPage="wwwroot/index.html"
             IsVisible="{Binding IsListVisible}"
             VerticalOptions="FillAndExpand">

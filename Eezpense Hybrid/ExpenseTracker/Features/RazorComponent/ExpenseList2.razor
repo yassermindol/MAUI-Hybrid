@@ -70,7 +70,8 @@
             <ul class="list-group mt-2" style="flex:1; overflow-y:auto;">
                 @foreach (var item in _viewModel.UiExpenses)
                 {
-                    <li id=@item.ID class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:var(--list-sub-item-bg);">
+                    <li id=@item.ID class="list-group-item list-group-item-action" style="padding-left:12px;padding-right:8px;background-color:var(--list-sub-item-bg);"
+                        @onclick="() => OnExpenseItemClicked(item)">
                         <div style="display:flex; flex-direction:column; flex:1; cursor:pointer;">
                             <div style="display:flex; flex-direction:row;flex:1;">
                                 <label style="margin-bottom:4px;font-size:14px;font-weight:500;color:var(--text-color)">@item.Category</label>
