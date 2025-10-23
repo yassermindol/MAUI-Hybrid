@@ -5,6 +5,7 @@ using Android.Views;
 using AndroidX.Core.View;
 using CommunityToolkit.Mvvm.Messaging;
 using ExpenseTracker.EventMessages;
+using Plugin.InAppBilling;
 
 namespace ExpenseTracker;
 
@@ -39,6 +40,7 @@ public class MainActivity : MauiAppCompatActivity, ViewTreeObserver.IOnGlobalLay
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+        _ = MakePurchase();
         //billingManager = new BillingManager(this);
 
         /*
@@ -56,5 +58,24 @@ public class MainActivity : MauiAppCompatActivity, ViewTreeObserver.IOnGlobalLay
         }
         */
         //Microsoft.Maui.ApplicationModel.Platform.CurrentActivity.Window.SetNavigationBarColor(Colors.Blue.ToAndroid());
+    }
+
+    public async Task<bool> MakePurchase()
+    {
+        var billing = CrossInAppBilling.Current;
+        try
+        {
+            var connected = await billing.ConnectAsync();
+            if (!connected)
+                return false;
+
+            //make additional billing calls
+        }
+        finally
+        {
+            await billing.DisconnectAsync();
+        }
+
+        return true;
     }
 }
