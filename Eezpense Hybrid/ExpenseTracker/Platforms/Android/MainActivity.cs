@@ -6,6 +6,7 @@ using AndroidX.Core.View;
 using CommunityToolkit.Mvvm.Messaging;
 using ExpenseTracker.EventMessages;
 using Plugin.InAppBilling;
+using ExpenseTracker.Services;
 
 namespace ExpenseTracker;
 
@@ -13,7 +14,7 @@ namespace ExpenseTracker;
 public class MainActivity : MauiAppCompatActivity, ViewTreeObserver.IOnGlobalLayoutListener
 {
     Android.Views.View? contentView;
-    //private BillingManager billingManager;
+    private BillingService _billingService;
 
     protected override void OnPostCreate(Bundle? savedInstanceState)
     {
@@ -22,6 +23,7 @@ public class MainActivity : MauiAppCompatActivity, ViewTreeObserver.IOnGlobalLay
         contentView = FindViewById(Android.Resource.Id.Content).RootView;
         contentView?.ViewTreeObserver?.AddOnGlobalLayoutListener(this);
     }
+    
     public void OnGlobalLayout()
     {
         try
@@ -40,8 +42,11 @@ public class MainActivity : MauiAppCompatActivity, ViewTreeObserver.IOnGlobalLay
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
-        _ = MakePurchase();
-        //billingManager = new BillingManager(this);
+        
+        _billingService = new BillingService();
+        
+        // Check subscription status on startup
+        _ = CheckSubscriptionStatus();
 
         /*
         // Get the color from MAUI resources
@@ -57,25 +62,98 @@ public class MainActivity : MauiAppCompatActivity, ViewTreeObserver.IOnGlobalLay
             Window.SetNavigationBarColor(androidColor);
         }
         */
-        //Microsoft.Maui.ApplicationModel.Platform.CurrentActivity.Window.SetNavigationBarColor(Colors.Blue.ToAndroid());
     }
 
-    public async Task<bool> MakePurchase()
+    /// <summary>
+    /// Check the current subscription status and handle pending purchases
+    /// </summary>
+    public async Task CheckSubscriptionStatus()
     {
-        var billing = CrossInAppBilling.Current;
         try
         {
-            var connected = await billing.ConnectAsync();
-            if (!connected)
-                return false;
-
-            //make additional billing calls
+            System.Diagnostics.Debug.WriteLine("Checking subscription status...");
+            
+            // Check if user has active subscription
+            var hasActiveSubscription = await _billingService.HasActivePremiumSubscription();
+            System.Diagnostics.Debug.WriteLine($"Has active subscription: {hasActiveSubscription}");
+            
+            // Get all subscription purchases to handle pending ones
+            var purchases = await _billingService.GetAllSubscriptionPurchases();
+            
+            foreach (var purchase in purchases)
+            {
+                System.Diagnostics.Debug.WriteLine($"Purchase found: {purchase.ProductId}, State: {purchase.State}");
+                
+                if (purchase.State == PurchaseState.PaymentPending)
+                {
+                    System.Diagnostics.Debug.WriteLine("Found pending payment, setting up callback...");
+                    SetupPurchaseUpdateCallback();
+                    break;
+                }
+                else if (purchase.State == PurchaseState.Purchased)
+                {
+                    // Try to acknowledge unacknowledged purchases if supported
+                    System.Diagnostics.Debug.WriteLine("Purchase found, attempting acknowledgment...");
+                    await _billingService.TryAcknowledgePurchase(purchase.PurchaseToken);
+                }
+            }
+            
+            // Get subscription product details
+            var product = await _billingService.GetSubscriptionProduct();
+            if (product != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Subscription product: {product.Name}, Price: {product.LocalizedPrice}");
+            }
         }
-        finally
+        catch (Exception ex)
         {
-            await billing.DisconnectAsync();
+            System.Diagnostics.Debug.WriteLine($"Error checking subscription status: {ex.Message}");
         }
-
-        return true;
+    }
+    
+    /// <summary>
+    /// Setup callback for purchase updates (for pending payments)
+    /// </summary>
+    private void SetupPurchaseUpdateCallback()
+    {
+        InAppBillingImplementation.OnAndroidPurchasesUpdated = async (billingResult, purchases) =>
+        {
+            System.Diagnostics.Debug.WriteLine($"Purchase update callback triggered. Result: {billingResult?.ResponseCode}");
+            
+            if (purchases != null)
+            {
+                foreach (var purchase in purchases)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Updated purchase: {purchase.ProductId}, State: {purchase.State}");
+                    
+                    if (purchase.State == PurchaseState.Purchased)
+                    {
+                        // Try to acknowledge the purchase
+                        await _billingService.TryAcknowledgePurchase(purchase.PurchaseToken);
+                        System.Diagnostics.Debug.WriteLine("Purchase completed and acknowledgment attempted");
+                        
+                        // You might want to send a message to update the UI
+                        // WeakReferenceMessenger.Default.Send(new SubscriptionPurchasedMessage());
+                    }
+                }
+            }
+        };
+    }
+    
+    /// <summary>
+    /// Method to purchase premium subscription (call this from your UI)
+    /// </summary>
+    public async Task<bool> PurchasePremiumSubscription()
+    {
+        try
+        {
+            SetupPurchaseUpdateCallback();
+            return await _billingService.PurchasePremiumSubscription();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in purchase method: {ex.Message}");
+            return false;
+        }
     }
 }

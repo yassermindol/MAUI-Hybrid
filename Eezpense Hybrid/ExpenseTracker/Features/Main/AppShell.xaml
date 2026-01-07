@@ -42,6 +42,10 @@
         <ShellContent ContentTemplate="{DataTemplate settings:SettingsPage}" />
     </Tab>
 
+    <Tab Title="Test Billing" Icon="ic_settings.png">
+        <ShellContent ContentTemplate="{DataTemplate test:BillingTestPage}" />
+    </Tab>
+
     <!--
 
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">

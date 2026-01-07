@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExpenseTracker.Features.Test.BillingTestPage"
+             Title="Billing Test Page">
+    
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="15">
+            
+            <!-- Status Information -->
+            <Frame BackgroundColor="LightGray" Padding="10">
+                <StackLayout>
+                    <Label Text="Subscription Status" FontAttributes="Bold" />
+                    <Label Text="{Binding SubscriptionInfo}" />
+                    <Label Text="Premium User:" FontAttributes="Bold" />
+                    <Label Text="{Binding IsPremiumUser}" TextColor="{Binding IsPremiumUser, Converter={StaticResource BoolToColorConverter}}" />
+                </StackLayout>
+            </Frame>
+
+            <!-- Test Buttons -->
+            <Label Text="Test Operations" FontSize="Large" FontAttributes="Bold" />
+            
+            <Button Text="1. Test Connection" 
+                    Command="{Binding TestConnectionCommand}" 
+                    BackgroundColor="LightBlue" />
+            
+            <Button Text="2. Test Purchase (SubscriptionService)" 
+                    Command="{Binding TestPurchaseCommand}" 
+                    BackgroundColor="Beige" />
+            
+            <Button Text="3. Test Purchase (MainActivity)" 
+                    Command="{Binding TestMainActivityPurchaseCommand}" 
+                    BackgroundColor="Yellow" />
+            
+            <Button Text="4. Get Purchase History" 
+                    Command="{Binding GetPurchaseHistoryCommand}" 
+                    BackgroundColor="LightGreen" />
+            
+            <Button Text="5. Get Subscription Details" 
+                    Command="{Binding GetSubscriptionDetailsCommand}" 
+                    BackgroundColor="Pink" />
+            
+            <Button Text="6. Check MainActivity Status" 
+                    Command="{Binding CheckMainActivityStatusCommand}" 
+                    BackgroundColor="LightCyan" />
+            
+            <Button Text="7. 🔍 Diagnose Setup Issues" 
+                    Command="{Binding DiagnoseSetupCommand}" 
+                    BackgroundColor="Red" 
+                    TextColor="White" />
+            
+            <!-- Loading indicator -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+            
+            <!-- Results -->
+            <Label Text="Test Results:" FontSize="Medium" FontAttributes="Bold" />
+            <Frame BackgroundColor="Black" Padding="10">
+                <ScrollView MaximumHeightRequest="200">
+                    <Label Text="{Binding TestResults}" 
+                           TextColor="LimeGreen" 
+                           FontFamily="Courier" 
+                           FontSize="Small" />
+                </ScrollView>
+            </Frame>
+            
+            <Button Text="Clear Results" 
+                    Command="{Binding ClearResultsCommand}" 
+                    BackgroundColor="Red" 
+                    TextColor="White" />
+            
+            <!-- Instructions -->
+            <Frame BackgroundColor="LightYellow" Padding="10">
+                <StackLayout>
+                    <Label Text="Testing Instructions:" FontAttributes="Bold" />
+                    <Label Text="1. Run on a physical Android device with Google Play" FontSize="Small" />
+                    <Label Text="2. Use a test account added to Google Play Console" FontSize="Small" />
+                    <Label Text="3. In simulator, connection will fail (expected)" FontSize="Small" />
+                    <Label Text="4. Check debug output window for detailed logs" FontSize="Small" />
+                </StackLayout>
+            </Frame>
+            
+        </StackLayout>
+    </ScrollView>
+    
+</ContentPage>

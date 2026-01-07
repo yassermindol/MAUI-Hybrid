@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using ExpenseTracker.Features.Daily;
 using ExpenseTracker.Features.Home.ViewModels;
+using ExpenseTracker.Services;
 using Microsoft.Extensions.Logging;
 using OxyPlot.Maui.Skia;
 using SkiaSharp.Views.Maui.Controls.Hosting;
@@ -30,6 +31,11 @@ namespace ExpenseTracker
 
             var services = builder.Services;
             services.AddSingleton<DailyViewModel>();
+            
+            // Register billing services
+            services.AddSingleton<BillingService>();
+            services.AddSingleton<SubscriptionService>();
+            services.AddSingleton<PlatformBillingService>();
 
 #if DEBUG
             builder.Logging.AddDebug();

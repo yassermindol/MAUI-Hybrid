@@ -28,6 +28,7 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
 
     HomeService _homeService = new();
     CalendarService _calendarService = new();
+    SubscriptionService _subscriptionService = new();
 
     public Action<UiExpenseItem> SaveExpenseDelegate { get; set; }
     public Action NoteCompletedDelegate { get; set; }
@@ -151,6 +152,159 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
 
     [ObservableProperty]
     string totalExpense;
+
+    [ObservableProperty]
+    bool isPremiumUser = false;
+
+    [ObservableProperty]
+    string subscriptionStatus = "Checking...";
+
+    [ObservableProperty]
+    bool isTestPurchaseVisible = true; // Show test purchase button
+
+    public async Task CheckPremiumStatus()
+    {
+        try
+        {
+            IsPremiumUser = await _subscriptionService.IsPremiumUser();
+            var subscriptionInfo = await _subscriptionService.GetSubscriptionInfo();
+            
+            if (subscriptionInfo != null)
+            {
+                if (subscriptionInfo.HasActiveSubscription)
+                {
+                    SubscriptionStatus = $"Premium Active - {subscriptionInfo.LocalizedPrice}/month";
+                    IsTestPurchaseVisible = false; // Hide purchase button if already premium
+                }
+                else
+                {
+                    SubscriptionStatus = $"Premium Available - {subscriptionInfo.LocalizedPrice}/month";
+                    IsTestPurchaseVisible = true; // Show purchase button
+                }
+            }
+            else
+            {
+                SubscriptionStatus = "Premium Available";
+                IsTestPurchaseVisible = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error checking premium status: {ex.Message}");
+            SubscriptionStatus = "Status Unknown";
+        }
+    }
+
+    [RelayCommand]
+    private async Task PurchasePremium()
+    {
+        if (IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+            SubscriptionStatus = "Processing purchase...";
+            
+            var result = await _subscriptionService.PurchasePremium();
+            
+            if (result.Success)
+            {
+                await ShowMessage("Success", "Premium subscription initiated successfully!");
+                await CheckPremiumStatus(); // Refresh status
+            }
+            else
+            {
+                await ShowMessage("Purchase Failed", result.Message);
+                SubscriptionStatus = "Purchase failed";
+            }
+        }
+        catch (Exception ex)
+        {
+            await ShowMessage("Error", $"Purchase error: {ex.Message}");
+            SubscriptionStatus = "Purchase error";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task TestPurchase()
+    {
+        if (IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+            SubscriptionStatus = "Initiating test purchase...";
+            
+            // Method 1: Using SubscriptionService
+            var result = await _subscriptionService.PurchasePremium();
+            
+            if (result.Success)
+            {
+                await ShowMessage("Test Purchase", "Premium subscription purchase initiated successfully!\n\nThis will open Google Play for payment confirmation.");
+                await CheckPremiumStatus(); // Refresh status
+            }
+            else
+            {
+                await ShowMessage("Purchase Failed", $"Test purchase failed: {result.Message}\n\nNote: This is expected in simulators.");
+                SubscriptionStatus = "Test purchase failed";
+            }
+        }
+        catch (Exception ex)
+        {
+            await ShowMessage("Error", $"Test purchase error: {ex.Message}");
+            SubscriptionStatus = "Purchase error";
+            System.Diagnostics.Debug.WriteLine($"Test purchase error: {ex}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task TestPurchaseAlternative()
+    {
+        if (IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+            SubscriptionStatus = "Testing alternative purchase method...";
+            
+            // Method 2: Using PlatformBillingService (MainActivity)
+            var platformService = new PlatformBillingService();
+            var success = await platformService.PurchasePremiumFromMainActivity();
+            
+            if (success)
+            {
+                await ShowMessage("Alternative Test Purchase", "Premium subscription initiated via MainActivity!");
+                await CheckPremiumStatus();
+            }
+            else
+            {
+                await ShowMessage("Alternative Purchase Failed", "Failed to initiate purchase via MainActivity.");
+            }
+        }
+        catch (Exception ex)
+        {
+            await ShowMessage("Error", $"Alternative purchase error: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Alternative purchase error: {ex}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand] 
+    private async Task RefreshSubscriptionStatus()
+    {
+        await CheckPremiumStatus();
+    }
 
     [RelayCommand]
     private async Task UiExpenseSelectedAsync()
@@ -435,7 +589,7 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
         }
 
         NotBusy();
-        StateHasChanged();
+        StateHasChanged?.Invoke();
     }
 
     public async Task ReloadDataIfShouldAsync()
