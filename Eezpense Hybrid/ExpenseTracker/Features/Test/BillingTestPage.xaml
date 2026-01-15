@@ -1,85 +1,107 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ExpenseTracker.Features.Test.BillingTestPage"
-             Title="Billing Test Page">
-    
+<ContentPage
+    x:Class="ExpenseTracker.Features.Test.BillingTestPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Billing Test Page">
+
     <ScrollView>
         <StackLayout Padding="20" Spacing="15">
-            
-            <!-- Status Information -->
-            <Frame BackgroundColor="LightGray" Padding="10">
+
+            <!--  Status Information  -->
+            <Frame Padding="10" BackgroundColor="LightGray">
                 <StackLayout>
-                    <Label Text="Subscription Status" FontAttributes="Bold" />
+                    <Label FontAttributes="Bold" Text="Subscription Status" />
                     <Label Text="{Binding SubscriptionInfo}" />
-                    <Label Text="Premium User:" FontAttributes="Bold" />
+                    <Label FontAttributes="Bold" Text="Premium User:" />
                     <Label Text="{Binding IsPremiumUser}" TextColor="{Binding IsPremiumUser, Converter={StaticResource BoolToColorConverter}}" />
                 </StackLayout>
             </Frame>
 
-            <!-- Test Buttons -->
-            <Label Text="Test Operations" FontSize="Large" FontAttributes="Bold" />
-            
-            <Button Text="1. Test Connection" 
-                    Command="{Binding TestConnectionCommand}" 
-                    BackgroundColor="LightBlue" />
-            
-            <Button Text="2. Test Purchase (SubscriptionService)" 
-                    Command="{Binding TestPurchaseCommand}" 
-                    BackgroundColor="Beige" />
-            
-            <Button Text="3. Test Purchase (MainActivity)" 
-                    Command="{Binding TestMainActivityPurchaseCommand}" 
-                    BackgroundColor="Yellow" />
-            
-            <Button Text="4. Get Purchase History" 
-                    Command="{Binding GetPurchaseHistoryCommand}" 
-                    BackgroundColor="LightGreen" />
-            
-            <Button Text="5. Get Subscription Details" 
-                    Command="{Binding GetSubscriptionDetailsCommand}" 
-                    BackgroundColor="Pink" />
-            
-            <Button Text="6. Check MainActivity Status" 
-                    Command="{Binding CheckMainActivityStatusCommand}" 
-                    BackgroundColor="LightCyan" />
-            
-            <Button Text="7. 🔍 Diagnose Setup Issues" 
-                    Command="{Binding DiagnoseSetupCommand}" 
-                    BackgroundColor="Red" 
-                    TextColor="White" />
-            
-            <!-- Loading indicator -->
-            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
-            
-            <!-- Results -->
-            <Label Text="Test Results:" FontSize="Medium" FontAttributes="Bold" />
-            <Frame BackgroundColor="Black" Padding="10">
+            <!--  Test Buttons  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="Large"
+                Text="Test Operations" />
+
+            <Button
+                BackgroundColor="LightBlue"
+                Command="{Binding TestConnectionCommand}"
+                Text="1. Test Connection"
+                TextColor="Black" />
+
+            <Button
+                BackgroundColor="Beige"
+                Command="{Binding TestPurchaseCommand}"
+                Text="2. Test Purchase (SubscriptionService)"
+                TextColor="Black" />
+
+            <Button
+                BackgroundColor="Yellow"
+                Command="{Binding TestMainActivityPurchaseCommand}"
+                Text="3. Test Purchase (MainActivity)"
+                TextColor="Black" />
+
+            <Button
+                BackgroundColor="LightGreen"
+                Command="{Binding GetPurchaseHistoryCommand}"
+                Text="4. Get Purchase History"
+                TextColor="Black" />
+
+            <Button
+                BackgroundColor="Pink"
+                Command="{Binding GetSubscriptionDetailsCommand}"
+                Text="5. Get Subscription Details"
+                TextColor="Black" />
+
+            <Button
+                BackgroundColor="LightCyan"
+                Command="{Binding CheckMainActivityStatusCommand}"
+                Text="6. Check MainActivity Status"
+                TextColor="Black" />
+
+            <Button
+                BackgroundColor="Red"
+                Command="{Binding DiagnoseSetupCommand}"
+                Text="7. 🔍 Diagnose Setup Issues"
+                TextColor="White" />
+
+            <!--  Loading indicator  -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <!--  Results  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="Medium"
+                Text="Test Results:" />
+            <Frame Padding="10" BackgroundColor="Black">
                 <ScrollView MaximumHeightRequest="200">
-                    <Label Text="{Binding TestResults}" 
-                           TextColor="LimeGreen" 
-                           FontFamily="Courier" 
-                           FontSize="Small" />
+                    <Label
+                        FontFamily="Courier"
+                        FontSize="Small"
+                        Text="{Binding TestResults}"
+                        TextColor="LimeGreen" />
                 </ScrollView>
             </Frame>
-            
-            <Button Text="Clear Results" 
-                    Command="{Binding ClearResultsCommand}" 
-                    BackgroundColor="Red" 
-                    TextColor="White" />
-            
-            <!-- Instructions -->
-            <Frame BackgroundColor="LightYellow" Padding="10">
+
+            <Button
+                BackgroundColor="Red"
+                Command="{Binding ClearResultsCommand}"
+                Text="Clear Results"
+                TextColor="White" />
+
+            <!--  Instructions  -->
+            <Frame Padding="10" BackgroundColor="LightYellow">
                 <StackLayout>
-                    <Label Text="Testing Instructions:" FontAttributes="Bold" />
-                    <Label Text="1. Run on a physical Android device with Google Play" FontSize="Small" />
-                    <Label Text="2. Use a test account added to Google Play Console" FontSize="Small" />
-                    <Label Text="3. In simulator, connection will fail (expected)" FontSize="Small" />
-                    <Label Text="4. Check debug output window for detailed logs" FontSize="Small" />
+                    <Label FontAttributes="Bold" Text="Testing Instructions:" />
+                    <Label FontSize="Small" Text="1. Run on a physical Android device with Google Play" />
+                    <Label FontSize="Small" Text="2. Use a test account added to Google Play Console" />
+                    <Label FontSize="Small" Text="3. In simulator, connection will fail (expected)" />
+                    <Label FontSize="Small" Text="4. Check debug output window for detailed logs" />
                 </StackLayout>
             </Frame>
-            
+
         </StackLayout>
     </ScrollView>
-    
+
 </ContentPage>
