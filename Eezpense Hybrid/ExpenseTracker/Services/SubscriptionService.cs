@@ -10,12 +10,10 @@ namespace ExpenseTracker.Services;
 public class SubscriptionService
 {
     private readonly BillingService _billingService;
-    private readonly ILogger<SubscriptionService> _logger;
     
-    public SubscriptionService(ILogger<SubscriptionService> logger = null)
+    public SubscriptionService()
     {
-        _billingService = new BillingService(null); // Pass null for logger type mismatch
-        _logger = logger;
+        _billingService = new BillingService(); // Pass null for logger type mismatch
     }
     
     /// <summary>
@@ -30,7 +28,6 @@ public class SubscriptionService
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "Error checking premium status");
             return false; // Default to non-premium on error
         }
     }
@@ -62,7 +59,6 @@ public class SubscriptionService
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "Error getting subscription info");
             return null;
         }
     }
@@ -84,7 +80,6 @@ public class SubscriptionService
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "Error purchasing premium");
             return new PurchaseResult 
             { 
                 Success = false, 

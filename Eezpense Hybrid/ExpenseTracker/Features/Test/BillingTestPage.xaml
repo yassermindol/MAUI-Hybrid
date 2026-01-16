@@ -14,7 +14,7 @@
                     <Label FontAttributes="Bold" Text="Subscription Status" />
                     <Label Text="{Binding SubscriptionInfo}" />
                     <Label FontAttributes="Bold" Text="Premium User:" />
-                    <Label Text="{Binding IsPremiumUser}" TextColor="{Binding IsPremiumUser, Converter={StaticResource BoolToColorConverter}}" />
+                    <Label Text="{Binding IsPremiumUser}" TextColor="Red" />
                 </StackLayout>
             </Frame>
 

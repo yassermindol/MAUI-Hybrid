@@ -6,12 +6,10 @@ namespace ExpenseTracker.Services;
 
 public class BillingService
 {
-    private readonly ILogger<BillingService> _logger;
     private const string MONTHLY_SUBSCRIPTION_ID = "eezpense_premium_monthly";
     
-    public BillingService(ILogger<BillingService> logger = null)
+    public BillingService()
     {
-        _logger = logger;
     }
     
     /// <summary>
@@ -44,7 +42,6 @@ public class BillingService
         catch (Exception ex)
         {
             Debug.WriteLine($"Error checking subscription status: {ex.Message}");
-            _logger?.LogError(ex, "Error checking subscription status");
             return false;
         }
         finally
@@ -79,7 +76,6 @@ public class BillingService
         catch (Exception ex)
         {
             Debug.WriteLine($"Error getting subscription product: {ex.Message}");
-            _logger?.LogError(ex, "Error getting subscription product");
             return null;
         }
         finally
@@ -125,7 +121,6 @@ public class BillingService
         catch (Exception ex)
         {
             Debug.WriteLine($"Error purchasing subscription: {ex.Message}");
-            _logger?.LogError(ex, "Error purchasing subscription");
             return false;
         }
         finally
@@ -157,7 +152,6 @@ public class BillingService
         catch (Exception ex)
         {
             Debug.WriteLine($"Error getting subscription purchases: {ex.Message}");
-            _logger?.LogError(ex, "Error getting subscription purchases");
             return new List<InAppBillingPurchase>();
         }
         finally
@@ -198,7 +192,6 @@ public class BillingService
         catch (Exception ex)
         {
             Debug.WriteLine($"Error finalizing purchase: {ex.Message}");
-            _logger?.LogError(ex, "Error finalizing purchase");
             return false;
         }
         finally
@@ -223,7 +216,6 @@ public class BillingService
         catch (Exception ex)
         {
             Debug.WriteLine($"Error acknowledging/finalizing purchase: {ex.Message}");
-            _logger?.LogError(ex, "Error acknowledging/finalizing purchase");
             return false;
         }
     }

@@ -24,7 +24,7 @@ public partial class BillingTestViewModel : BaseViewModel
     }
 
     [ObservableProperty]
-    string testResults = "Ready for testing...\n";
+    string testResults = "Ready for testing";
 
     [ObservableProperty]
     bool isPremiumUser = false;
