@@ -25,6 +25,7 @@ namespace ExpenseTracker.Features.Home.ViewModels;
 public partial class HomeViewModel : ExpenseListBaseViewModel
 {
     double _total = 0;
+    bool _userHasAppAccess = false;
 
     HomeService _homeService = new();
     CalendarService _calendarService = new();
@@ -153,159 +154,6 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
     [ObservableProperty]
     string totalExpense;
 
-    [ObservableProperty]
-    bool isPremiumUser = false;
-
-    [ObservableProperty]
-    string subscriptionStatus = "Checking...";
-
-    [ObservableProperty]
-    bool isTestPurchaseVisible = true; // Show test purchase button
-
-    public async Task CheckPremiumStatus()
-    {
-        try
-        {
-            IsPremiumUser = await _subscriptionService.IsPremiumUser();
-            var subscriptionInfo = await _subscriptionService.GetSubscriptionInfo();
-            
-            if (subscriptionInfo != null)
-            {
-                if (subscriptionInfo.HasActiveSubscription)
-                {
-                    SubscriptionStatus = $"Premium Active - {subscriptionInfo.LocalizedPrice}/month";
-                    IsTestPurchaseVisible = false; // Hide purchase button if already premium
-                }
-                else
-                {
-                    SubscriptionStatus = $"Premium Available - {subscriptionInfo.LocalizedPrice}/month";
-                    IsTestPurchaseVisible = true; // Show purchase button
-                }
-            }
-            else
-            {
-                SubscriptionStatus = "Premium Available";
-                IsTestPurchaseVisible = true;
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error checking premium status: {ex.Message}");
-            SubscriptionStatus = "Status Unknown";
-        }
-    }
-
-    [RelayCommand]
-    private async Task PurchasePremium()
-    {
-        if (IsBusy) return;
-
-        try
-        {
-            IsBusy = true;
-            SubscriptionStatus = "Processing purchase...";
-            
-            var result = await _subscriptionService.PurchasePremium();
-            
-            if (result.Success)
-            {
-                await ShowMessage("Success", "Premium subscription initiated successfully!");
-                await CheckPremiumStatus(); // Refresh status
-            }
-            else
-            {
-                await ShowMessage("Purchase Failed", result.Message);
-                SubscriptionStatus = "Purchase failed";
-            }
-        }
-        catch (Exception ex)
-        {
-            await ShowMessage("Error", $"Purchase error: {ex.Message}");
-            SubscriptionStatus = "Purchase error";
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private async Task TestPurchase()
-    {
-        if (IsBusy) return;
-
-        try
-        {
-            IsBusy = true;
-            SubscriptionStatus = "Initiating test purchase...";
-            
-            // Method 1: Using SubscriptionService
-            var result = await _subscriptionService.PurchasePremium();
-            
-            if (result.Success)
-            {
-                await ShowMessage("Test Purchase", "Premium subscription purchase initiated successfully!\n\nThis will open Google Play for payment confirmation.");
-                await CheckPremiumStatus(); // Refresh status
-            }
-            else
-            {
-                await ShowMessage("Purchase Failed", $"Test purchase failed: {result.Message}\n\nNote: This is expected in simulators.");
-                SubscriptionStatus = "Test purchase failed";
-            }
-        }
-        catch (Exception ex)
-        {
-            await ShowMessage("Error", $"Test purchase error: {ex.Message}");
-            SubscriptionStatus = "Purchase error";
-            System.Diagnostics.Debug.WriteLine($"Test purchase error: {ex}");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private async Task TestPurchaseAlternative()
-    {
-        if (IsBusy) return;
-
-        try
-        {
-            IsBusy = true;
-            SubscriptionStatus = "Testing alternative purchase method...";
-            
-            // Method 2: Using PlatformBillingService (MainActivity)
-            var platformService = new PlatformBillingService();
-            var success = await platformService.PurchasePremiumFromMainActivity();
-            
-            if (success)
-            {
-                await ShowMessage("Alternative Test Purchase", "Premium subscription initiated via MainActivity!");
-                await CheckPremiumStatus();
-            }
-            else
-            {
-                await ShowMessage("Alternative Purchase Failed", "Failed to initiate purchase via MainActivity.");
-            }
-        }
-        catch (Exception ex)
-        {
-            await ShowMessage("Error", $"Alternative purchase error: {ex.Message}");
-            System.Diagnostics.Debug.WriteLine($"Alternative purchase error: {ex}");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    [RelayCommand] 
-    private async Task RefreshSubscriptionStatus()
-    {
-        await CheckPremiumStatus();
-    }
-
     [RelayCommand]
     private async Task UiExpenseSelectedAsync()
     {
@@ -381,14 +229,37 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
     DateTime _selectedExpenseDate = DateTime.MinValue;
 
     [RelayCommand]
-    private void Save()
+    private async Task SaveAsync()
     {
+        if (_userHasAppAccess == false)
+        {
+            string response = await DisplayActionSheet("Subscription Required", "Cancel", null, "Subscribe");
+
+            if (response == "Subscribe")
+            {
+                var result = await _subscriptionService.PurchasePremium();
+                if(result.Success)
+                {
+                    _userHasAppAccess = true;
+                }
+                else
+                {
+                    _userHasAppAccess = false;
+                    await ShowMessage("Subscription Failed", result.Message);
+                    return;
+                }
+            }                
+            else
+                return;
+        }
+
         if (!IsInputsValid())
             return;
         if (IsBusy)
             return;
 
         IsBusy = true;
+
         double amount = double.Parse(AmountStr);
         DateTime date = _selectedExpenseDate == DateTime.MinValue ? DateTime.Now : _selectedExpenseDate;
         ExpenseEntity expenseEntity;
@@ -402,7 +273,7 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
             Amount = amount,
             Note = Note,
             DateTime = date,
-            Category = SelectedExpenseCategory,            
+            Category = SelectedExpenseCategory,
             ItemType = ExpenseItemType.ExpenseItem,
         };
 
@@ -555,9 +426,24 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
 
     public async Task LoadDataAsync()
     {
+
         if (IsBusy)
             return;
+
         Busy();
+
+        _userHasAppAccess = await _subscriptionService.IsPremiumUser();
+
+        if (await _subscriptionService.IsInTrialPeriod())
+        {
+            _userHasAppAccess = true;
+            int daysRemaining = await _subscriptionService.GetTrialDaysRemaining();
+            if (daysRemaining < 6)
+            {
+                ShowMessage("Trial Period", $"You have {daysRemaining} day(s) remaining in your trial period. Enjoy premium features during this time!");
+            }
+        }
+
         _expenseEntities = _homeService.GetRecent(SelectedStartDate, out _total);
         ObservableCollection<UiExpenseItem> expenses = new ObservableCollection<UiExpenseItem>();
         ObservableCollection<UiGroupByCategoryItem> groupedExpenses = new ObservableCollection<UiGroupByCategoryItem>();
@@ -575,14 +461,14 @@ public partial class HomeViewModel : ExpenseListBaseViewModel
         UiGroupByCategoryExpenses.Clear();
 
         if (expenses.Count > 0)
-        {            
+        {
             foreach (var item in expenses)
                 UiExpenses.Add(item);
             IsExpenseListGroupedByCategory = false;
         }
 
         if (groupedExpenses.Count > 0)
-        {            
+        {
             foreach (var item in groupedExpenses)
                 UiGroupByCategoryExpenses.Add(item);
             IsExpenseListGroupedByCategory = true;

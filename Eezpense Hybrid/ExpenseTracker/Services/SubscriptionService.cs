@@ -17,18 +17,73 @@ public class SubscriptionService
     }
     
     /// <summary>
-    /// Check if user is a premium subscriber
+    /// Check if user is a premium subscriber (includes trial period)
     /// </summary>
     /// <returns>True if user has premium access</returns>
     public async Task<bool> IsPremiumUser()
     {
         try
         {
-            return await _billingService.HasActivePremiumSubscription();
+            bool result = await _billingService.HasActivePremiumSubscription();
+            return result;
         }
         catch (Exception ex)
         {
             return false; // Default to non-premium on error
+        }
+    }
+    
+    /// <summary>
+    /// Check if user is currently in trial period
+    /// </summary>
+    /// <returns>True if user is in free trial</returns>
+    public async Task<bool> IsInTrialPeriod()
+    {
+        try
+        {
+            var purchases = await _billingService.GetAllSubscriptionPurchases();
+            var activePurchase = purchases.FirstOrDefault(p => 
+                p.ProductId == "eezpense_premium_monthly" && 
+                (p.State == PurchaseState.Purchased || p.State == PurchaseState.PaymentPending));
+            
+            if (activePurchase == null)
+                return false;
+                
+            // Assume trial period is 14 days from purchase date
+            var trialEndDate = activePurchase.TransactionDateUtc.AddDays(14);
+            return DateTime.UtcNow < trialEndDate;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+    
+    /// <summary>
+    /// Get remaining trial days
+    /// </summary>
+    /// <returns>Number of days remaining in trial, 0 if not in trial</returns>
+    public async Task<int> GetTrialDaysRemaining()
+    {
+        try
+        {
+            var purchases = await _billingService.GetAllSubscriptionPurchases();
+            var activePurchase = purchases.FirstOrDefault(p => 
+                p.ProductId == "eezpense_premium_monthly" && 
+                (p.State == PurchaseState.Purchased || p.State == PurchaseState.PaymentPending));
+            
+            if (activePurchase == null)
+                return 0;
+                
+            // Calculate days remaining based on purchase date + 14 days
+            var trialEndDate = activePurchase.TransactionDateUtc.AddDays(14);
+            var daysRemaining = (int)(trialEndDate - DateTime.UtcNow).TotalDays;
+            
+            return Math.Max(0, daysRemaining);
+        }
+        catch (Exception ex)
+        {
+            return 0;
         }
     }
     
@@ -43,6 +98,8 @@ public class SubscriptionService
             var product = await _billingService.GetSubscriptionProduct();
             var hasActive = await _billingService.HasActivePremiumSubscription();
             var purchases = await _billingService.GetAllSubscriptionPurchases();
+            var isInTrial = await IsInTrialPeriod();
+            var trialDaysRemaining = await GetTrialDaysRemaining();
             
             var activePurchase = purchases.FirstOrDefault(p => 
                 p.ProductId == "eezpense_premium_monthly" && 
@@ -54,7 +111,11 @@ public class SubscriptionService
                 LocalizedPrice = product?.LocalizedPrice ?? "N/A",
                 HasActiveSubscription = hasActive,
                 PurchaseState = activePurchase?.State,
-                PurchaseDate = activePurchase?.TransactionDateUtc
+                PurchaseDate = activePurchase?.TransactionDateUtc,
+                IsInTrialPeriod = isInTrial,
+                TrialDaysRemaining = trialDaysRemaining,
+                TrialEndDate = isInTrial && activePurchase != null ? 
+                    activePurchase.TransactionDateUtc.AddDays(14) : null
             };
         }
         catch (Exception ex)
@@ -99,6 +160,9 @@ public class SubscriptionInfo
     public bool HasActiveSubscription { get; set; }
     public PurchaseState? PurchaseState { get; set; }
     public DateTime? PurchaseDate { get; set; }
+    public bool IsInTrialPeriod { get; set; }
+    public int TrialDaysRemaining { get; set; }
+    public DateTime? TrialEndDate { get; set; }
 }
 
 /// <summary>
