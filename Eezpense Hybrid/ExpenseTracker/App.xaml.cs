@@ -1,7 +1,5 @@
-﻿using ExpenseTracker.Features.Daily;
-using ExpenseTracker.Features.Main;
-using ExpenseTracker.Features.OnBoarding;
-using ExpenseTracker.Settings;
+﻿using ExpenseTracker.Features.Main;
+using ExpenseTracker.Services;
 
 namespace ExpenseTracker
 {
@@ -10,12 +8,21 @@ namespace ExpenseTracker
         public App()
         {
             InitializeComponent();
-            if (AppSettings.Account.OnBoardingCompleted)
-                MainPage = new AppShell();
-            else
-                MainPage = new OnBoardingPage();
-
-            RequestedThemeChanged += OnRequestedThemeChanged;
+            MainPage = new AppShell();
+            
+            // Process any unacknowledged purchases on startup
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    var billingService = new BillingService();
+                    await billingService.ProcessPendingPurchases();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error processing pending purchases: {ex.Message}");
+                }
+            });
         }
 
         public static Action<bool> OnThemeChanged;

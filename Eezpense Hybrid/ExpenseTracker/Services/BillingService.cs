@@ -85,9 +85,9 @@ public class BillingService
     }
     
     /// <summary>
-    /// Purchase the premium subscription
+    /// Purchase the premium subscription with automatic acknowledgment
     /// </summary>
-    /// <returns>True if purchase was successful, false otherwise</returns>
+    /// <returns>True if purchase was successful and acknowledged, false otherwise</returns>
     public async Task<bool> PurchasePremiumSubscription()
     {
         try
@@ -107,12 +107,26 @@ public class BillingService
             if (purchase?.State == PurchaseState.Purchased)
             {
                 Debug.WriteLine("Subscription purchased successfully");
-                return true;
+                
+                // CRITICAL: Acknowledge the purchase immediately
+                var acknowledged = await TryAcknowledgePurchase(purchase.PurchaseToken);
+                if (acknowledged)
+                {
+                    Debug.WriteLine("Purchase acknowledged successfully");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine("WARNING: Purchase succeeded but acknowledgment failed");
+                    // Still return true since purchase succeeded, but log the issue
+                    return true;
+                }
             }
             else if (purchase?.State == PurchaseState.PaymentPending)
             {
                 Debug.WriteLine("Payment is pending for subscription");
-                return true; // Consider pending as success for now
+                // Note: Don't acknowledge pending purchases
+                return true;
             }
             
             Debug.WriteLine($"Purchase failed with state: {purchase?.State}");
@@ -122,6 +136,68 @@ public class BillingService
         {
             Debug.WriteLine($"Error purchasing subscription: {ex.Message}");
             return false;
+        }
+        finally
+        {
+            await CrossInAppBilling.Current.DisconnectAsync();
+        }
+    }
+    
+    /// <summary>
+    /// Process and acknowledge any unacknowledged purchases
+    /// Call this on app startup to handle purchases made while app was closed
+    /// </summary>
+    /// <returns>Number of purchases processed</returns>
+    public async Task<int> ProcessPendingPurchases()
+    {
+        try
+        {
+            var billing = CrossInAppBilling.Current;
+            var connected = await billing.ConnectAsync();
+            
+            if (!connected)
+            {
+                Debug.WriteLine("Could not connect to billing service");
+                return 0;
+            }
+
+            // Get all subscription purchases
+
+            var purchases = await billing.GetPurchasesAsync(ItemType.Subscription);
+            var premiumPurchases = purchases?.Where(p => 
+                p.ProductId == MONTHLY_SUBSCRIPTION_ID && 
+                p.State == PurchaseState.Purchased &&
+                (p.IsAcknowledged == false || p.IsAcknowledged == null)) ?? new List<InAppBillingPurchase>();
+            
+            int processedCount = 0;
+            
+            foreach (var purchase in premiumPurchases)
+            {
+                Debug.WriteLine($"Processing unacknowledged purchase: {purchase.PurchaseToken}");
+                
+                // Grant premium access (if needed - probably already done)
+                // Your logic here to ensure user has premium features
+                
+                // Acknowledge the purchase
+                var acknowledged = await TryAcknowledgePurchase(purchase.PurchaseToken);
+                if (acknowledged)
+                {
+                    processedCount++;
+                    Debug.WriteLine($"Successfully acknowledged purchase: {purchase.PurchaseToken}");
+                }
+                else
+                {
+                    Debug.WriteLine($"Failed to acknowledge purchase: {purchase.PurchaseToken}");
+                }
+            }
+            
+            Debug.WriteLine($"Processed {processedCount} pending purchases");
+            return processedCount;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error processing pending purchases: {ex.Message}");
+            return 0;
         }
         finally
         {
